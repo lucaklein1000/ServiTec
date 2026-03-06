@@ -1,0 +1,6 @@
+@ServiTec_HostAddress = http://localhost:5206
+
+GET {{ServiTec_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
