@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using ServiTec.Data;
-using ServiTec.Services;
+using ServiTec.Application.Services;
+using ServiTec.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +15,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<ProducteService>();
 
-builder.Services.AddScoped<ProducteRepository, ProducteRepository>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddSwaggerGen();
 
