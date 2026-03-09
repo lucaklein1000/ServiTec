@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ServiTec.Models;
+namespace ServiTec.Domain.Models;
 
 public partial class Usuari
 {

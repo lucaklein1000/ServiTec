@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using ServiTec.Models;
+using ServiTec.Domain.Models;
 
-namespace ServiTec.Data;
+namespace ServiTec.Infrastructure.Data;
 
 public partial class ServiTecDbContext : DbContext
 {

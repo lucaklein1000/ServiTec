@@ -1,4 +1,4 @@
-﻿namespace ServiTec.DTOs
+﻿namespace ServiTec.Application.DTOs
 {
     public class CreateProducteDTO
     {
