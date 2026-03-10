@@ -14,6 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<ProducteService>();
+builder.Services.AddScoped<UsuariService>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 

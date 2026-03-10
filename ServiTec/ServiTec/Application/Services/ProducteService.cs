@@ -55,7 +55,7 @@ namespace ServiTec.Application.Services
             return resultat;
         }
 
-        public async Task<Producte?> ActualitzarProducte(int id, ActualitzarProducte dto)
+        public async Task<Producte?> UpdateProducteDTO(int id, UpdateProducteDTO dto)
         {
             var producte = await _repository.GetById(id);
 

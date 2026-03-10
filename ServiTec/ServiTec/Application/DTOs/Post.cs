@@ -8,4 +8,12 @@
         public bool PostActiu { get; set; }
         public int PostIdCategoria { get; set; }
     }
+
+    public class CreateUsuariDTO
+        {
+            public string PostNomUsuari { get; set; } = null!;
+            public string PostContrasenya { get; set; } = null!;
+            public bool PostActiu { get; set; }
+            public bool PostAdmin { get; set; }
+    }
 }

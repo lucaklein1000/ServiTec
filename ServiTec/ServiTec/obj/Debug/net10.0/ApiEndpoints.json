@@ -1,63 +1,6 @@
 [
   {
     "ContainingType": "ServiTec.Controllers.ProducteController",
-    "Method": "ActualitzarProducte",
-    "RelativePath": "api/Producte/actualitzarProducte/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "dto",
-        "Type": "ServiTec.DTOs.ActualitzarProducte",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "ServiTec.Models.Producte",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "ServiTec.Controllers.ProducteController",
-    "Method": "BuscarProducte",
-    "RelativePath": "api/Producte/buscarProducte/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "ServiTec.Models.Producte",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "ServiTec.Controllers.ProducteController",
     "Method": "Delete",
     "RelativePath": "api/Producte/eliminarProducte/{id}",
     "HttpMethod": "DELETE",
@@ -82,7 +25,7 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "ServiTec.DTOs.CreateProducteDTO",
+        "Type": "ServiTec.Application.DTOs.CreateProducteDTO",
         "IsRequired": true
       }
     ],
@@ -98,7 +41,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ServiTec.DTOs.ProducteDTO, ServiTec, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ServiTec.Application.DTOs.ProducteDTO, ServiTec, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -109,16 +52,27 @@
     ]
   },
   {
-    "ContainingType": "ServiTec.Controllers.WeatherForecastController",
-    "Method": "Get",
-    "RelativePath": "WeatherForecast",
-    "HttpMethod": "GET",
+    "ContainingType": "ServiTec.Controllers.ProducteController",
+    "Method": "ActualitzarProducte",
+    "RelativePath": "api/Producte/UpdateProducteDTO/{id}",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "ServiTec.Application.DTOs.UpdateProducteDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ServiTec.WeatherForecast, ServiTec, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "ServiTec.Domain.Models.Producte",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -126,7 +80,105 @@
         ],
         "StatusCode": 200
       }
+    ]
+  },
+  {
+    "ContainingType": "ServiTec.Controllers.UsuariController",
+    "Method": "ActualitzarUsuari",
+    "RelativePath": "api/Usuari/actualitzar/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "ServiTec.Application.DTOs.UpdateUsuariDTO",
+        "IsRequired": true
+      }
     ],
-    "EndpointName": "GetWeatherForecast"
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ServiTec.Controllers.UsuariController",
+    "Method": "BuscarUsuari",
+    "RelativePath": "api/Usuari/buscar/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ServiTec.Domain.Models.Usuari",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ServiTec.Controllers.UsuariController",
+    "Method": "CrearUsuari",
+    "RelativePath": "api/Usuari/crear",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "ServiTec.Application.DTOs.CreateUsuariDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ServiTec.Controllers.UsuariController",
+    "Method": "Delete",
+    "RelativePath": "api/Usuari/eliminar/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ServiTec.Controllers.UsuariController",
+    "Method": "LlistarUsuaris",
+    "RelativePath": "api/Usuari/llistar",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ServiTec.Domain.Models.Usuari, ServiTec, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   }
 ]

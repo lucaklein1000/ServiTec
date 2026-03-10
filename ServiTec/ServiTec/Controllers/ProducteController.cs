@@ -97,10 +97,10 @@ namespace ServiTec.Controllers
         /// 200 OK si la actualización se realiza correctamente.
         /// 404 NotFound si el producto no existe.
         /// </returns>
-        [HttpPut("actualitzarProducte/{id}")]
-        public async Task<ActionResult<Producte>> ActualitzarProducte(int id, ActualitzarProducte dto)
+        [HttpPut("UpdateProducteDTO/{id}")]
+        public async Task<ActionResult<Producte>> ActualitzarProducte(int id, UpdateProducteDTO dto)
         {
-            var producte = await _producteService.ActualitzarProducte(id, dto);
+            var producte = await _producteService.UpdateProducteDTO(id, dto);
 
             if (producte == null)
                 return NotFound();

@@ -74,7 +74,7 @@
         }
       }
     },
-    "/api/Producte/actualitzarProducte/{id}": {
+    "/api/Producte/UpdateProducteDTO/{id}": {
       "put": {
         "tags": [
           "Producte"
@@ -94,17 +94,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ActualitzarProducte"
+                "$ref": "#/components/schemas/UpdateProducteDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ActualitzarProducte"
+                "$ref": "#/components/schemas/UpdateProducteDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ActualitzarProducte"
+                "$ref": "#/components/schemas/UpdateProducteDTO"
               }
             }
           }
@@ -156,10 +156,48 @@
         }
       }
     },
-    "/api/Producte/buscarProducte/{id}": {
+    "/api/Usuari/llistar": {
       "get": {
         "tags": [
-          "Producte"
+          "Usuari"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Usuari"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Usuari"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Usuari"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Usuari/buscar/{id}": {
+      "get": {
+        "tags": [
+          "Usuari"
         ],
         "parameters": [
           {
@@ -178,17 +216,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/Producte"
+                  "$ref": "#/components/schemas/Usuari"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Producte"
+                  "$ref": "#/components/schemas/Usuari"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Producte"
+                  "$ref": "#/components/schemas/Usuari"
                 }
               }
             }
@@ -196,41 +234,98 @@
         }
       }
     },
-    "/WeatherForecast": {
-      "get": {
+    "/api/Usuari/crear": {
+      "post": {
         "tags": [
-          "WeatherForecast"
+          "Usuari"
         ],
-        "operationId": "GetWeatherForecast",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUsuariDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUsuariDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUsuariDTO"
               }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Usuari/actualitzar/{id}": {
+      "put": {
+        "tags": [
+          "Usuari"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUsuariDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUsuariDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUsuariDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Usuari/eliminar/{id}": {
+      "delete": {
+        "tags": [
+          "Usuari"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -238,35 +333,6 @@
   },
   "components": {
     "schemas": {
-      "ActualitzarProducte": {
-        "type": "object",
-        "properties": {
-          "putIdProducte": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "putNom": {
-            "type": "string",
-            "nullable": true
-          },
-          "putDescripcio": {
-            "type": "string",
-            "nullable": true
-          },
-          "putPreu": {
-            "type": "number",
-            "format": "double"
-          },
-          "putActiu": {
-            "type": "boolean"
-          },
-          "putIdCategoria": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
       "Categoria": {
         "type": "object",
         "properties": {
@@ -286,6 +352,56 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Producte"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Comanda": {
+        "type": "object",
+        "properties": {
+          "idComanda": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dataCreacio": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "estat": {
+            "type": "string",
+            "nullable": true
+          },
+          "total": {
+            "type": "number",
+            "format": "double"
+          },
+          "idTaula": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idUsuari": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idTaulaNavigation": {
+            "$ref": "#/components/schemas/Taula"
+          },
+          "idUsuariNavigation": {
+            "$ref": "#/components/schemas/Usuari"
+          },
+          "liniaComanda": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LiniaComanda"
+            },
+            "nullable": true
+          },
+          "liniaUsuaris": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LiniaUsuari"
             },
             "nullable": true
           }
@@ -313,6 +429,86 @@
           "postIdCategoria": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateUsuariDTO": {
+        "type": "object",
+        "properties": {
+          "postNomUsuari": {
+            "type": "string",
+            "nullable": true
+          },
+          "postContrasenya": {
+            "type": "string",
+            "nullable": true
+          },
+          "postActiu": {
+            "type": "boolean"
+          },
+          "postAdmin": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LiniaComanda": {
+        "type": "object",
+        "properties": {
+          "idLinia": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantitat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "preuUnitari": {
+            "type": "number",
+            "format": "double"
+          },
+          "subtotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "idComanda": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idProducte": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idComandaNavigation": {
+            "$ref": "#/components/schemas/Comanda"
+          },
+          "idProducteNavigation": {
+            "$ref": "#/components/schemas/Producte"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LiniaUsuari": {
+        "type": "object",
+        "properties": {
+          "idLiniaUsuari": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idUsuari": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idComanda": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idComandaNavigation": {
+            "$ref": "#/components/schemas/Comanda"
+          },
+          "idUsuariNavigation": {
+            "$ref": "#/components/schemas/Usuari"
           }
         },
         "additionalProperties": false
@@ -367,24 +563,121 @@
         },
         "additionalProperties": false
       },
-      "WeatherForecast": {
+      "Taula": {
         "type": "object",
         "properties": {
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "temperatureC": {
+          "idTaula": {
             "type": "integer",
             "format": "int32"
           },
-          "temperatureF": {
+          "numero": {
             "type": "integer",
-            "format": "int32",
-            "readOnly": true
+            "format": "int32"
           },
-          "summary": {
+          "capacitat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estat": {
             "type": "string",
+            "nullable": true
+          },
+          "comanda": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comanda"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateProducteDTO": {
+        "type": "object",
+        "properties": {
+          "putIdProducte": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "putNom": {
+            "type": "string",
+            "nullable": true
+          },
+          "putDescripcio": {
+            "type": "string",
+            "nullable": true
+          },
+          "putPreu": {
+            "type": "number",
+            "format": "double"
+          },
+          "putActiu": {
+            "type": "boolean"
+          },
+          "putIdCategoria": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateUsuariDTO": {
+        "type": "object",
+        "properties": {
+          "putIdUsuari": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "putNomUsuari": {
+            "type": "string",
+            "nullable": true
+          },
+          "putContrasenya": {
+            "type": "string",
+            "nullable": true
+          },
+          "putActiu": {
+            "type": "boolean"
+          },
+          "putAdmin": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Usuari": {
+        "type": "object",
+        "properties": {
+          "idUsuari": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nomUsuari": {
+            "type": "string",
+            "nullable": true
+          },
+          "contrasenya": {
+            "type": "string",
+            "nullable": true
+          },
+          "actiu": {
+            "type": "boolean"
+          },
+          "admin": {
+            "type": "boolean"
+          },
+          "comanda": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comanda"
+            },
+            "nullable": true
+          },
+          "liniaUsuaris": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LiniaUsuari"
+            },
             "nullable": true
           }
         },
@@ -397,7 +690,7 @@
       "name": "Producte"
     },
     {
-      "name": "WeatherForecast"
+      "name": "Usuari"
     }
   ]
 }

@@ -1,83 +1,145 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using ServiTec.Domain.Models;
+using ServiTec.Application.DTOs;
 
 namespace ServiTec.Controllers
 {
-    public class UsuariController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UsuariController : ControllerBase
     {
-        // GET: UsuariController
-        public ActionResult Index()
+        private readonly UsuariService _usuariService;
+
+        public UsuariController(UsuariService usuariService)
         {
-            return View();
+            _usuariService = usuariService;
         }
 
-        // GET: UsuariController/Details/5
-        public ActionResult Details(int id)
+        /// <brief>
+        /// Recupera la llista completa d'usuaris del sistema.
+        /// </brief>
+        /// <pre>
+        /// - El servei d'usuaris ha d'estar operatiu.
+        /// </pre>
+        /// <post>
+        /// - Es retorna una col·lecció amb tots els usuaris registrats.
+        /// </post>
+        /// <returns>
+        /// 200 OK amb la llista d'usuaris.
+        /// </returns>
+        [HttpGet("llistar")]
+        public async Task<ActionResult<IEnumerable<Usuari>>> LlistarUsuaris()
         {
-            return View();
+            var usuaris = await _usuariService.GetAll();
+            return Ok(usuaris);
         }
 
-        // GET: UsuariController/Create
-        public ActionResult Create()
+        /// <brief>
+        /// Cerca un usuari concret a partir del seu identificador.
+        /// </brief>
+        /// <pre>
+        /// - L'identificador proporcionat ha de ser vàlid.
+        /// </pre>
+        /// <post>
+        /// - Si l'usuari existeix, es retorna la seva informació.
+        /// </post>
+        /// <param name="id">
+        /// Identificador de l'usuari a cercar.
+        /// </param>
+        /// <returns>
+        /// 200 OK amb l'usuari trobat.
+        /// 404 NotFound si l'usuari no existeix.
+        /// </returns>
+        [HttpGet("buscar/{id}")]
+        public async Task<ActionResult<Usuari>> BuscarUsuari(int id)
         {
-            return View();
+            var usuari = await _usuariService.GetById(id);
+
+            if (usuari == null)
+                return NotFound();
+
+            return Ok(usuari);
         }
 
-        // POST: UsuariController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        /// <brief>
+        /// Crea un nou usuari al sistema.
+        /// </brief>
+        /// <pre>
+        /// - Les dades del DTO han de ser vàlides.
+        /// </pre>
+        /// <post>
+        /// - Es crea un nou registre d'usuari al sistema.
+        /// </post>
+        /// <param name="dto">
+        /// Objecte DTO que conté la informació necessària per crear l'usuari.
+        /// </param>
+        /// <returns>
+        /// 201 Created si la creació es realitza correctament.
+        /// </returns>
+        [HttpPost("crear")]
+        public async Task<ActionResult> CrearUsuari(CreateUsuariDTO dto)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var usuari = await _usuariService.Create(dto);
+
+            return StatusCode(StatusCodes.Status201Created, usuari);
         }
 
-        // GET: UsuariController/Edit/5
-        public ActionResult Edit(int id)
+        /// <brief>
+        /// Actualitza la informació d'un usuari existent.
+        /// </brief>
+        /// <pre>
+        /// - L'usuari indicat ha d'existir.
+        /// - Les dades proporcionades han de ser vàlides.
+        /// </pre>
+        /// <post>
+        /// - Les dades de l'usuari queden actualitzades al sistema.
+        /// </post>
+        /// <param name="id">
+        /// Identificador de l'usuari a actualitzar.
+        /// </param>
+        /// <param name="dto">
+        /// Objecte DTO amb les noves dades de l'usuari.
+        /// </param>
+        /// <returns>
+        /// 200 OK si l'actualització es realitza correctament.
+        /// 404 NotFound si l'usuari no existeix.
+        /// </returns>
+        [HttpPut("actualitzar/{id}")]
+        public async Task<ActionResult> ActualitzarUsuari(int id, UpdateUsuariDTO dto)
         {
-            return View();
+            var usuari = await _usuariService.Update(id, dto);
+
+            if (usuari == null)
+                return NotFound();
+
+            return Ok(usuari);
         }
 
-        // POST: UsuariController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        /// <brief>
+        /// Elimina un usuari del sistema.
+        /// </brief>
+        /// <pre>
+        /// - L'usuari indicat ha d'existir al sistema.
+        /// </pre>
+        /// <post>
+        /// - L'usuari és eliminat del sistema.
+        /// </post>
+        /// <param name="id">
+        /// Identificador de l'usuari a eliminar.
+        /// </param>
+        /// <returns>
+        /// 204 NoContent si l'eliminació es realitza correctament.
+        /// 404 NotFound si l'usuari no existeix.
+        /// </returns>
+        [HttpDelete("eliminar/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+            var eliminat = await _usuariService.Delete(id);
 
-        // GET: UsuariController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+            if (!eliminat)
+                return NotFound();
 
-        // POST: UsuariController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return NoContent();
         }
     }
 }
