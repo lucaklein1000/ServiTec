@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ServiTec.Application.Services;
 using ServiTec.Infrastructure.Data;
+using ServiTec.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<ProducteService>();
 builder.Services.AddScoped<UsuariService>();
+builder.Services.AddScoped<TaulaService>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 

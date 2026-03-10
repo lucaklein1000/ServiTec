@@ -11,7 +11,7 @@ public partial class Taula
 
     public int Capacitat { get; set; }
 
-    public string Estat { get; set; } = null!;
+    public bool Estat { get; set; }
 
     public virtual ICollection<Comanda> Comanda { get; set; } = new List<Comanda>();
 }

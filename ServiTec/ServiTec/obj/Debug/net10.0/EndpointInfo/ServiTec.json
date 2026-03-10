@@ -156,6 +156,191 @@
         }
       }
     },
+    "/api/Taula": {
+      "get": {
+        "tags": [
+          "Taula"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaulaDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaulaDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaulaDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Taula"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaulaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaulaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaulaDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaulaDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaulaDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaulaDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Taula/{id}": {
+      "get": {
+        "tags": [
+          "Taula"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaulaDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaulaDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaulaDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Taula"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaulaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaulaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaulaDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Taula"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Usuari/llistar": {
       "get": {
         "tags": [
@@ -433,6 +618,23 @@
         },
         "additionalProperties": false
       },
+      "CreateTaulaDTO": {
+        "type": "object",
+        "properties": {
+          "numero": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "capacitat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estat": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateUsuariDTO": {
         "type": "object",
         "properties": {
@@ -579,8 +781,7 @@
             "format": "int32"
           },
           "estat": {
-            "type": "string",
-            "nullable": true
+            "type": "boolean"
           },
           "comanda": {
             "type": "array",
@@ -588,6 +789,27 @@
               "$ref": "#/components/schemas/Comanda"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TaulaDTO": {
+        "type": "object",
+        "properties": {
+          "idTaula": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numero": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "capacitat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estat": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -617,6 +839,23 @@
           "putIdCategoria": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateTaulaDTO": {
+        "type": "object",
+        "properties": {
+          "numero": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "capacitat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estat": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -688,6 +927,9 @@
   "tags": [
     {
       "name": "Producte"
+    },
+    {
+      "name": "Taula"
     },
     {
       "name": "Usuari"

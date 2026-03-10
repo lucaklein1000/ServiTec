@@ -17,4 +17,16 @@ namespace ServiTec.Application.DTOs
         public bool Actiu { get; set; }
         public bool Admin { get; set; }
     }
+
+    public class TaulaDTO
+    {
+        public int IdTaula { get; set; }
+
+        public int Numero { get; set; }
+
+        public int Capacitat { get; set; }
+
+        public bool Estat { get; set; }
+    }
+
 }

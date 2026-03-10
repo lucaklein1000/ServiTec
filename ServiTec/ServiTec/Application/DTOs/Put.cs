@@ -18,4 +18,17 @@
             public bool PutActiu { get; set; }
             public bool PutAdmin { get; set; }
     }
+
+    namespace ServiTec.DTOs
+    {
+        public class UpdateTaulaDTO
+        {
+            public int Numero { get; set; }
+
+            public int Capacitat { get; set; }
+
+            public bool Estat { get; set; }
+        }
+    }
+
 }

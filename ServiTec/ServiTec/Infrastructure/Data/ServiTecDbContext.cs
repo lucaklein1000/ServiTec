@@ -26,7 +26,7 @@ public partial class ServiTecDbContext : DbContext
 
     public virtual DbSet<Producte> Productes { get; set; }
 
-    public virtual DbSet<Taula> Taulas { get; set; }
+    public virtual DbSet<Taula> Taules { get; set; }
 
     public virtual DbSet<Usuari> Usuaris { get; set; }
 
@@ -160,11 +160,12 @@ public partial class ServiTecDbContext : DbContext
             entity.ToTable("Taula");
 
             entity.Property(e => e.IdTaula).HasColumnName("idTaula");
+
             entity.Property(e => e.Capacitat).HasColumnName("capacitat");
+
             entity.Property(e => e.Estat)
-                .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("estat");
+
             entity.Property(e => e.Numero).HasColumnName("numero");
         });
 

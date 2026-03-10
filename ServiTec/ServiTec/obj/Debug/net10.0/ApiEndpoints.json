@@ -83,6 +83,115 @@
     ]
   },
   {
+    "ContainingType": "ServiTec.Controllers.TaulaController",
+    "Method": "GetAll",
+    "RelativePath": "api/Taula",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ServiTec.Application.DTOs.TaulaDTO, ServiTec, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ServiTec.Controllers.TaulaController",
+    "Method": "Create",
+    "RelativePath": "api/Taula",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "ServiTec.Application.DTOs.CreateTaulaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ServiTec.Application.DTOs.TaulaDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ServiTec.Controllers.TaulaController",
+    "Method": "GetById",
+    "RelativePath": "api/Taula/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ServiTec.Application.DTOs.TaulaDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ServiTec.Controllers.TaulaController",
+    "Method": "Update",
+    "RelativePath": "api/Taula/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "ServiTec.Application.DTOs.ServiTec.DTOs.UpdateTaulaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ServiTec.Controllers.TaulaController",
+    "Method": "Delete",
+    "RelativePath": "api/Taula/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "ServiTec.Controllers.UsuariController",
     "Method": "ActualitzarUsuari",
     "RelativePath": "api/Usuari/actualitzar/{id}",

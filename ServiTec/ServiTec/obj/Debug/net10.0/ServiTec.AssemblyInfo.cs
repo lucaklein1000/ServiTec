@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ServiTec")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2f0dbce9f5455b9a718bad401d6caf0bf22b8982")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ee97f690b119372363b05b66b433397281ac840c")]
 [assembly: System.Reflection.AssemblyProductAttribute("ServiTec")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ServiTec")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

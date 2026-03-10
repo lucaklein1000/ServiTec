@@ -16,4 +16,13 @@
             public bool PostActiu { get; set; }
             public bool PostAdmin { get; set; }
     }
+
+    public class CreateTaulaDTO
+    {
+        public int Numero { get; set; }
+
+        public int Capacitat { get; set; }
+
+        public bool Estat { get; set; }
+    }
 }
