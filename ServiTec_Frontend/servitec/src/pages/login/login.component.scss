@@ -1,0 +1,320 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+// ── Variables ──────────────────────────────────────────────
+$cream:      #F7F3EE;
+$warm-dark:  #1C1612;
+$gold:       #C9A84C;
+$gold-light: #E8C97A;
+$brown:      #5C3D2E;
+$muted:      #8B7355;
+$error:      #C0392B;
+$white:      #FFFFFF;
+
+// ── Reset ─────────────────────────────────────────────────
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+// ── Page ──────────────────────────────────────────────────
+.page {
+  min-height: 100vh;
+  background-color: $warm-dark;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+.bg-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(201,168,76,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(201,168,76,0.05) 0%, transparent 50%);
+  pointer-events: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(201,168,76,0.03) 40px,
+      rgba(201,168,76,0.03) 41px
+    );
+  }
+}
+
+// ── Layout ────────────────────────────────────────────────
+.container {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 2rem;
+  width: 100%;
+  max-width: 900px;
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
+}
+
+// ── Card base ─────────────────────────────────────────────
+%card {
+  background: rgba(247, 243, 238, 0.04);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 16px;
+  padding: 2.5rem;
+  backdrop-filter: blur(12px);
+}
+
+// ── Login card ────────────────────────────────────────────
+.login-card {
+  @extend %card;
+  animation: fadeUp 0.6s ease both;
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.brand-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.brand-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: $gold;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.brand-subtitle {
+  margin-top: 0.5rem;
+  color: $muted;
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+
+  label {
+    display: block;
+    color: $gold-light;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .input-icon {
+    position: absolute;
+    left: 0.9rem;
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.85rem 1rem 0.85rem 2.8rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 10px;
+    color: $cream;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+
+    &::placeholder { color: rgba(247,243,238,0.25); }
+
+    &:focus {
+      border-color: $gold;
+      background: rgba(201,168,76,0.06);
+    }
+  }
+}
+
+.btn-login {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, $gold, $brown);
+  border: none;
+  border-radius: 10px;
+  color: $warm-dark;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  &:active { transform: translateY(0); }
+}
+
+// ── Users card ────────────────────────────────────────────
+.users-card {
+  @extend %card;
+  animation: fadeUp 0.6s 0.15s ease both;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 520px;
+  overflow: hidden;
+}
+
+.users-title {
+  font-family: 'Playfair Display', serif;
+  color: $gold;
+  font-size: 1.3rem;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+  padding-bottom: 0.75rem;
+}
+
+.user-list {
+  list-style: none;
+  overflow-y: auto;
+  flex: 1;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 4px; }
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+  transition: background 0.15s;
+  border-radius: 8px;
+  padding-inline: 0.5rem;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: rgba(201,168,76,0.05); }
+}
+
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $gold, $brown);
+  color: $warm-dark;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  color: $cream;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-email {
+  color: $muted;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-rol {
+  font-size: 0.72rem;
+  color: $gold;
+  background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 20px;
+  padding: 0.2rem 0.65rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// ── Estados ───────────────────────────────────────────────
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: $muted;
+  font-size: 0.9rem;
+  padding: 1rem 0;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(201,168,76,0.2);
+  border-top-color: $gold;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+.empty {
+  color: $muted;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.error-msg {
+  color: $error;
+  font-size: 0.83rem;
+  background: rgba(192,57,43,0.1);
+  border: 1px solid rgba(192,57,43,0.3);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin-top: 0.5rem;
+}
+
+// ── Animations ────────────────────────────────────────────
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

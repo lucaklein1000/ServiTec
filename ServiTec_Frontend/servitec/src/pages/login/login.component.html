@@ -1,0 +1,105 @@
+<!--
+  @file login.component.html
+  @description Template de la pantalla de login de ServiTec.
+               Conté el formulari d'autenticació i la llista d'usuaris
+               obtinguda de la API. Usa directives Angular per mostrar
+               i ocultar elements segons l'estat del component.
+  @author ServiTec
+-->
+
+<!-- Contenidor principal que ocupa tota la pantalla -->
+<div class="page">
+
+  <!-- Div decoratiu per al fons amb patró geomètric (definit al SCSS) -->
+  <div class="bg-pattern"></div>
+
+  <!-- Contenidor dels dos panells: login i llista d'usuaris -->
+  <div class="container">
+
+    <!-- ── PANELL LOGIN ────────────────────────────────── -->
+    <div class="login-card">
+
+      <!-- Capçalera amb icona, títol i subtítol de l'app -->
+      <div class="brand">
+        <div class="brand-icon">🍽</div>
+        <h1 class="brand-title">ServiTec</h1>
+        <p class="brand-subtitle">Sistema de gestió per a restaurants</p>
+      </div>
+
+      <!-- Camp d'usuari -->
+      <div class="form-group">
+        <label for="usuario">Usuari</label>
+        <div class="input-wrapper">
+          <span class="input-icon">👤</span>
+          <!-- [(ngModel)] vincula el valor del input amb la variable 'usuario' del component -->
+          <input
+            id="usuario"
+            type="text"
+            [(ngModel)]="usuario"
+            placeholder="Introdueix el teu usuari"
+            autocomplete="username"
+          />
+        </div>
+      </div>
+
+      <!-- Camp de contrasenya -->
+      <div class="form-group">
+        <label for="password">Contrasenya</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <!-- type="password" oculta els caràcters escrits -->
+          <input
+            id="password"
+            type="password"
+            [(ngModel)]="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+          />
+        </div>
+      </div>
+
+      <!-- Missatge d'error: només es mostra si la variable 'error' té contingut -->
+      <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+      <!-- Botó que crida al mètode login() del component en fer clic -->
+      <button class="btn-login" (click)="login()">Entrar</button>
+    </div>
+
+    <!-- ── PANELL USUARIS ──────────────────────────────── -->
+    <div class="users-card">
+      <h2 class="users-title">Usuaris registrats</h2>
+
+      <!-- Spinner de càrrega: visible mentre s'espera la resposta de la API -->
+      <div class="loading" *ngIf="cargando">
+        <div class="spinner"></div>
+        <span>Carregant usuaris...</span>
+      </div>
+
+      <!-- Missatge buit: visible si ha acabat de carregar, no hi ha usuaris i no hi ha error -->
+      <div class="empty" *ngIf="!cargando && usuarios.length === 0 && !error">
+        No hi ha usuaris registrats.
+      </div>
+
+      <!-- Missatge d'error de la crida a la API -->
+      <div class="error-msg" *ngIf="!cargando && error">{{ error }}</div>
+
+      <!-- Llista d'usuaris: visible només quan hi ha dades -->
+      <ul class="user-list" *ngIf="!cargando && usuarios.length > 0">
+        <!-- *ngFor repeteix aquest element per cada usuari de l'array -->
+        <li class="user-item" *ngFor="let u of usuarios">
+          <!-- Avatar circular amb la primera lletra del nom en majúscula -->
+          <div class="user-avatar">{{ u.nomUsuari.charAt(0).toUpperCase() }}</div>
+          <div class="user-info">
+            <!-- Nom de l'usuari -->
+            <span class="user-name">{{ u.nomUsuari }}</span>
+            <!-- ID de l'usuari -->
+            <span class="user-email">ID: {{ u.idUsuari }}</span>
+          </div>
+          <!-- Etiqueta de rol: operador ternari, si admin=true mostra 'Admin', si no 'Usuari' -->
+          <span class="user-rol">{{ u.admin ? 'Admin' : 'Usuari' }}</span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
