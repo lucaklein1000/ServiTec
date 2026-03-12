@@ -22,7 +22,21 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddSwaggerGen();
 
+// Conexio amb el frontend Angular
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+
 var app = builder.Build();
+
+app.UseCors("AllowAngular");
 
 /*
 app.MapGet("/", (HttpContext context) =>

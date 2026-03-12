@@ -1,57 +1,57 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\",
+  "WorkspaceRootPath": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\application\\services\\taulaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\services\\taulaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\infrastructure\\data\\servitecdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\infrastructure\\data\\servitecdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\domain\\models\\taula.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\domain\\models\\taula.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\application\\dtos\\get.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\dtos\\get.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\application\\dtos\\post.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\dtos\\post.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\application\\dtos\\put.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\dtos\\put.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\controllers\\taulacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\application\\services\\taulaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\services\\taulaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\infrastructure\\data\\servitecdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\infrastructure\\data\\servitecdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\domain\\models\\taula.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\domain\\models\\taula.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\application\\dtos\\get.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\dtos\\get.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\application\\dtos\\post.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\dtos\\post.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\application\\dtos\\put.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\dtos\\put.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\controllers\\taulacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\controllers\\taulacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\application\\services\\producteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\application\\services\\producteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\services\\producteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\controllers\\productecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\controllers\\productecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\controllers\\productecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\application\\services\\usuariservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\application\\services\\usuariservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\services\\usuariservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\domain\\models\\usuari.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\domain\\models\\usuari.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\domain\\models\\usuari.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\escritorio\\escritorio\\servitec\\servitec\\servitec\\infrastructure\\repositories\\repository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\infrastructure\\repositories\\repository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\infrastructure\\repositories\\repository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -62,28 +62,28 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "TaulaService.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\TaulaService.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\TaulaService.cs",
               "RelativeDocumentMoniker": "ServiTec\\Application\\Services\\TaulaService.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\TaulaService.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\TaulaService.cs",
               "RelativeToolTip": "ServiTec\\Application\\Services\\TaulaService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEUAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAACUAAAAAAAAAAAAgwEUAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-10T13:45:58.636Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Taula.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Domain\\Models\\Taula.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Domain\\Models\\Taula.cs",
               "RelativeDocumentMoniker": "ServiTec\\Domain\\Models\\Taula.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Domain\\Models\\Taula.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Domain\\Models\\Taula.cs",
               "RelativeToolTip": "ServiTec\\Domain\\Models\\Taula.cs",
               "ViewState": "AgIAAAcAAAAAAAAAAAAzwA0AAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -91,11 +91,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Get.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Get.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Get.cs",
               "RelativeDocumentMoniker": "ServiTec\\Application\\DTOs\\Get.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Get.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Get.cs",
               "RelativeToolTip": "ServiTec\\Application\\DTOs\\Get.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAuwBwAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -103,11 +103,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Post.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Post.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Post.cs",
               "RelativeDocumentMoniker": "ServiTec\\Application\\DTOs\\Post.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Post.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Post.cs",
               "RelativeToolTip": "ServiTec\\Application\\DTOs\\Post.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAAUwBkAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -115,11 +115,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Put.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Put.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Put.cs",
               "RelativeDocumentMoniker": "ServiTec\\Application\\DTOs\\Put.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Put.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Put.cs",
               "RelativeToolTip": "ServiTec\\Application\\DTOs\\Put.cs",
               "ViewState": "AgIAABcAAAAAAAAAAAA6wB0AAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -127,23 +127,24 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Program.cs",
               "RelativeDocumentMoniker": "ServiTec\\Program.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Program.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Program.cs",
               "RelativeToolTip": "ServiTec\\Program.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAAABIAAAArAAAAAAAAAA==",
+              "ViewState": "AgIAABAAAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-09T17:03:40.806Z"
+              "WhenOpened": "2026-03-09T17:03:40.806Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "ServiTecDbContext.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Infrastructure\\Data\\ServiTecDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Infrastructure\\Data\\ServiTecDbContext.cs",
               "RelativeDocumentMoniker": "ServiTec\\Infrastructure\\Data\\ServiTecDbContext.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Infrastructure\\Data\\ServiTecDbContext.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Infrastructure\\Data\\ServiTecDbContext.cs",
               "RelativeToolTip": "ServiTec\\Infrastructure\\Data\\ServiTecDbContext.cs",
               "ViewState": "AgIAAJ8AAAAAAAAAAAAnwKgAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -153,9 +154,9 @@
               "$type": "Document",
               "DocumentIndex": 7,
               "Title": "TaulaController.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Controllers\\TaulaController.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Controllers\\TaulaController.cs",
               "RelativeDocumentMoniker": "ServiTec\\Controllers\\TaulaController.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Controllers\\TaulaController.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Controllers\\TaulaController.cs",
               "RelativeToolTip": "ServiTec\\Controllers\\TaulaController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -165,9 +166,9 @@
               "$type": "Document",
               "DocumentIndex": 8,
               "Title": "ProducteService.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\ProducteService.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\ProducteService.cs",
               "RelativeDocumentMoniker": "ServiTec\\Application\\Services\\ProducteService.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\ProducteService.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\ProducteService.cs",
               "RelativeToolTip": "ServiTec\\Application\\Services\\ProducteService.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -177,9 +178,9 @@
               "$type": "Document",
               "DocumentIndex": 12,
               "Title": "Repository.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Infrastructure\\Repositories\\Repository.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Infrastructure\\Repositories\\Repository.cs",
               "RelativeDocumentMoniker": "ServiTec\\Infrastructure\\Repositories\\Repository.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Infrastructure\\Repositories\\Repository.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Infrastructure\\Repositories\\Repository.cs",
               "RelativeToolTip": "ServiTec\\Infrastructure\\Repositories\\Repository.cs",
               "ViewState": "AgIAAAoAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -189,9 +190,9 @@
               "$type": "Document",
               "DocumentIndex": 9,
               "Title": "ProducteController.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Controllers\\ProducteController.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Controllers\\ProducteController.cs",
               "RelativeDocumentMoniker": "ServiTec\\Controllers\\ProducteController.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Controllers\\ProducteController.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Controllers\\ProducteController.cs",
               "RelativeToolTip": "ServiTec\\Controllers\\ProducteController.cs",
               "ViewState": "AgIAACcAAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -201,9 +202,9 @@
               "$type": "Document",
               "DocumentIndex": 11,
               "Title": "Usuari.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Domain\\Models\\Usuari.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Domain\\Models\\Usuari.cs",
               "RelativeDocumentMoniker": "ServiTec\\Domain\\Models\\Usuari.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Domain\\Models\\Usuari.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Domain\\Models\\Usuari.cs",
               "RelativeToolTip": "ServiTec\\Domain\\Models\\Usuari.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -213,9 +214,9 @@
               "$type": "Document",
               "DocumentIndex": 10,
               "Title": "UsuariService.cs",
-              "DocumentMoniker": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\UsuariService.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\UsuariService.cs",
               "RelativeDocumentMoniker": "ServiTec\\Application\\Services\\UsuariService.cs",
-              "ToolTip": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\UsuariService.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\UsuariService.cs",
               "RelativeToolTip": "ServiTec\\Application\\Services\\UsuariService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
