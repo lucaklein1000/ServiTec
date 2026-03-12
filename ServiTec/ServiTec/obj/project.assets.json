@@ -3569,23 +3569,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\agatu\\.nuget\\packages\\": {},
+    "C:\\Users\\Luca Klein\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\ServiTec.csproj",
+      "projectUniqueName": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\ServiTec.csproj",
       "projectName": "ServiTec",
-      "projectPath": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\ServiTec.csproj",
-      "packagesPath": "C:\\Users\\agatu\\.nuget\\packages\\",
-      "outputPath": "C:\\Escritorio\\Escritorio\\ServiTec\\ServiTec\\ServiTec\\obj\\",
+      "projectPath": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\ServiTec.csproj",
+      "packagesPath": "C:\\Users\\Luca Klein\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\agatu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Luca Klein\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3613,7 +3613,7 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "10.0.200"
     },
     "frameworks": {
       "net10.0": {
@@ -3665,7 +3665,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.200/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

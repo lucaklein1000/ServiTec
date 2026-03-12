@@ -2,3 +2,9 @@
 [Bb]in/
 [Oo]bj/
 *.user
+
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+*.log
