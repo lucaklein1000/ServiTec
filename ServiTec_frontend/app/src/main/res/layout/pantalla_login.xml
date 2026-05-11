@@ -41,6 +41,7 @@
             android:textStyle="bold" />
 
         <EditText
+            android:id="@+id/idUsuari"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
@@ -56,6 +57,7 @@
             android:textStyle="bold" />
 
         <EditText
+            android:id="@+id/idContrasenya"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
