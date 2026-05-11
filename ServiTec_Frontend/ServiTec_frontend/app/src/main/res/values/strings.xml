@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ServiTec</string>
+    <string name="subtitle">Smart restaurant management for your business</string>
+    <string name="usuario">Usuari</string>
+    <string name="password">Contrasenya</string>
+    <string name="login">Iniciar sesió</string>
+    <string name="hint_usuario">Ingrese su usuario</string>
+    <string name="hint_password">Ingrese su contraseña</string>
+</resources>
