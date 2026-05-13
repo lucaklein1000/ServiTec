@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ServiTec.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using ServiTec.Application.DTOs;
+using ServiTec.Domain.Models;
 
 namespace ServiTec.Controllers
 {
@@ -140,6 +141,34 @@ namespace ServiTec.Controllers
                 return NotFound();
 
             return NoContent();
+        }
+
+        /// <brief>
+        /// Realitza el procés de l'autenticació d'un usuari.
+        /// </brief>
+        /// <pre>
+        /// - L'objecte LoginRequest ha de contenir un nom d'usuari i contrasenya vàlids.
+        /// - El servei d'usuaris ha d'estar disponible.
+        /// </pre>
+        /// <post>
+        /// - Es retorna la informació de l'usuari si l'autenticació és satisfactòria.
+        /// </post>
+        /// <param name="request">
+        /// Objecte que conté les credencials (Username i Password).
+        /// </param>
+        /// <returns>
+        /// 200 OK amb les dades de l'usuari si les credencials són correctes.
+        /// 401 Unauthorized si el nom d'usuari o la contrasenya no coincideixen.
+        /// </returns>
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            var usuari = await _usuariService.ValidarLogin(request.NomUsuari, request.Contrasenya);
+
+            if (usuari == null)
+                return Unauthorized(new { message = "Usuari o contrasenya incorrectes" });
+
+            return Ok(usuari);
         }
     }
 }

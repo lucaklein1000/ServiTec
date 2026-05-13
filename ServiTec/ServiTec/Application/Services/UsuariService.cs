@@ -60,4 +60,10 @@ public class UsuariService
         await _repository.Delete(usuari);
         return true;
     }
+
+    public async Task<Usuari?> ValidarLogin(string nomUsuari, string contrasenya)
+    {
+        var usuaris = await _repository.GetAll();
+        return usuaris.FirstOrDefault(u => u.NomUsuari == nomUsuari && u.Contrasenya == contrasenya);
+    }
 }

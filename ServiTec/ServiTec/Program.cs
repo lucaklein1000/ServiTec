@@ -5,6 +5,8 @@ using ServiTec.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseUrls("http://0.0.0.0:5206");
+
 builder.Services.AddDbContext<ServiTecDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("connectionDB"))
 );
@@ -25,9 +27,9 @@ builder.Services.AddSwaggerGen();
 // Conexio amb el frontend Angular
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngular", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.AllowAnyOrigin()
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -36,7 +38,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseCors("AllowAngular");
+app.UseCors("AllowAll");
 
 /*
 app.MapGet("/", (HttpContext context) =>
@@ -63,7 +65,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
