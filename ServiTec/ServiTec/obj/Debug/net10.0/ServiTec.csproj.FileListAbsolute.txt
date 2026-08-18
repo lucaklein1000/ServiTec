@@ -486,3 +486,4 @@ C:\Escritorio\Escritorio\ServiTec\ServiTec\ServiTec\obj\Debug\net10.0\refint\Ser
 C:\Escritorio\Escritorio\ServiTec\ServiTec\ServiTec\obj\Debug\net10.0\ServiTec.pdb
 C:\Escritorio\Escritorio\ServiTec\ServiTec\ServiTec\obj\Debug\net10.0\ServiTec.genruntimeconfig.cache
 C:\Escritorio\Escritorio\ServiTec\ServiTec\ServiTec\obj\Debug\net10.0\ref\ServiTec.dll
+C:\Users\Luca Klein\Desktop\ServiTec\ServiTec\ServiTec\bin\Debug\net10.0\BCrypt-Net-Next.dll

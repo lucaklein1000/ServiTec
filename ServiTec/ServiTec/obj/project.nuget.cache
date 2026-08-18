@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "y44AYKfWR0Y=",
+  "dgSpecHash": "6fD+BcmA9HI=",
   "success": true,
   "projectFilePath": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\ServiTec.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Luca Klein\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Luca Klein\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
+    "C:\\Users\\Luca Klein\\.nuget\\packages\\bcrypt.net-next\\4.2.0\\bcrypt.net-next.4.2.0.nupkg.sha512",
     "C:\\Users\\Luca Klein\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Luca Klein\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.3\\microsoft.aspnetcore.openapi.10.0.3.nupkg.sha512",
     "C:\\Users\\Luca Klein\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\8.0.0\\microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512",
