@@ -150,7 +150,7 @@ class PantallaAfegirMenjador : AppCompatActivity() {
         // Permitir eliminar la mesa haciendo clic sobre ella en el lienzo
         taulaView.setOnClickListener {
             canvasMenjador.removeView(taulaView)
-            llistaTaulesCollocades.removeIf { it.numero == numeroTaula }
+            llistaTaulesCollocades.removeIf { it.postNumero == numeroTaula }
             if (llistaTaulesCollocades.isEmpty()) {
                 tvHintCanvas.visibility = View.VISIBLE
             }
@@ -159,12 +159,12 @@ class PantallaAfegirMenjador : AppCompatActivity() {
         // Añadir a la lista DTO para enviar al backend
         llistaTaulesCollocades.add(
             PostTaulaDTO(
-                numero = numeroTaula,
-                capacitat = capacitat,
-                estat = false,
-                idMenjador = 1,
-                posX = posXPercent,
-                posY = posYPercent
+                postNumero = numeroTaula,
+                postCapacitat = capacitat,
+                postEstat = false,
+                postIdMenjador = 1,
+                postPosX = posXPercent,
+                postPosY = posYPercent
             )
         )
 

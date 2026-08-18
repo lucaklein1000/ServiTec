@@ -10,10 +10,12 @@ import com.example.servitec_frontend.data.model.Menjador
 import com.example.servitec_frontend.data.model.PostCategoriaDTO
 import com.example.servitec_frontend.data.model.PostMenjadorDTO
 import com.example.servitec_frontend.data.model.PostProducteDTO
+import com.example.servitec_frontend.data.model.PostTaulaDTO
 import com.example.servitec_frontend.data.model.Producte
 import com.example.servitec_frontend.data.model.ProducteDTO
 import com.example.servitec_frontend.data.model.PutCategoriaDTO
 import com.example.servitec_frontend.data.model.PutProducteDTO
+import com.example.servitec_frontend.data.model.PutTaulaDTO
 import com.example.servitec_frontend.data.model.PutUsuariDTO
 import com.example.servitec_frontend.data.model.ResponseComnada
 import com.example.servitec_frontend.data.model.ResponseCuina
@@ -68,11 +70,17 @@ interface ApiService {
    @GET("api/Producte/Llistar")
    suspend fun getProducts(): Response<List<Producte>>
 
-    @PUT("api/Producte/actualitzar/{id}")
+    @PUT("api/Producte/actualitza/{id}")
     suspend fun actualitzarProducte(@Path("id") idProducte: Int, @Body dto: PutProducteDTO): Response<ProducteDTO>
 
     @GET("api/Taula/llistar")
     suspend fun obtenirTaules(): Response<List<Taula>>
+
+    @POST("api/Taula/crear")
+    suspend fun crearTaula(@Body dto: PostTaulaDTO): Response<Taula>
+
+    @PUT("api/Taula/Actualitza{id}")
+    suspend fun actualitzarTaula(@Path("id") idTaula: Int, @Body dto: PutTaulaDTO): Response<Taula>
 
     @POST("api/Comanda/crear")
     suspend fun crearComanda(@Body dto: CreateComandaDTO): Response<ResponseBody>

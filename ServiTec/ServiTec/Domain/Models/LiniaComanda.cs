@@ -24,5 +24,10 @@ public partial class LiniaComanda
     [ForeignKey("IdProducte")] 
     public virtual Producte IdProducteNavigation { get; set; } = null!;
 
+    public int? IdCategoria { get; set; }
+
+    [ForeignKey("IdCategoria")]
+    public virtual Categoria? IdCategoriaNavigation { get; set; }
+
     public string Estat { get; set; }
 }

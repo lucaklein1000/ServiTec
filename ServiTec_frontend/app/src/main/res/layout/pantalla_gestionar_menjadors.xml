@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F5F7"
+    android:orientation="horizontal">
+
+    <!-- 1. COLUMNA IZQUIERDA (NAVEGACIÓN / PANELL DE CONTROL) -->
+    <LinearLayout
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:background="@color/blau_primari"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ServiTec"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Edició de Plànols"
+            android:textColor="#9EAEC7"
+            android:textSize="12sp" />
+
+        <!-- BOTÓN TORNAR AL PANELL -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTornar"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="← TORNAR AL PANELL"
+            android:textAlignment="textStart"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:cornerRadius="12dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- INFORMACIÓN O INSTRUCCIONES RÁPIDAS -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="• Arrossega taules de la paleta per afegir-ne al plànol.\n• Arrossega qualsevol taula del plànol cap a la zona d'esborrar per eliminar-la."
+            android:textColor="#9EAEC7"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+
+    <!-- 2. ÁREA PRINCIPAL: EDITOR, PALETA Y LIENZO -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- CABECERA: DESPLEGABLE CON BUSCADOR (AUTOCOMPLETE) + BOTÓN GUARDAR -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <!-- DESPLEGABLE TIPO AUTOCOMPLETE CON BUSCADOR -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:hint="Cerca o selecciona un menjador...">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actvMenjadors"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:completionThreshold="1"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGuardarPlano"
+                    android:layout_width="wrap_content"
+                    android:layout_height="52dp"
+                    android:paddingHorizontal="24dp"
+                    android:text="Guardar Canvis"
+                    android:textColor="@android:color/white"
+                    app:backgroundTint="#10B981"
+                    app:cornerRadius="8dp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ZONA DE TRABAJO (PALETA + ZONA DE BORRADO A LA IZQUIERDA | LIENZO A LA DERECHA) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <!-- COLUMNA IZQUIERDA: PALETA DE MESAS + PAPELERA -->
+            <LinearLayout
+                android:layout_width="180dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical">
+
+                <!-- PALETA DE MESAS NUEVAS -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:text="Afegir Taules"
+                            android:textColor="#1B3358"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:text="Arrossega al plànol ➔"
+                            android:textColor="#64748B"
+                            android:textSize="11sp" />
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <!-- ITEM MESA 2 PAX -->
+                                <LinearLayout
+                                    android:id="@+id/dragTaula2Pax"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="12dp"
+                                    android:background="#F8FAFC"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="50dp"
+                                        android:layout_height="50dp"
+                                        android:background="#1B3358"
+                                        android:gravity="center"
+                                        android:text="2 PAX"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="10sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Taula 2 Persones"
+                                        android:textColor="#334155"
+                                        android:textSize="11sp" />
+                                </LinearLayout>
+
+                                <!-- ITEM MESA 4 PAX -->
+                                <LinearLayout
+                                    android:id="@+id/dragTaula4Pax"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="12dp"
+                                    android:background="#F8FAFC"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="65dp"
+                                        android:layout_height="50dp"
+                                        android:background="#1B3358"
+                                        android:gravity="center"
+                                        android:text="4 PAX"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="10sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Taula 4 Persones"
+                                        android:textColor="#334155"
+                                        android:textSize="11sp" />
+                                </LinearLayout>
+
+                                <!-- ITEM MESA 6 PAX -->
+                                <LinearLayout
+                                    android:id="@+id/dragTaula6Pax"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="12dp"
+                                    android:background="#F8FAFC"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="80dp"
+                                        android:layout_height="50dp"
+                                        android:background="#1B3358"
+                                        android:gravity="center"
+                                        android:text="6 PAX"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="10sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Taula 6 Persones"
+                                        android:textColor="#334155"
+                                        android:textSize="11sp" />
+                                </LinearLayout>
+
+                                <!-- ITEM MESA 8 PAX -->
+                                <LinearLayout
+                                    android:id="@+id/dragTaula8Pax"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="12dp"
+                                    android:background="#F8FAFC"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="95dp"
+                                        android:layout_height="50dp"
+                                        android:background="#1B3358"
+                                        android:gravity="center"
+                                        android:text="8 PAX"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="10sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Taula 8 Persones"
+                                        android:textColor="#334155"
+                                        android:textSize="11sp" />
+                                </LinearLayout>
+
+                            </LinearLayout>
+                        </ScrollView>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- ZONA DE RECICLAJE / PAPELERA ABAJO DE LA PALETA -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardPapelera"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    app:cardBackgroundColor="#FEE2E2"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:strokeColor="#FCA5A5"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:id="@+id/areaPapelera"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🗑️ Esborrar Taula"
+                            android:textColor="#EF4444"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Amolla aquí per eliminar"
+                            android:textColor="#991B1B"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <!-- LIENZO / CANVAS LIMPIO A LA DERECHA -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
+
+                <RelativeLayout
+                    android:id="@+id/canvasMenjador"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#FAFAFA">
+
+                    <TextView
+                        android:id="@+id/tvHintCanvas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="Selecciona un menjador per veure i editar les seves taules"
+                        android:textColor="#94A3B8"
+                        android:textSize="14sp" />
+
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

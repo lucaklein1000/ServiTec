@@ -1,13 +1,14 @@
 package com.example.servitec_frontend.ui
 
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.enableSavedStateHandles
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,26 +18,26 @@ import com.example.servitec_frontend.data.model.CreateComandaDTO
 import com.example.servitec_frontend.data.model.CreateLiniaComandaDTO
 import com.example.servitec_frontend.data.model.LiniaComandaTemporal
 import com.example.servitec_frontend.data.model.Producte
-import com.example.servitec_frontend.data.model.ProducteDTO
 import com.example.servitec_frontend.repository.ProducteRepository
 import com.example.servitec_frontend.repository.TaulaRepository
 import com.example.servitec_frontend.ui.adapter.CategoriesAdapter
-import com.example.servitec_frontend.ui.adapter.ComandaAdapter
 import com.example.servitec_frontend.ui.adapter.ProductesAdapter
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
 
 class PantallaTaula : AppCompatActivity() {
 
     private lateinit var adapterProductes: ProductesAdapter
-    private lateinit var adapterCentre: ComandaAdapter
+    private lateinit var adapterCentre: ComandaColorAdapter
     private lateinit var tvTotalPreu: TextView
-    private lateinit var btnEnviar : Button
-    private lateinit var  btnCobrar : Button
-    private lateinit var btnSumarProdcute : Button
-    private lateinit var bntSorir : Button
-    private lateinit var btnTreureCompte : Button
+    private lateinit var btnEnviar: Button
+    private lateinit var btnCobrar: Button
+    private lateinit var btnSumarProducte: Button
+    private lateinit var btnSortir: Button
+    private lateinit var btnTreureCompte: Button
+    private lateinit var btnDemanarSegons: Button
+    private lateinit var btnBorrar: com.google.android.material.button.MaterialButton
+    private lateinit var btnCambiarOrde : MaterialButton
     private lateinit var mostrarNumeroTaula: TextView
 
     private var totsElsProductes = listOf<Producte>()
@@ -45,10 +46,8 @@ class PantallaTaula : AppCompatActivity() {
     private val historialGuardat = mutableListOf<LiniaComandaTemporal>()
     private val productesSeleccionats = mutableListOf<LiniaComandaTemporal>()
 
-    // Guardem la ID de la comanda si la taula ja està ocupada (Útil per a futures actualitzacions)
     private var idComandaActiva = -1
     private var estatComandaActiva = "oberta"
-
     private var producteBorrar: LiniaComandaTemporal? = null
 
     private lateinit var tvQuantitat: TextView
@@ -59,47 +58,38 @@ class PantallaTaula : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_taula)
 
-        tvTotalPreu = findViewById(R.id.tvTotalPrecio)
-        btnEnviar = findViewById(R.id.btnEnviar)
-        btnSumarProdcute = findViewById(R.id.btnSumarProducte)
-        btnCobrar = findViewById(R.id.btnCobrar)
-        bntSorir = findViewById(R.id.btnVolver)
-        btnTreureCompte = findViewById(R.id.btnTreureCompte)
-        mostrarNumeroTaula = findViewById(R.id.tvTituloMesa)
-        tvQuantitat = findViewById(R.id.tvQuantitatTeclejada)
+        initViews()
 
         val idTaulaActual = intent.getIntExtra("idTaula", -1)
         val nTaulaActual = intent.getStringExtra("nTaula") ?: "Taula"
         val sharedPreferences = getSharedPreferences("ServiTecPrefs", MODE_PRIVATE)
         val idUsuariActual = sharedPreferences.getInt("idUsuari", -1)
         val taulaOcupada = intent.getBooleanExtra("taulaOcupada", false)
-        val btnBorrar = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnBorrarProductos)
+        btnCambiarOrde = findViewById(R.id.btnCambiarOrden)
 
         mostrarNumeroTaula.text = nTaulaActual
 
-        // 1. Configuración del RecyclerView de Categorías (Izquierda)
+        // 1. Categorías (Izquierda)
         val rvCategories = findViewById<RecyclerView>(R.id.rvCategorias)
         rvCategories.layoutManager = LinearLayoutManager(this)
 
-        // 2. Configuración del RecyclerView del Centro (Tu comanda actual)
-        val rvCentre = findViewById<RecyclerView>(R.id.rvPedido)          // ✅ ahora sí es el centro
+        // 2. Ticket Combinado (Centro)
+        val rvCentre = findViewById<RecyclerView>(R.id.rvPedido)
         rvCentre.layoutManager = LinearLayoutManager(this)
-        adapterCentre = ComandaAdapter(emptyList()) { itemPulsat ->
+
+        adapterCentre = ComandaColorAdapter(emptyList()) { itemPulsat ->
             producteBorrar = itemPulsat
-            Toast.makeText(this, "Seleccionat: ${itemPulsat.producte.nom}, ${itemPulsat.idLiniaComanda}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Seleccionat: ${itemPulsat.producte.nom}", Toast.LENGTH_SHORT).show()
         }
         rvCentre.adapter = adapterCentre
 
-// 3. Configuración del RecyclerView de Productos (Derecha / Cuadrícula)
-        val rvProductes = findViewById<RecyclerView>(R.id.rvSeleccionProductos)   // ✅ ahora sí es la derecha
+        // 3. Catálogo de Productos (Derecha)
+        val rvProductes = findViewById<RecyclerView>(R.id.rvSeleccionProductos)
         rvProductes.layoutManager = GridLayoutManager(this, 2)
 
-        val botonsNumeros = mapOf(
-            R.id.btnNum0 to "0", R.id.btnNum1 to "1", R.id.btnNum2 to "2", R.id.btnNum3 to "3",
-            R.id.btnNum4 to "4", R.id.btnNum5 to "5", R.id.btnNum6 to "6", R.id.btnNum7 to "7",
-            R.id.btnNum8 to "8", R.id.btnNum9 to "9",
-        )
-        // 🎇 RECUPERACIÓ DE LA COMANDA ACTIVA SI LA TAULA ESTÀ OCUPADA
+        setupTeclatNumeric()
+
+        // Carga inicial de datos de la mesa
         if (taulaOcupada && idTaulaActual != -1) {
             lifecycleScope.launch {
                 val comandaActiva = taulaRepository.obtenirComandaActiva(idTaulaActual)
@@ -107,9 +97,8 @@ class PantallaTaula : AppCompatActivity() {
                 if (comandaActiva != null) {
                     idComandaActiva = comandaActiva.idComanda
                     estatComandaActiva = comandaActiva.estat
-
-                    // Netegem el carrito local abans de carregar les dades de SQL Server
                     productesSeleccionats.clear()
+                    historialGuardat.clear()
 
                     comandaActiva.liniaComanda?.forEach { linea ->
                         val prod = linea.idProducteNavigation
@@ -126,215 +115,37 @@ class PantallaTaula : AppCompatActivity() {
                             )
                         }
                     }
-
-                    // Notifiquem al teu adaptador del centre per pintar els productes de la BD
-                    adapterCentre.actualitzarLlista(historialGuardat)
-
-                    // Actualitzem el TextView amb el preu total que ve del Back-end
-                    tvTotalPreu.text = "${String.format("%.2f", comandaActiva.total)}€"
+                    actualitzarTotalInterficie()
                 }
             }
         }
 
-        botonsNumeros.forEach { (id, digit) ->
-            findViewById<com.google.android.material.button.MaterialButton>(id).setOnClickListener {
-                quantitatTeclejada = if (!quantitatEditada) {
-                    digit
-                } else {
-                    (quantitatTeclejada + digit).take(3) // límite de 3 dígitos, por ejemplo
-                }
-                quantitatEditada = true
-                tvQuantitat.text = "${quantitatTeclejada}x"
-            }
-        }
-
-        findViewById<com.google.android.material.button.MaterialButton>(R.id.btnNumC).setOnClickListener {
-            quantitatTeclejada = "1"
-            quantitatEditada = false
-            tvQuantitat.text = "${quantitatTeclejada}x"
-        }
-
-        findViewById<com.google.android.material.button.MaterialButton>(R.id.btnNumBorrarUn).setOnClickListener {
-            borrarNumeroTeclat()
-        }
-
-        // Lógica del clic en los productos de la cuadrícula
+        // Selección de productos de la carta
         adapterProductes = ProductesAdapter(emptyList()) { productoPulsado ->
+            val q = quantitatTeclejada.toIntOrNull() ?: 1
             val itemExistente = productesSeleccionats.find { it.producte.idProducte == productoPulsado.idProducte }
 
             if (itemExistente != null) {
-                itemExistente.quantitat += quantitatTeclejada.toInt()
+                itemExistente.quantitat += q
                 itemExistente.total = itemExistente.producte.preu * itemExistente.quantitat
             } else {
-                val totalInicial = productoPulsado.preu * 1
-                productesSeleccionats.add(LiniaComandaTemporal(
-                    producte = productoPulsado,
-                    quantitat = quantitatTeclejada.toInt(),
-                    preu = productoPulsado.preu,
-                    total = quantitatTeclejada.toInt() * productoPulsado.preu,
-                    estat = "pendentEnviar"
-                ))
+                productesSeleccionats.add(
+                    LiniaComandaTemporal(
+                        producte = productoPulsado,
+                        quantitat = q,
+                        preu = productoPulsado.preu,
+                        total = q * productoPulsado.preu,
+                        estat = "pendentEnviar"
+                    )
+                )
             }
 
             borrarNumeroTeclat()
-
-            Log.d("DEBUG_CENTRE", "Producte: ${productoPulsado.nom} | Qtd: ${itemExistente?.quantitat ?: 1} | Total Línia: ${itemExistente?.total ?: productoPulsado.preu}€")
-
             actualitzarTotalInterficie()
         }
         rvProductes.adapter = adapterProductes
 
-        btnEnviar.setOnClickListener {
-            // 1. Verificamos que la cesta de la sesión actual no esté vacía
-            if (productesSeleccionats.isEmpty()) {
-                Toast.makeText(this, "No hi ha cap producte nou per enviar a cuina", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            lifecycleScope.launch {
-                btnEnviar.isEnabled = false // Evitamos duplicar peticiones por doble clic
-
-                // 2. Mapeamos ÚNICAMENTE los productos nuevos seleccionados en esta ronda
-                val novesLiniesDto = productesSeleccionats.map { l ->
-                    CreateLiniaComandaDTO(
-                        postIdProducte = l.producte.idProducte,
-                        postQuantitat = l.quantitat,
-                        postEstat = l.estat // Marcamos como 'Pendent' para que cocina sepa que es nuevo
-                    )
-                }
-
-                // 3. Consultamos si la mesa ya tiene comanda activa en la BD
-                val comandaActiva = taulaRepository.obtenirComandaActiva(idTaulaActual)
-                val idComandaActiva = comandaActiva?.idComanda ?: -1
-
-                val exit: Boolean
-
-                if (taulaOcupada && idComandaActiva > 0) {
-                    // 🔄 MESA OCUPADA: Enviamos SOLO las nuevas líneas a la comanda existente
-                    // (Las líneas anteriores ya están guardadas en la BD y NO se reenvían)
-                    val resultat = taulaRepository.afegirLinies(idComandaActiva, novesLiniesDto)
-                    exit = resultat.isSuccess
-                } else {
-                    // 🆕 MESA LIBRE: Creamos la comanda inicial desde cero
-                    val novaComandaDto = CreateComandaDTO(
-                        postEstat = "oberta",
-                        postIdTaula = idTaulaActual,
-                        postIdUsuari = idUsuariActual,
-                        postLinies = novesLiniesDto
-                    )
-                    exit = taulaRepository.enviarComanda(novaComandaDto)
-                }
-
-                // 4. Gestión del resultado
-                if (exit) {
-                    Toast.makeText(this@PantallaTaula, "Comanda enviada a cuina correctament!", Toast.LENGTH_LONG).show()
-
-                    // Limpiamos la cesta temporal de la pantalla
-                    productesSeleccionats.clear()
-                    adapterCentre.actualitzarLlista(productesSeleccionats)
-                    actualitzarTotalInterficie()
-
-                    finish() // Volvemos al mapa de mesas
-                } else {
-                    Toast.makeText(this@PantallaTaula, "Error en connectar amb el servidor", Toast.LENGTH_LONG).show()
-                }
-
-                btnEnviar.isEnabled = true
-            }
-        }
-
-        btnSumarProdcute.setOnClickListener {
-            if (historialGuardat.isEmpty() && productesSeleccionats.isEmpty()) {
-                Toast.makeText(this@PantallaTaula, "No hi ha productes", Toast.LENGTH_LONG).show()
-            }
-            else {
-                val elemento = producteBorrar
-                if (elemento != null) {
-                    // 1. Obtenemos el producto seleccionado (o el último si no hay selección)
-                    if (elemento.idLiniaComanda == 0) {
-                        // CASO A: Es de la comanda actual -> Sumamos 1 a la cantidad de esta misma línea
-                        elemento.quantitat += 1
-                        elemento.total = elemento.preu * elemento.quantitat
-                        adapterCentre.notifyDataSetChanged()
-                    } else {
-                        // CASO B: Es de una comanda anterior -> Creamos una línea nueva con 1 unidad
-                        productesSeleccionats.add(
-                            LiniaComandaTemporal(
-                                producte = elemento.producte,
-                                quantitat = 1,
-                                preu = elemento.preu,
-                                total = elemento.preu,
-                                estat = "pendentEnviar"
-                            )
-                        )
-                    }
-
-                    // 2. Recalculamos el importe total del ticket
-                    actualitzarTotalInterficie()
-                }
-            }
-        }
-
-        btnTreureCompte.setOnClickListener {
-            lifecycleScope.launch {
-                btnTreureCompte.isEnabled = false
-                if (idComandaActiva >= 1) {
-                    taulaRepository.cambiarEstatComanda(idComandaActiva, "pendent")
-                }
-                btnTreureCompte.isEnabled = true
-            }
-
-            productesSeleccionats.clear()
-            adapterCentre.actualitzarLlista(productesSeleccionats)
-            actualitzarTotalInterficie()
-
-            finish()
-        }
-
-        btnCobrar.setOnClickListener {
-            if (idComandaActiva == -1) {
-                Toast.makeText(this, "No hi ha cap comanda activa per cobrar", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (estatComandaActiva == "pendent") {
-                lifecycleScope.launch {
-                    btnCobrar.isEnabled = false
-                    val cobrado = taulaRepository.cobrarComanda(idComandaActiva)
-
-                    if (cobrado) {
-                        Toast.makeText(
-                            this@PantallaTaula,
-                            "Mesa cobrada correctament!",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        // Limpiamos los productos locales de la pantalla
-                        productesSeleccionats.clear()
-                        adapterCentre.actualitzarLlista(productesSeleccionats)
-                        actualitzarTotalInterficie()
-
-                        // Cerramos la pantalla para volver al panel general
-                        finish()
-                    } else {
-                        Toast.makeText(
-                            this@PantallaTaula,
-                            "Error al cobrar la comanda",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    btnCobrar.isEnabled = true
-                }
-            }
-            else{
-                Toast.makeText(this, "No es pot cobrar una comanda activa", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        bntSorir.setOnClickListener{
-            finish()
-        }
-
-        // 4. Carga inicial de categorías y productos desde el Repositorio
+        // Carga inicial de categorías y catálogo
         lifecycleScope.launch {
             val categoriesBD = taulaRepository.obtenirCategories()
             val productesBD = taulaRepository.obtenerProductos() ?: emptyList()
@@ -352,90 +163,306 @@ class PantallaTaula : AppCompatActivity() {
                     val productesInicials = totsElsProductes.filter { it.idCategoria == primeraCatId }
                     adapterProductes.actualitzarLlista(productesInicials)
                 }
-            } else {
-                Toast.makeText(this@PantallaTaula, "Error al cargar los datos del servidor", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        // Acciones de Botones
+        btnEnviar.setOnClickListener {
+            if (productesSeleccionats.isEmpty()) {
+                Toast.makeText(this, "No hi ha cap producte nou per enviar a cuina", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
 
+            lifecycleScope.launch {
+                btnEnviar.isEnabled = false
 
-            btnBorrar.setOnClickListener {
-                val elemento = producteBorrar
+                // Enviamos la categoría modificada si existe, de lo contrario la original del producto
+                val novesLiniesDto = productesSeleccionats.map { l ->
+                    CreateLiniaComandaDTO(
+                        postIdProducte = l.producte.idProducte,
+                        postQuantitat = l.quantitat,
+                        postEstat = l.estat,
+                        postIdCategoria = l.idCategoriaModificada ?: l.producte.idCategoria
+                    )
+                }
 
-                if (elemento != null) {
+                val comandaActiva = taulaRepository.obtenirComandaActiva(idTaulaActual)
+                val idComandaObtinguda = comandaActiva?.idComanda ?: -1
+                val exit: Boolean
 
-                    if (elemento.idLiniaComanda == 0) {
-                        // 1. L'eliminem de la llista de la sessió actual
-                        productesSeleccionats.remove(elemento)
-
-                        // 2. ResResetegem la variable del producte seleccionat
-                        producteBorrar = null
-
-                        // 3. Treiem el ressaltat blau de l'adapter
-                        adapterCentre.netejarSeleccio()
-
-                        // 4. Recalculem el total i refresquem la vista
-                        actualitzarTotalInterficie()
-
-                        Toast.makeText(this@PantallaTaula, "Producte eliminat", Toast.LENGTH_SHORT).show()
-                    } else {
-                        lifecycleScope.launch {
-                            btnBorrar.isEnabled = false
-
-                            val exit = taulaRepository.eliminarLiniaComanda(elemento.idLiniaComanda)
-
-                            if (exit) {
-                                if (elemento.quantitat == 1) {
-                                    elemento.quantitat -= 1
-                                    elemento.estat = "Eliminat"
-                                    elemento.total = 0.0
-                                }
-                                else{
-                                    elemento.quantitat -= 1
-                                    elemento.total -= elemento.preu
-                                }
-
-
-                                producteBorrar = null
-                                adapterCentre.netejarSeleccio()
-                                actualitzarTotalInterficie()
-                                btnBorrar.isEnabled = true
-
-                                Toast.makeText(
-                                    this@PantallaTaula,
-                                    "Producte marcat com a eliminat",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    }
+                if (taulaOcupada && idComandaObtinguda > 0) {
+                    val resultat = taulaRepository.afegirLinies(idComandaObtinguda, novesLiniesDto)
+                    exit = resultat.isSuccess
                 } else {
-                    Toast.makeText(this@PantallaTaula, "Selecciona un producte de la comanda per esborrar", Toast.LENGTH_SHORT).show()
+                    val novaComandaDto = CreateComandaDTO(
+                        postEstat = "oberta",
+                        postIdTaula = idTaulaActual,
+                        postIdUsuari = idUsuariActual,
+                        postLinies = novesLiniesDto
+                    )
+                    exit = taulaRepository.enviarComanda(novaComandaDto)
+                }
+
+                if (exit) {
+                    Toast.makeText(this@PantallaTaula, "Comanda enviada a cuina correctament!", Toast.LENGTH_LONG).show()
+                    productesSeleccionats.clear()
+                    actualitzarTotalInterficie()
+                    finish()
+                } else {
+                    Toast.makeText(this@PantallaTaula, "Error en connectar amb el servidor", Toast.LENGTH_LONG).show()
+                }
+                btnEnviar.isEnabled = true
+            }
+        }
+
+        btnSumarProducte.setOnClickListener {
+            val elemento = producteBorrar
+            if (elemento != null) {
+                if (elemento.idLiniaComanda == 0) {
+                    elemento.quantitat += 1
+                    elemento.total = elemento.preu * elemento.quantitat
+                } else {
+                    productesSeleccionats.add(
+                        LiniaComandaTemporal(
+                            producte = elemento.producte,
+                            quantitat = 1,
+                            preu = elemento.preu,
+                            total = elemento.preu,
+                            estat = "pendentEnviar"
+                        )
+                    )
+                }
+                actualitzarTotalInterficie()
+            } else {
+                Toast.makeText(this, "Selecciona un producte primer", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnBorrar.setOnClickListener {
+            val elemento = producteBorrar
+            if (elemento != null) {
+                if (elemento.idLiniaComanda == 0) {
+                    productesSeleccionats.remove(elemento)
+                    producteBorrar = null
+                    adapterCentre.netejarSeleccio()
+                    actualitzarTotalInterficie()
+                    Toast.makeText(this, "Producte eliminat", Toast.LENGTH_SHORT).show()
+                } else {
+                    lifecycleScope.launch {
+                        btnBorrar.isEnabled = false
+                        val exit = taulaRepository.eliminarLiniaComanda(elemento.idLiniaComanda)
+                        if (exit) {
+                            if (elemento.quantitat == 1) {
+                                elemento.quantitat -= 1
+                                elemento.estat = "Eliminat"
+                                elemento.total = 0.0
+                            } else {
+                                elemento.quantitat -= 1
+                                elemento.total -= elemento.preu
+                            }
+                            producteBorrar = null
+                            adapterCentre.netejarSeleccio()
+                            actualitzarTotalInterficie()
+                            Toast.makeText(this@PantallaTaula, "Producte marcat com a eliminat", Toast.LENGTH_LONG).show()
+                        }
+                        btnBorrar.isEnabled = true
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Selecciona un producte de la comanda per esborrar", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnDemanarSegons.setOnClickListener {
+            Toast.makeText(this, "Avís enviat a cuina: Marxa els segons!", Toast.LENGTH_SHORT).show()
+        }
+
+        btnTreureCompte.setOnClickListener {
+            lifecycleScope.launch {
+                btnTreureCompte.isEnabled = false
+                if (idComandaActiva >= 1) {
+                    taulaRepository.cambiarEstatComanda(idComandaActiva, "pendent")
+                }
+                btnTreureCompte.isEnabled = true
+                productesSeleccionats.clear()
+                actualitzarTotalInterficie()
+                finish()
+            }
+        }
+
+        btnCobrar.setOnClickListener {
+            if (idComandaActiva == -1) {
+                Toast.makeText(this, "No hi ha cap comanda activa per cobrar", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (estatComandaActiva == "pendent") {
+                lifecycleScope.launch {
+                    btnCobrar.isEnabled = false
+                    val cobrado = taulaRepository.cobrarComanda(idComandaActiva)
+
+                    if (cobrado) {
+                        Toast.makeText(this@PantallaTaula, "Mesa cobrada correctament!", Toast.LENGTH_LONG).show()
+                        productesSeleccionats.clear()
+                        actualitzarTotalInterficie()
+                        finish()
+                    } else {
+                        Toast.makeText(this@PantallaTaula, "Error al cobrar la comanda", Toast.LENGTH_SHORT).show()
+                    }
+                    btnCobrar.isEnabled = true
+                }
+            } else {
+                Toast.makeText(this, "No es pot cobrar una comanda activa (s'ha de demanar el compte primer)", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnCambiarOrde.setOnClickListener {
+            val element = producteBorrar
+            if (element != null) {
+                val categoriaActual = element.idCategoriaModificada ?: element.producte.idCategoria
+                val novaCategoria = if (categoriaActual == 2) 3 else 2
+
+                element.idCategoriaModificada = novaCategoria
+                actualitzarTotalInterficie()
+
+                val nomTipo = if (novaCategoria == 2) "Primer plat" else "Segon plat"
+                Toast.makeText(this, "Canviat a: $nomTipo", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Selecciona una línia primer", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnSortir.setOnClickListener { finish() }
+    }
+
+    private fun initViews() {
+        tvTotalPreu = findViewById(R.id.tvTotalPrecio)
+        btnEnviar = findViewById(R.id.btnEnviar)
+        btnSumarProducte = findViewById(R.id.btnSumarProducte)
+        btnCobrar = findViewById(R.id.btnCobrar)
+        btnSortir = findViewById(R.id.btnVolver)
+        btnTreureCompte = findViewById(R.id.btnTreureCompte)
+        btnDemanarSegons = findViewById(R.id.btnDemanarSegons)
+        btnBorrar = findViewById(R.id.btnBorrarProductos)
+        mostrarNumeroTaula = findViewById(R.id.tvTituloMesa)
+        tvQuantitat = findViewById(R.id.tvQuantitatTeclejada)
+    }
+
+    private fun setupTeclatNumeric() {
+        val botonsNumeros = mapOf(
+            R.id.btnNum0 to "0", R.id.btnNum1 to "1", R.id.btnNum2 to "2", R.id.btnNum3 to "3",
+            R.id.btnNum4 to "4", R.id.btnNum5 to "5", R.id.btnNum6 to "6", R.id.btnNum7 to "7",
+            R.id.btnNum8 to "8", R.id.btnNum9 to "9"
+        )
+
+        botonsNumeros.forEach { (id, digit) ->
+            findViewById<com.google.android.material.button.MaterialButton>(id).setOnClickListener {
+                quantitatTeclejada = if (!quantitatEditada) digit else (quantitatTeclejada + digit).take(3)
+                quantitatEditada = true
+                tvQuantitat.text = "${quantitatTeclejada}x"
+            }
+        }
+
+        findViewById<com.google.android.material.button.MaterialButton>(R.id.btnNumC).setOnClickListener {
+            borrarNumeroTeclat()
+        }
+
+        findViewById<com.google.android.material.button.MaterialButton>(R.id.btnNumBorrarUn).setOnClickListener {
+            if (quantitatEditada) {
+                quantitatTeclejada = quantitatTeclejada.dropLast(1)
+                if (quantitatTeclejada.isEmpty()) {
+                    quantitatTeclejada = "1"
+                    quantitatEditada = false
                 }
             }
+            tvQuantitat.text = "${quantitatTeclejada}x"
         }
     }
 
-    // Funció auxiliar per calcular i refrescar el total a la UI de forma neta
+    private fun borrarNumeroTeclat() {
+        quantitatTeclejada = "1"
+        quantitatEditada = false
+        tvQuantitat.text = "${quantitatTeclejada}x"
+    }
+
     private fun actualitzarTotalInterficie() {
         val totsElsItems = mutableListOf<LiniaComandaTemporal>()
-        totsElsItems.addAll(historialGuardat)       // Lo que ya estaba en la BD
-        totsElsItems.addAll(productesSeleccionats)  // Los nuevos (donde ya va el Café con quantitat = 2)
+        totsElsItems.addAll(historialGuardat.filter { it.estat != "Eliminat" })
+        totsElsItems.addAll(productesSeleccionats)
 
-        // Le pasamos la lista lista al adapter central
+        totsElsItems.sortBy { it.idCategoriaModificada ?: it.producte.idCategoria }
+
         adapterCentre.actualitzarLlista(totsElsItems)
 
-        // Actualizamos el total de abajo
         val granTotal = totsElsItems.sumOf { it.total }
         tvTotalPreu.text = "${String.format("%.2f", granTotal)}€"
     }
 
-    private fun borrarNumeroTeclat(){
-        if (quantitatEditada) {
-            quantitatTeclejada = quantitatTeclejada.dropLast(1)
-            if (quantitatTeclejada.isEmpty()) {
-                quantitatTeclejada = "1"
-                quantitatEditada = false
+    // Adaptador interno con control de selección y colores correctos según la categoría modificada
+    inner class ComandaColorAdapter(
+        private var llista: List<LiniaComandaTemporal>,
+        private val onItemClick: (LiniaComandaTemporal) -> Unit
+    ) : RecyclerView.Adapter<ComandaColorAdapter.ComandaViewHolder>() {
+
+        private var posicioSeleccionada: Int = RecyclerView.NO_POSITION
+
+        inner class ComandaViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComandaViewHolder {
+            val tv = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_producte_ticket, parent, false) as TextView
+            return ComandaViewHolder(tv)
+        }
+
+        override fun onBindViewHolder(holder: ComandaViewHolder, position: Int) {
+            val item = llista[position]
+            val context = holder.itemView.context
+
+            // Usamos la categoría modificada o la del producto por defecto
+            val catEfectiva = item.idCategoriaModificada ?: item.producte.idCategoria
+
+            val resIdColor = when (catEfectiva) {
+                1 -> R.color.blauMenu
+                2 -> R.color.primerPlat
+                3 -> R.color.negre
+                4 -> R.color.postres
+                else -> R.color.blauMenu
+            }
+
+            // Aplicar fondo resaltado si coincide con la selección actual
+            if (posicioSeleccionada == holder.bindingAdapterPosition) {
+                holder.textView.setBackgroundColor(Color.parseColor("#E2E8F0"))
+            } else {
+                holder.textView.setBackgroundColor(Color.TRANSPARENT)
+            }
+
+            holder.textView.apply {
+                setTextColor(ContextCompat.getColor(context, resIdColor))
+                text = "${item.quantitat}x ${item.producte.nom}"
+                setOnClickListener {
+                    val posAnterior = posicioSeleccionada
+                    posicioSeleccionada = holder.bindingAdapterPosition
+
+                    notifyItemChanged(posAnterior)
+                    notifyItemChanged(posicioSeleccionada)
+
+                    onItemClick(item)
+                }
             }
         }
-        tvQuantitat.text = "${quantitatTeclejada}x"
+
+        override fun getItemCount(): Int = llista.size
+
+        fun actualitzarLlista(novaLlista: List<LiniaComandaTemporal>) {
+            this.llista = novaLlista
+            notifyDataSetChanged()
+        }
+
+        fun netejarSeleccio() {
+            val posAnterior = posicioSeleccionada
+            posicioSeleccionada = RecyclerView.NO_POSITION
+            if (posAnterior != RecyclerView.NO_POSITION) {
+                notifyItemChanged(posAnterior)
+            }
+        }
     }
 }

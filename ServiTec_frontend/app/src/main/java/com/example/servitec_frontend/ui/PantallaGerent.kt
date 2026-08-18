@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.servitec_frontend.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.example.servitec_frontend.ui.PantallaGestionarMenjadors
 
 class PantallaGerent : AppCompatActivity() {
     private lateinit var btnTancarSessio: TextView
@@ -18,6 +19,7 @@ class PantallaGerent : AppCompatActivity() {
     private lateinit var gestinarProdcutes : MaterialCardView
     private lateinit var afegirCategories : MaterialCardView
     private lateinit var afegirMenjador : MaterialCardView
+    private lateinit var gestionarMenjador : MaterialCardView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,7 @@ class PantallaGerent : AppCompatActivity() {
         gestinarProdcutes = findViewById(R.id.cardGestionarProductes)
         afegirCategories = findViewById(R.id.cardAfegirCategories)
         afegirMenjador = findViewById(R.id.cardAfegirMenjador)
+        gestionarMenjador = findViewById(R.id.cardGestionarMenjadors)
 
         btnTancarSessio.setOnClickListener {
             tancarSessio()
@@ -61,6 +64,10 @@ class PantallaGerent : AppCompatActivity() {
 
         afegirMenjador.setOnClickListener {
             startActivity(Intent(this, PantallaAfegirMenjador::class.java))
+        }
+
+        gestionarMenjador.setOnClickListener {
+            startActivity(Intent(this, PantallaGestionarMenjadors::class.java))
         }
 
     }

@@ -44,11 +44,11 @@ class PantallaAfegirProducte : AppCompatActivity() {
         btnTornar = findViewById(R.id.btnTornar)
         val switchDispoible = findViewById<SwitchMaterial>(R.id.switchDisponible)
 
-        val categorias = arrayOf("Refrescos", "Primer Plat", "Segon Plat", "Postre", "Cafe")
+        carregarCategories()
+
+        val categorias = arrayOf(categories)
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categorias)
         spinnerCategoria.setAdapter(adapter)
-
-        carregarCategories()
 
         btnGuardarProducte.setOnClickListener {
             val nom = etNomProducte.text.toString().trim()
@@ -89,6 +89,15 @@ class PantallaAfegirProducte : AppCompatActivity() {
     private fun carregarCategories() {
         lifecycleScope.launch {
             categories = repositoryTaula.obtenirCategories() ?: emptyList()
+
+            val nomsCategories = categories.map { it.nom }
+            val adapter = ArrayAdapter(
+                this@PantallaAfegirProducte,
+                android.R.layout.simple_dropdown_item_1line,
+                nomsCategories
+            )
+
+            spinnerCategoria.setAdapter(adapter)
         }
     }
 

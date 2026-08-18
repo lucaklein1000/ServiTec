@@ -33,7 +33,9 @@ namespace ServiTec.Services
                 Subtotal = p.Subtotal,
                 IdComanda = p.IdComanda,
                 IdProducte = p.IdProducte,
-                Estat = p.Estat
+                Estat = p.Estat,
+                // Usamos 'p' de forma consistente
+                IdCategoria = p.IdCategoria ?? p.IdProducteNavigation?.IdCategoria
             }).ToList();
         }
 
@@ -45,7 +47,7 @@ namespace ServiTec.Services
 
         public async Task<LiniaComandaDTO?> Create(CreateLiniaComandaDTO dto)
         {
-            // 🔍 Buscamos el producto con el nombre exacto del DTO
+            // 🔍 Buscamos el producto con el ID exacto del DTO
             var producte = await _productRepository.GetById(dto.PostIdProducte);
             if (producte == null) return null;
 
@@ -53,12 +55,14 @@ namespace ServiTec.Services
 
             var nuevaLinia = new LiniaComanda
             {
-                IdComanda = dto.PostIdComanda,   
-                IdProducte = dto.PostIdProducte,                                        
-                Quantitat = dto.PostQuantitat,   
+                IdComanda = dto.PostIdComanda,
+                IdProducte = dto.PostIdProducte,
+                Quantitat = dto.PostQuantitat,
                 PreuUnitari = preuUnitari,
                 Subtotal = preuUnitari * dto.PostQuantitat,
-                Estat = "Pendent" 
+                Estat = "Pendent",
+                // Si no se asigna categoría explícita en el DTO, hereda la del producto
+                IdCategoria = dto.PostIdCategoria ?? producte.IdCategoria
             };
 
             var resultat = await _repository.Create(nuevaLinia);
@@ -72,7 +76,8 @@ namespace ServiTec.Services
                 Subtotal = resultat.Subtotal,
                 IdComanda = resultat.IdComanda,
                 IdProducte = resultat.IdProducte,
-                Estat = resultat.Estat
+                Estat = resultat.Estat,
+                IdCategoria = resultat.IdCategoria
             };
         }
 

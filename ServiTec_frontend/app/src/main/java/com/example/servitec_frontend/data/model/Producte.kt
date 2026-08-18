@@ -9,7 +9,7 @@ data class Producte(
     @SerializedName("descripcio") val descripcio: String,
     @SerializedName("quantitat") val quantitat: Int,
     @SerializedName("preu") val preu: Double,
-    @SerializedName("idCategoria") val idCategoria: Int,
+    @SerializedName("idCategoria") var idCategoria: Int,
     @SerializedName("actiu") val actiu: Boolean
 
 ){

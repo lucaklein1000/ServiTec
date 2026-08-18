@@ -6,7 +6,7 @@ data class Menjador (
     val idMenjador: Int,
     val nomMenjador: String,
     val actiu: Boolean,
-    val taules: List<Taula>
+    var taules: List<Taula>
 )
 data class PostMenjadorDTO(
     @SerializedName("PostNomMenjador") val postNomMenjador: String,

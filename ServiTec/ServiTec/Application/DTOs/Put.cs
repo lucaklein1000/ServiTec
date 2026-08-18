@@ -65,6 +65,8 @@
 
             public bool PutEstat { get; set; }
             public string? PutEstatComanda { get; set; }
+            public double PutPosX { get; set; }
+            public double PutPosY { get; set; }
         }
     }
 

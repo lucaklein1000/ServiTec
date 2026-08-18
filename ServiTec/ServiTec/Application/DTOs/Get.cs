@@ -11,6 +11,7 @@ namespace ServiTec.Application.DTOs
         public int IdComanda { get; set; }
         public int IdProducte { get; set; }
         public string Estat { get; set; } = null!;
+        public int? IdCategoria { get; set; }
     }
 
     public class ComandaDTO

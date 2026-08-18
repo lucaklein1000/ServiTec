@@ -33,6 +33,7 @@
         <activity android:name=".ui.PantallaGestionarProductes" android:exported="false"/>
         <activity android:name=".ui.PantallaAfegirCategoria" android:exported="false"/>
         <activity android:name=".ui.PantallaAfegirMenjador" android:exported="false"/>
+        <activity android:name=".ui.PantallaGestionarMenjadors" android:exported="false"/>
     </application>
 
 </manifest>

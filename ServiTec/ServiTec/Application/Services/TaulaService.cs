@@ -55,7 +55,10 @@ namespace ServiTec.Services
             {
                 Numero = dto.PostNumero,
                 Capacitat = dto.PostCapacitat,
-                Estat = dto.PostEstat
+                Estat = dto.PostEstat,
+                IdMenjador = dto.PostIdMenjador,
+                PosX = dto.PostPosX,
+                PosY = dto.PostPosY
             };
 
             _context.Taules.Add(taula);
@@ -66,7 +69,10 @@ namespace ServiTec.Services
                 IdTaula = taula.IdTaula,
                 Numero = taula.Numero,
                 Capacitat = taula.Capacitat,
-                Estat = taula.Estat
+                Estat = taula.Estat,
+                IdMenjador = taula.IdMenjador,
+                PosX = taula.PosX,
+                PosY = taula.PosY
             };
         }
 
@@ -80,6 +86,8 @@ namespace ServiTec.Services
             taula.Numero = dto.PutNumero;
             taula.Capacitat = dto.PutCapacitat;
             taula.Estat = dto.PutEstat;
+            taula.PosX = dto.PutPosX;
+            taula.PosY = dto.PutPosY;
 
             await _context.SaveChangesAsync();
 

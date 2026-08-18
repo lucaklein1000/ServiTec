@@ -8,7 +8,8 @@ data class LiniaComandaTemporal(
     var quantitat: Int,
     var preu: Double,
     var total: Double,
-    var estat: String
+    var estat: String,
+    var idCategoriaModificada: Int? = null
 )
 
 data class LiniaCuinaDTO(

@@ -1653,6 +1653,11 @@
           "postEstat": {
             "type": "string",
             "nullable": true
+          },
+          "postIdCategoria": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1792,6 +1797,14 @@
           "idProducteNavigation": {
             "$ref": "#/components/schemas/Producte"
           },
+          "idCategoria": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "idCategoriaNavigation": {
+            "$ref": "#/components/schemas/Categoria"
+          },
           "estat": {
             "type": "string",
             "nullable": true
@@ -1828,6 +1841,11 @@
           },
           "estat": {
             "type": "string",
+            "nullable": true
+          },
+          "idCategoria": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },
@@ -2192,6 +2210,14 @@
           "putEstatComanda": {
             "type": "string",
             "nullable": true
+          },
+          "putPosX": {
+            "type": "number",
+            "format": "double"
+          },
+          "putPosY": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false

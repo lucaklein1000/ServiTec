@@ -48,7 +48,7 @@ class PantallaPanell : AppCompatActivity() {
         btnDireccio.visibility = if (esGerentOAdmin) View.VISIBLE else View.GONE
 
         btnDireccio.setOnClickListener {
-            // Abrir pantalla de Dirección / Gestión
+            finish()
         }
 
         btnCerrarSesion.setOnClickListener {

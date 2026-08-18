@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="negre">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blau_primari">#1B3B6F</color>
     <color name="blau_secundari">#1E3A8A</color>
@@ -14,6 +14,8 @@
     <color name="taula_lliure">#1E3A8A</color>
     <color name="blauMenu">#1E3A8A</color>
     <color name="red_deleted">#FFCDD2</color>
+    <color name="primerPlat">#15803D</color>
+    <color name="postres">#78350F</color>
 
 
 </resources>

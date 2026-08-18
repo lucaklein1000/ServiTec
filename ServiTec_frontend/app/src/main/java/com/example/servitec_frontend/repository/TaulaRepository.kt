@@ -11,8 +11,10 @@ import com.example.servitec_frontend.data.model.CreateLiniaComandaDTO
 import com.example.servitec_frontend.data.model.Menjador
 import com.example.servitec_frontend.data.model.PostCategoriaDTO
 import com.example.servitec_frontend.data.model.PostMenjadorDTO
+import com.example.servitec_frontend.data.model.PostTaulaDTO
 import com.example.servitec_frontend.data.model.Producte
 import com.example.servitec_frontend.data.model.PutCategoriaDTO
+import com.example.servitec_frontend.data.model.PutTaulaDTO
 import com.example.servitec_frontend.data.model.PutUsuariDTO
 import com.example.servitec_frontend.data.model.ResponseComnada
 import com.example.servitec_frontend.data.model.Taula
@@ -168,4 +170,29 @@ class TaulaRepository {
             null
         }
     }
+
+    suspend fun actualitzarTaula(idTaula: Int, taula: PutTaulaDTO): Boolean {
+        return try {
+            val response = apiService.actualitzarTaula(idTaula, taula)
+            response.isSuccessful
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    suspend fun crearTaula(novaTaula: PostTaulaDTO): Taula? {
+        return try {
+            val response = apiService.crearTaula(novaTaula)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
 }

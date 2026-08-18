@@ -5,7 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class CreateLiniaComandaDTO(
     val postIdProducte: Int,
     val postQuantitat: Int,
-    val postEstat: String
+    val postEstat: String,
+    val postIdCategoria: Int
 )
 
 data class CanviarEstatDTO(

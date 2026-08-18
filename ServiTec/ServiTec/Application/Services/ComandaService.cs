@@ -120,7 +120,8 @@ public class ComandaService
                     PreuUnitari = preuUnitari,
                     Subtotal = subtotal,
                     IdProducte = liniaDto.PostIdProducte,
-                    Estat = liniaDto.PostEstat
+                    Estat = liniaDto.PostEstat,
+                    IdCategoria = liniaDto.PostIdCategoria
                     // NO asignamos IdComanda. Al meterlo en la lista de 'comanda', EF lo mapea solo.
                 };
 
