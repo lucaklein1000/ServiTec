@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\application\\dtos\\get.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\dtos\\get.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\application\\services\\usuariservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\services\\usuariservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -33,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\application\\dtos\\post.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\dtos\\post.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|c:\\users\\luca klein\\desktop\\servitec\\servitec\\servitec\\application\\dtos\\get.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{76E131EF-3371-48E1-0FAE-4A3AE8156E4B}|ServiTec\\ServiTec.csproj|solutionrelative:servitec\\application\\dtos\\get.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,37 +46,24 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "UsuariService.cs",
               "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\UsuariService.cs",
               "RelativeDocumentMoniker": "ServiTec\\Application\\Services\\UsuariService.cs",
-              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\UsuariService.cs*",
-              "RelativeToolTip": "ServiTec\\Application\\Services\\UsuariService.cs*",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAowE8AAAAIAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\UsuariService.cs",
+              "RelativeToolTip": "ServiTec\\Application\\Services\\UsuariService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAE8AAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-08-18T21:15:17.935Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ComandaService.cs",
-              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\ComandaService.cs",
-              "RelativeDocumentMoniker": "ServiTec\\Application\\Services\\ComandaService.cs",
-              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\ComandaService.cs",
-              "RelativeToolTip": "ServiTec\\Application\\Services\\ComandaService.cs",
-              "ViewState": "AgIAAF0AAAAAAAAAAAAEwHQAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-18T15:13:47.424Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "ComandaController.cs",
               "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Controllers\\ComandaController.cs",
               "RelativeDocumentMoniker": "ServiTec\\Controllers\\ComandaController.cs",
@@ -84,12 +71,11 @@
               "RelativeToolTip": "ServiTec\\Controllers\\ComandaController.cs",
               "ViewState": "AgIAAFwAAAAAAAAAAAAIwGcAAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-18T15:12:12.563Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-18T15:12:12.563Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "CategoriaController.cs",
               "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Controllers\\CategoriaController.cs",
               "RelativeDocumentMoniker": "ServiTec\\Controllers\\CategoriaController.cs",
@@ -97,12 +83,11 @@
               "RelativeToolTip": "ServiTec\\Controllers\\CategoriaController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-18T15:12:03.222Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-18T15:12:03.222Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "CategoriaService.cs",
               "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\CategoriaService.cs",
               "RelativeDocumentMoniker": "ServiTec\\Application\\Services\\CategoriaService.cs",
@@ -110,12 +95,36 @@
               "RelativeToolTip": "ServiTec\\Application\\Services\\CategoriaService.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAwwDEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-18T15:11:54.496Z",
+              "WhenOpened": "2026-08-18T15:11:54.496Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Get.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Get.cs",
+              "RelativeDocumentMoniker": "ServiTec\\Application\\DTOs\\Get.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Get.cs*",
+              "RelativeToolTip": "ServiTec\\Application\\DTOs\\Get.cs*",
+              "ViewState": "AgIAACYAAAAAAAAAAAAowDYAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-17T17:07:07.928Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 3,
+              "Title": "ComandaService.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\ComandaService.cs",
+              "RelativeDocumentMoniker": "ServiTec\\Application\\Services\\ComandaService.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\ComandaService.cs",
+              "RelativeToolTip": "ServiTec\\Application\\Services\\ComandaService.cs",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAEwHQAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-18T15:13:47.424Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "Usuari.cs",
               "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Domain\\Models\\Usuari.cs",
               "RelativeDocumentMoniker": "ServiTec\\Domain\\Models\\Usuari.cs",
@@ -123,12 +132,11 @@
               "RelativeToolTip": "ServiTec\\Domain\\Models\\Usuari.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-18T15:11:46.164Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-18T15:11:46.164Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "LiniaComandaService.cs",
               "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\LiniaComandaService.cs",
               "RelativeDocumentMoniker": "ServiTec\\Application\\Services\\LiniaComandaService.cs",
@@ -136,12 +144,11 @@
               "RelativeToolTip": "ServiTec\\Application\\Services\\LiniaComandaService.cs",
               "ViewState": "AgIAACcAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-17T17:08:57.265Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-17T17:08:57.265Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "Post.cs",
               "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Post.cs",
               "RelativeDocumentMoniker": "ServiTec\\Application\\DTOs\\Post.cs",
@@ -149,20 +156,7 @@
               "RelativeToolTip": "ServiTec\\Application\\DTOs\\Post.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-17T17:07:59.423Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Get.cs",
-              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Get.cs",
-              "RelativeDocumentMoniker": "ServiTec\\Application\\DTOs\\Get.cs",
-              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\DTOs\\Get.cs",
-              "RelativeToolTip": "ServiTec\\Application\\DTOs\\Get.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-17T17:07:07.928Z"
+              "WhenOpened": "2026-08-17T17:07:59.423Z"
             }
           ]
         }

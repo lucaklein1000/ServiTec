@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 data class UsuariDTO(
     val idUsuari: Int,
     val nomUsuari: String,
-    val contrasenya: String,
     val actiu: Boolean,
     val admin: Boolean,
     val rol: String

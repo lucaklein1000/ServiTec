@@ -53,7 +53,6 @@ namespace ServiTec.Application.DTOs
     {
         public int IdUsuari { get; set; }
         public string nomUsuari { get; set; }
-        public string contrasenya { get; set; }
         public bool Actiu { get; set; }
         public bool Admin { get; set; }
         public string Rol { get; set; } = null!;

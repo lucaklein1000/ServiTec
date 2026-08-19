@@ -73,7 +73,7 @@ class PantallaGestionarPersonal : AppCompatActivity() {
 
             usuariSeleccionat?.let { usuari ->
                 etEditNom.setText(usuari.nomUsuari)
-                etEditContrasenya.setText(usuari.contrasenya) // Ajusta si la propiedad en tu DTO tiene otro nombre
+                etEditContrasenya.setText("") // Ajusta si la propiedad en tu DTO tiene otro nombre
                 spinnerEditRol.setText(usuari.rol, false)
                 switchActiu.isChecked = usuari.actiu
                 switchAdmin.isChecked = usuari.admin
