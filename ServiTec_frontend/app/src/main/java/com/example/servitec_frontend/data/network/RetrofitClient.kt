@@ -1,43 +1,49 @@
-// ============================================================================
-// Projecte:      ServiTec - Sistema de Gestió de Restaurants (TFG)
-// Autor:         Luca Klein
-// Titulació:     Grau en Enginyeria Informàtica (4t Curs)
-// Institució:    Universitat de Girona (UdG)
-// Fitxer:        RetrofitClient.kt
-// Descripció:    Singleton que inicialitza el client de Retrofit amb OkHttp
-//                i l AuthInterceptor per gestionar peticions protegides.
-// ============================================================================
-
 package com.example.servitec_frontend.data.network
 
 import android.content.Context
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 object RetrofitClient {
 
-    private const val BASE_URL = "http://10.0.2.2:5206/"
-
-    private var apiService: ApiService? = null
+    private const val BASE_URL = "https://10.0.2.2:7123/"
 
     /**
-     * Retorna la instància de ApiService configurada amb el cercador de token JWT.
+     * Crea un OkHttpClient que ignora las validaciones SSL de desarrollo.
      */
-    fun getApiService(context: Context): ApiService {
-        if (apiService == null) {
-            val okHttpClient = OkHttpClient.Builder()
-                .addInterceptor(AuthInterceptor(context.applicationContext))
-                .build()
+    private fun getUnsafeOkHttpClient(context: Context): OkHttpClient {
+        return try {
+            val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+                override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+                override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+                override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+            })
 
-            val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
+            val sslContext = SSLContext.getInstance("SSL")
+            sslContext.init(null, trustAllCerts, SecureRandom())
 
-            apiService = retrofit.create(ApiService::class.java)
+            OkHttpClient.Builder()
+                .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
+                .hostnameVerifier { _, _ -> true }
+                .addInterceptor(AuthInterceptor(context)) // Tu interceptor del token JWT
+                .build()
+        } catch (e: Exception) {
+            throw RuntimeException(e)
         }
-        return apiService!!
+    }
+
+    fun getApiService(context: Context): ApiService {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(getUnsafeOkHttpClient(context))
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiService::class.java)
     }
 }

@@ -6,7 +6,7 @@
 // Fitxer:        Program.cs
 // Descripció:    Punt d'entrada principal de l'aplicació ASP.NET Core. Configura
 //                el contenidor d'injecció de dependències, la base de dades,
-//                la seguretat JWT, la política CORS restrictiva i Swagger.
+//                la seguretat JWT, la política CORS restrictiva, HTTPS i Swagger.
 // ============================================================================
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,8 +22,8 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar el servidor perquè escolti per totes les interfícies al port 5206
-builder.WebHost.UseUrls("http://0.0.0.0:5206");
+// Configurar el servidor per escoltar en HTTP (5206) i HTTPS (7123)
+builder.WebHost.UseUrls("http://0.0.0.0:5206", "https://0.0.0.0:7123");
 
 // Configuració de la connexió amb la base de dades SQL Server
 builder.Services.AddDbContext<ServiTecDbContext>(options =>
@@ -88,8 +88,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy(allowServiTecOrigins, policy =>
     {
         policy.WithOrigins(
-                    "http://10.0.2.2:5206",      // Emulador d'Android (localhost del host)
-                    "http://localhost:5206",      // Accés local directe al servidor
+                    "http://10.0.2.2:5206",      // Emulador d'Android (HTTP)
+                    "https://10.0.2.2:7123",     // Emulador d'Android (HTTPS)
+                    "http://localhost:5206",      // Accés local directe HTTP
+                    "https://localhost:7123",     // Accés local directe HTTPS
                     "http://localhost:5173",      // Front-End Web (Vite / React / Vue)
                     "http://localhost:4200"       // Front-End Web (Angular)
               )
@@ -110,7 +112,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false;
+    options.RequireHttpsMetadata = true; // Forçar metadades sobre HTTPS en entorns de producció
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -140,6 +142,9 @@ app.UseRouting();
 
 // CORS s'ha de col·locar estrictament entre UseRouting i UseAuthentication
 app.UseCors(allowServiTecOrigins);
+
+// Redirecció automàtica de tot el tràfic HTTP cap a HTTPS
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

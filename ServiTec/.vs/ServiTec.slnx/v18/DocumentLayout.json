@@ -30,8 +30,22 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ComandaService.cs",
+              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\ComandaService.cs",
+              "RelativeDocumentMoniker": "ServiTec\\Application\\Services\\ComandaService.cs",
+              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\ComandaService.cs",
+              "RelativeToolTip": "ServiTec\\Application\\Services\\ComandaService.cs",
+              "ViewState": "AgIAAMcAAAAAAAAAAAAnwOAAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-19T21:33:31.466Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -40,7 +54,7 @@
               "RelativeDocumentMoniker": "ServiTec\\Program.cs",
               "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Program.cs*",
               "RelativeToolTip": "ServiTec\\Program.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJ8AAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAFcAAAAAAAAAAADwv6QAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-08-20T17:35:14.686Z",
               "EditorCaption": ""
@@ -56,19 +70,6 @@
               "ViewState": "AgIAAMkAAAAAAAAAAADgv98AAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-08-19T21:38:11.796Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ComandaService.cs",
-              "DocumentMoniker": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\ComandaService.cs",
-              "RelativeDocumentMoniker": "ServiTec\\Application\\Services\\ComandaService.cs",
-              "ToolTip": "C:\\Users\\Luca Klein\\Desktop\\ServiTec\\ServiTec\\ServiTec\\Application\\Services\\ComandaService.cs",
-              "RelativeToolTip": "ServiTec\\Application\\Services\\ComandaService.cs",
-              "ViewState": "AgIAAMcAAAAAAAAAAAAnwOAAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-19T21:33:31.466Z",
               "EditorCaption": ""
             },
             {
