@@ -21,7 +21,7 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.servitec_frontend.R
-import com.example.servitec_frontend.data.model.ResponseCuina
+import com.example.servitec_frontend.data.model.Cuina
 import com.example.servitec_frontend.repository.TaulaRepository
 import kotlinx.coroutines.launch
 
@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
  * @param comandes Llista de comandes actives destinades a la cuina.
  */
 class CuinaAdapter(
-    private val comandes: MutableList<ResponseCuina>
+    private val comandes: MutableList<Cuina>
 ) : RecyclerView.Adapter<CuinaAdapter.CuinaViewHolder>() {
 
     class CuinaViewHolder(view: View) : RecyclerView.ViewHolder(view) {

@@ -11,24 +11,23 @@ package com.example.servitec_frontend.data.network
 
 import com.example.servitec_frontend.data.model.Categoria
 import com.example.servitec_frontend.data.model.ComandaDTO
-import com.example.servitec_frontend.data.model.CrearUsuariDTO
+import com.example.servitec_frontend.data.model.CreateUsuariDTO
 import com.example.servitec_frontend.data.model.CreateComandaDTO
 import com.example.servitec_frontend.data.model.CreateLiniaComandaDTO
 import com.example.servitec_frontend.data.model.LoginRequest
 import com.example.servitec_frontend.data.model.Menjador
-import com.example.servitec_frontend.data.model.PostCategoriaDTO
-import com.example.servitec_frontend.data.model.PostMenjadorDTO
-import com.example.servitec_frontend.data.model.PostProducteDTO
-import com.example.servitec_frontend.data.model.PostTaulaDTO
+import com.example.servitec_frontend.data.model.CreateCategoriaDTO
+import com.example.servitec_frontend.data.model.CreateMenjadorDTO
+import com.example.servitec_frontend.data.model.CreateProdcuteDTO
+import com.example.servitec_frontend.data.model.CreateTaulaDTO
 import com.example.servitec_frontend.data.model.Producte
 import com.example.servitec_frontend.data.model.ProducteDTO
-import com.example.servitec_frontend.data.model.PutCategoriaDTO
-import com.example.servitec_frontend.data.model.PutProducteDTO
-import com.example.servitec_frontend.data.model.PutTaulaDTO
-import com.example.servitec_frontend.data.model.PutUsuariDTO
-import com.example.servitec_frontend.data.model.ResponseComnada
-import com.example.servitec_frontend.data.model.ResponseCuina
-import com.example.servitec_frontend.data.model.Taula
+import com.example.servitec_frontend.data.model.UpdateCategoriaDTO
+import com.example.servitec_frontend.data.model.UpdateProdcuteDTO
+import com.example.servitec_frontend.data.model.UpdateTaulaDTO
+import com.example.servitec_frontend.data.model.UpdateUsuariDTO
+import com.example.servitec_frontend.data.model.Cuina
+import com.example.servitec_frontend.data.model.TaulaDTO
 import com.example.servitec_frontend.data.model.UsuariDTO
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -47,7 +46,7 @@ interface ApiService {
  suspend fun llistarUsuari(): Response<List<UsuariDTO>>
 
  @POST("api/Usuari/crear")
- suspend fun crearUsuari(@Body dto: CrearUsuariDTO): Response<UsuariDTO>
+ suspend fun crearUsuari(@Body dto: CreateUsuariDTO): Response<UsuariDTO>
 
  @POST("api/Auth/login")
  fun login(@Body request: LoginRequest): Call<UsuariDTO>
@@ -56,21 +55,21 @@ interface ApiService {
  suspend fun eliminarUsuari(@Path("id") idUsuari: Int): Response<ResponseBody>
 
  @PUT("api/Usuari/actualitzar/{id}")
- suspend fun actualitzarUsuari(@Path("id") idUsuariDTO: Int, @Body dto: PutUsuariDTO): Response<UsuariDTO>
+ suspend fun actualitzarUsuari(@Path("id") idUsuariDTO: Int, @Body dto: UpdateUsuariDTO): Response<UsuariDTO>
 
  // CATEGORIES
  @GET("api/Categoria/llistar")
  suspend fun getCategories(): Response<List<Categoria>>
 
  @POST("api/Categoria/crear")
- suspend fun crearCategoria(@Body dto: PostCategoriaDTO): Response<Categoria>
+ suspend fun crearCategoria(@Body dto: CreateCategoriaDTO): Response<Categoria>
 
  @PUT("api/Categoria/actualitzar/{id}")
- suspend fun actualitzarCategoria(@Path("id") idCategoria: Int, @Body dto: PutCategoriaDTO): Response<Categoria>
+ suspend fun actualitzarCategoria(@Path("id") idCategoria: Int, @Body dto: UpdateCategoriaDTO): Response<Categoria>
 
  // PRODUCTES
  @POST("api/Producte/crear")
- suspend fun crearProducte(@Body dto: PostProducteDTO): Response<Producte>
+ suspend fun crearProducte(@Body dto: CreateProdcuteDTO): Response<Producte>
 
  @DELETE("api/Producte/eliminar/{id}")
  suspend fun eliminarProducte(@Path("id") idProducte: Int): Response<ResponseBody>
@@ -82,27 +81,27 @@ interface ApiService {
  suspend fun getProducts(): Response<List<Producte>>
 
  @PUT("api/Producte/actualitzar/{id}")
- suspend fun actualitzarProducte(@Path("id") idProducte: Int, @Body dto: PutProducteDTO): Response<ProducteDTO>
+ suspend fun actualitzarProducte(@Path("id") idProducte: Int, @Body dto: UpdateProdcuteDTO): Response<ProducteDTO>
 
  // TAULES
  @GET("api/Taula/llistar")
- suspend fun obtenirTaules(): Response<List<Taula>>
+ suspend fun obtenirTaules(): Response<List<TaulaDTO>>
 
  @POST("api/Taula/crear")
- suspend fun crearTaula(@Body dto: PostTaulaDTO): Response<Taula>
+ suspend fun crearTaula(@Body dto: CreateTaulaDTO): Response<TaulaDTO>
 
  @PUT("api/Taula/actualitzar/{id}") // 🛑 CORREGIDO: falta de barra inclinada y minúsculas
- suspend fun actualitzarTaula(@Path("id") idTaula: Int, @Body dto: PutTaulaDTO): Response<Taula>
+ suspend fun actualitzarTaula(@Path("id") idTaula: Int, @Body dto: UpdateTaulaDTO): Response<TaulaDTO>
 
  // COMANDES
  @POST("api/Comanda/crear")
  suspend fun crearComanda(@Body dto: CreateComandaDTO): Response<ResponseBody>
 
  @GET("api/Comanda/activa/{id}")
- suspend fun obtenirComandaActiva(@Path("id") idMesa: Int): Response<ResponseComnada>
+ suspend fun obtenirComandaActiva(@Path("id") idMesa: Int): Response<ComandaDTO>
 
  @GET("api/Comanda/cuina")
- suspend fun getComandesCuina(): Response<MutableList<ResponseCuina>>
+ suspend fun getComandesCuina(): Response<MutableList<Cuina>>
 
  @PUT("api/Comanda/{id}/estat")
  suspend fun canviarEstatComanda(@Path("id") idComanda: Int, @Body nouEstat: String): Response<ResponseBody>
@@ -124,5 +123,5 @@ interface ApiService {
  suspend fun llistarMenjador(): Response<List<Menjador>>
 
  @POST("api/Menjador/crear")
- suspend fun crearMenjador(@Body dto: PostMenjadorDTO): Response<Menjador>
+ suspend fun crearMenjador(@Body dto: CreateMenjadorDTO): Response<Menjador>
 }

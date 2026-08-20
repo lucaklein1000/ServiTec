@@ -1,17 +1,15 @@
 package com.example.servitec_frontend.ui.adapter
 import android.content.Intent
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.servitec_frontend.R
-import com.example.servitec_frontend.data.model.Taula
+import com.example.servitec_frontend.data.model.TaulaDTO
 import com.example.servitec_frontend.ui.PantallaTaula
 import kotlin.jvm.java
-    class TaulesAdapter(private val llista: List<Taula>) : RecyclerView.Adapter<TaulesAdapter.ViewHolder>() {
+    class TaulesAdapter(private val llista: List<TaulaDTO>) : RecyclerView.Adapter<TaulesAdapter.ViewHolder>() {
 
         class ViewHolder(vista: View) : RecyclerView.ViewHolder(vista) {
             val tvNumero: TextView = vista.findViewById(R.id.tvNumeroTaula)

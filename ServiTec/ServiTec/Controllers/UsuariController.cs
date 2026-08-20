@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServiTec.Application.DTOs;
+using ServiTec.Application.Services;
 using ServiTec.Domain.Models;
 
 namespace ServiTec.Controllers

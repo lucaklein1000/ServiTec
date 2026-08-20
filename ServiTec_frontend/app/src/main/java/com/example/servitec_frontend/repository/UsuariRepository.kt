@@ -11,9 +11,9 @@
 package com.example.servitec_frontend.repository
 
 import android.content.Context
-import com.example.servitec_frontend.data.model.CrearUsuariDTO
+import com.example.servitec_frontend.data.model.CreateUsuariDTO
 import com.example.servitec_frontend.data.model.LoginRequest
-import com.example.servitec_frontend.data.model.PutUsuariDTO
+import com.example.servitec_frontend.data.model.UpdateUsuariDTO
 import com.example.servitec_frontend.data.model.UsuariDTO
 import com.example.servitec_frontend.data.network.RetrofitClient
 import retrofit2.Call
@@ -79,7 +79,7 @@ class UsuariRepository(private val context: Context) {
      * @param nouUsuari DTO amb les dades de creació del nou usuari.
      * @return L objecte `UsuariDTO` creat o `null` si es produeix un error.
      */
-    suspend fun crearUsuari(nouUsuari: CrearUsuariDTO): UsuariDTO? {
+    suspend fun crearUsuari(nouUsuari: CreateUsuariDTO): UsuariDTO? {
         return try {
             val response = apiService.crearUsuari(nouUsuari)
             if (response.isSuccessful) {
@@ -116,7 +116,7 @@ class UsuariRepository(private val context: Context) {
      * @param usuari DTO amb les noves dades de l usuari.
      * @return `true` si l actualització és correcta, `false` en cas contrari.
      */
-    suspend fun actualitzarUsuari(idUsuari: Int, usuari: PutUsuariDTO): Boolean {
+    suspend fun actualitzarUsuari(idUsuari: Int, usuari: UpdateUsuariDTO): Boolean {
         return try {
             val response = apiService.actualitzarUsuari(idUsuari, usuari)
             response.isSuccessful

@@ -1,10 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// ============================================================================
+// Projecte:      ServiTec - Sistema de Gestió de Restaurants (TFG)
+// Autor:         Luca Klein
+// Titulació:     Grau en Enginyeria Informàtica (4t Curs)
+// Institució:    Universitat de Girona (UdG)
+// Fitxer:        LiniaComandaService.cs
+// Descripció:    Servei de domini encarregat de gestionar les línies de detall
+//                de les comandes (afegir/modificar/eliminar plats o begudes,
+//                gestió d'estats de cuina i recalcul automàtic del total).
+// ============================================================================
+
+using Microsoft.EntityFrameworkCore;
 using ServiTec.Application.DTOs;
-using ServiTec.Application.DTOs.ServiTec.DTOs;
+using ServiTec.Application.Interfaces;
 using ServiTec.Domain.Models;
 
 namespace ServiTec.Services
 {
+    /// <summary>
+    /// Servei encarregat de gestionar les operacions de la base de dades
+    /// associades als elements individuals (línies) continguts a cada comanda.
+    /// </summary>
     public class LiniaComandaService
     {
         private readonly IRepository<LiniaComanda> _repository;
@@ -21,7 +36,10 @@ namespace ServiTec.Services
             _comandaRepository = comandaRepository;
         }
 
-        // 1. OBTENER TODAS LAS LÍNEAS
+        /// <summary>
+        /// Obté la llista completa de línies de comanda registrades al sistema.
+        /// </summary>
+        /// <returns>Col·lecció de DTOs amb la informació de cada línia.</returns>
         public async Task<IEnumerable<LiniaComandaDTO>> GetAll()
         {
             var liniaComandas = await _repository.GetAll();
@@ -34,38 +52,46 @@ namespace ServiTec.Services
                 IdComanda = p.IdComanda,
                 IdProducte = p.IdProducte,
                 Estat = p.Estat,
-                // Usamos 'p' de forma consistente
                 IdCategoria = p.IdCategoria ?? p.IdProducteNavigation?.IdCategoria
             }).ToList();
         }
 
-        // 2. OBTENER UNA LÍNEA POR ID
+        /// <summary>
+        /// Obté una línia de comanda específica pel seu identificador únic.
+        /// </summary>
+        /// <param name="id">Identificador únic de la línia de comanda.</param>
+        /// <returns>L'entitat de la línia trobada o null si no existeix.</returns>
         public async Task<LiniaComanda?> GetById(int id)
         {
             return await _repository.GetById(id);
         }
 
+        /// <summary>
+        /// Crea una nova línia de comanda, assigna el preu actual del producte i recalcula el total de la comanda mare.
+        /// </summary>
+        /// <param name="dto">Objecte de transferència de dades amb les dades del producte i quantitat.</param>
+        /// <returns>El DTO de la línia creada o null si el producte no existeix.</returns>
         public async Task<LiniaComandaDTO?> Create(CreateLiniaComandaDTO dto)
         {
-            // 🔍 Buscamos el producto con el ID exacto del DTO
-            var producte = await _productRepository.GetById(dto.PostIdProducte);
+            var producte = await _productRepository.GetById(dto.IdProducte);
             if (producte == null) return null;
 
             decimal preuUnitari = (decimal)producte.Preu;
 
             var nuevaLinia = new LiniaComanda
             {
-                IdComanda = dto.PostIdComanda,
-                IdProducte = dto.PostIdProducte,
-                Quantitat = dto.PostQuantitat,
+                IdComanda = dto.IdComanda,
+                IdProducte = dto.IdProducte,
+                Quantitat = dto.Quantitat,
                 PreuUnitari = preuUnitari,
-                Subtotal = preuUnitari * dto.PostQuantitat,
+                Subtotal = preuUnitari * dto.Quantitat,
                 Estat = "Pendent",
-                // Si no se asigna categoría explícita en el DTO, hereda la del producto
-                IdCategoria = dto.PostIdCategoria ?? producte.IdCategoria
+                IdCategoria = dto.IdCategoria ?? producte.IdCategoria
             };
 
             var resultat = await _repository.Create(nuevaLinia);
+
+            // Sincronitzem el total acumulat de la comanda principal
             await ActualitzarTotalComanda(resultat.IdComanda);
 
             return new LiniaComandaDTO
@@ -81,59 +107,64 @@ namespace ServiTec.Services
             };
         }
 
-        // 🛠️ MÉTODO AUXILIAR PRIVADO: Modificado para usar tu _comandaRepository genérico
-        private async Task ActualitzarTotalComanda(int idComanda)
-        {
-            // 1. Obtenemos la comanda cabecera
-            var comanda = await _comandaRepository.GetById(idComanda);
-
-            if (comanda != null)
-            {
-                // 2. Obtenemos todas las líneas del sistema a través del repositorio genérico
-                var totesLesLinies = await _repository.GetAll();
-
-                // 3. Filtramos las que pertenecen a esta comanda y sumamos sus subtotales
-                comanda.Total = totesLesLinies
-                    .Where(l => l.IdComanda == idComanda)
-                    .Sum(l => l.Subtotal);
-
-                // 4. Actualizamos la comanda en la base de datos
-                await _comandaRepository.Update(comanda);
-            }
-        }
-
+        /// <summary>
+        /// Modifica la quantitat d'un element d'una comanda i actualitza el subtotal i el total global.
+        /// </summary>
+        /// <param name="id">Identificador únic de la línia a modificar.</param>
+        /// <param name="dto">Objecte de transferència de dades amb la nova quantitat.</param>
+        /// <returns>Cert si s'ha actualitzat correctament, o fals si no existia.</returns>
         public async Task<bool> Update(int id, UpdateLiniaComandaDTO dto)
         {
-            // 🔍 Buscamos la línea usando tu repositorio genérico
             var linia = await _repository.GetById(id);
             if (linia == null) return false;
 
-            // Actualizamos la cantidad con el campo de tu DTO
-            linia.Quantitat = dto.PutQuantitat; // ⚠️ Revisa si en tu DTO se llama PostQuantitat o Quantitat
-            linia.Subtotal = linia.Quantitat * linia.PreuUnitari; // Recalculamos el subtotal de la línea
+            linia.Quantitat = dto.Quantitat;
+            linia.Subtotal = linia.Quantitat * linia.PreuUnitari;
 
-            // 💾 Guardamos los cambios a través del repositorio genérico
             await _repository.Update(linia);
 
-            // 🔄 Sincronizamos el total general de la factura
+            // Recalculem l'import total de la comanda
             await ActualitzarTotalComanda(linia.IdComanda);
             return true;
         }
 
+        /// <summary>
+        /// Elimina un element d'una comanda i recalcula l'import total resultant.
+        /// </summary>
+        /// <param name="id">Identificador únic de la línia a eliminar.</param>
+        /// <returns>Cert si s'ha eliminat correctament, o fals si no existia.</returns>
         public async Task<bool> Delete(int id)
         {
-            // 🔍 Buscamos la línea para saber a qué comanda pertenecía antes de borrarla
             var linia = await _repository.GetById(id);
             if (linia == null) return false;
 
             int idComanda = linia.IdComanda;
 
-            // ❌ Borramos usando tu repositorio genérico
             await _repository.Delete(linia);
 
-            // 🔄 Sincronizamos el total de la comanda cabecera restando este plato
+            // Reajustem el total de la comanda un cop extreta la línia
             await ActualitzarTotalComanda(idComanda);
             return true;
+        }
+
+        /// <summary>
+        /// Mètode privat encarregat de recalcular el sumatori de subtotals i actualitzar el camp Total de la comanda.
+        /// </summary>
+        /// <param name="idComanda">Identificador únic de la comanda a recalcular.</param>
+        private async Task ActualitzarTotalComanda(int idComanda)
+        {
+            var comanda = await _comandaRepository.GetById(idComanda);
+
+            if (comanda != null)
+            {
+                var totesLesLinies = await _repository.GetAll();
+
+                comanda.Total = totesLesLinies
+                    .Where(l => l.IdComanda == idComanda)
+                    .Sum(l => l.Subtotal);
+
+                await _comandaRepository.Update(comanda);
+            }
         }
     }
 }

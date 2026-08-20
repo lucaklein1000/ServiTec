@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.servitec_frontend.R
 import com.example.servitec_frontend.data.model.Categoria
-import com.example.servitec_frontend.data.model.PostCategoriaDTO
-import com.example.servitec_frontend.data.model.PutCategoriaDTO
+import com.example.servitec_frontend.data.model.CreateCategoriaDTO
+import com.example.servitec_frontend.data.model.UpdateCategoriaDTO
 import com.example.servitec_frontend.repository.TaulaRepository
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -67,9 +67,9 @@ class PantallaAfegirCategoria : AppCompatActivity() {
             } else {
                 btnCrearCategoria.isEnabled = false
 
-                val novaCategoria = PostCategoriaDTO(
-                    postNom = nom,
-                    postDescripcio = descripcio
+                val novaCategoria = CreateCategoriaDTO(
+                    nom = nom,
+                    descripcio = descripcio
                 )
 
                 lifecycleScope.launch {
@@ -123,9 +123,9 @@ class PantallaAfegirCategoria : AppCompatActivity() {
             } else {
                 btnGuardarCanvisCategoria.isEnabled = false
 
-                val categoriaModificada = PutCategoriaDTO(
-                    putNom = nom,
-                    putDescripcio = descripcio
+                val categoriaModificada = UpdateCategoriaDTO(
+                    nom = nom,
+                    descripcio = descripcio
                 )
 
                 lifecycleScope.launch {

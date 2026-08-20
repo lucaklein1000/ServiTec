@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.servitec_frontend.R
-import com.example.servitec_frontend.data.model.PutUsuariDTO
+import com.example.servitec_frontend.data.model.UpdateUsuariDTO
 import com.example.servitec_frontend.data.model.UsuariDTO
 import com.example.servitec_frontend.repository.UsuariRepository
 import com.google.android.material.button.MaterialButton
@@ -100,12 +100,12 @@ class PantallaGestionarPersonal : AppCompatActivity() {
             } else {
                 btnGuardarCanvis.isEnabled = false
 
-                val usuariModificat = PutUsuariDTO(
-                    putNomUsuari = nom,
-                    putContrasenya = contrasenya,
-                    putRol = rol,
-                    putActiu = actiu,
-                    putAdmin = admin
+                val usuariModificat = UpdateUsuariDTO(
+                    nomUsuari = nom,
+                    contrasenya = contrasenya,
+                    rol = rol,
+                    actiu = actiu,
+                    admin = admin
                 )
 
                 lifecycleScope.launch {

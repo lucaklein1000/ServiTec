@@ -1,6 +1,5 @@
 package com.example.servitec_frontend.data.model
 
-import android.text.BoringLayout
 import com.google.gson.annotations.SerializedName
 
 data class Producte(
@@ -25,18 +24,18 @@ data class ProducteDTO(
     val actiu: Boolean,
     val idCategoria: Int
 )
-data class PostProducteDTO(
-    val postNom: String,
-    val postDescripcio: String,
-    val postPreu: Double,
-    val postActiu: Boolean,
-    val postIdCategoria: Int
+data class CreateProdcuteDTO(
+    val nom: String,
+    val descripcio: String,
+    val preu: Double,
+    val actiu: Boolean,
+    val idCategoria: Int
 )
 
-data class PutProducteDTO(
-    @SerializedName("PutNom") val putNom: String,
-    @SerializedName("PutDescripcio") val putDescripcio: String,
-    @SerializedName("PutPreu") val putPreu: Double,
-    @SerializedName("PutActiu") val putActiu: Boolean,
-    @SerializedName("PutIdCategoria") val putIdCategoria: Int ?
+data class UpdateProdcuteDTO(
+    val nom: String,
+    val descripcio: String,
+    val preu: Double,
+    val actiu: Boolean,
+    val idCategoria: Int ?
 )
