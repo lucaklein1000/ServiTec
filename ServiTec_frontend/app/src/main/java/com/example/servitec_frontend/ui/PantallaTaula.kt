@@ -41,8 +41,8 @@ class PantallaTaula : AppCompatActivity() {
     private lateinit var mostrarNumeroTaula: TextView
 
     private var totsElsProductes = listOf<Producte>()
-    private val taulaRepository = TaulaRepository()
-    private val producteRepository = ProducteRepository()
+    private lateinit var taulaRepository: TaulaRepository
+    private lateinit var producteRepository: ProducteRepository
     private val historialGuardat = mutableListOf<LiniaComandaTemporal>()
     private val productesSeleccionats = mutableListOf<LiniaComandaTemporal>()
 
@@ -66,7 +66,8 @@ class PantallaTaula : AppCompatActivity() {
         val idUsuariActual = sharedPreferences.getInt("idUsuari", -1)
         val taulaOcupada = intent.getBooleanExtra("taulaOcupada", false)
         btnCambiarOrde = findViewById(R.id.btnCambiarOrden)
-
+        taulaRepository = TaulaRepository(this)
+        producteRepository = ProducteRepository(this)
         mostrarNumeroTaula.text = nTaulaActual
 
         // 1. Categorías (Izquierda)

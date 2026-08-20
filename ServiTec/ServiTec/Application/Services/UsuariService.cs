@@ -77,6 +77,8 @@ public class UsuariService
         var usuari = await GetByNomUsuari(nomUsuari);
         if (usuari == null) return null;
 
+        if (!usuari.Actiu) return null;
+
         if (!BCrypt.Net.BCrypt.Verify(contrasenya, usuari.Contrasenya))
         {
             return null;

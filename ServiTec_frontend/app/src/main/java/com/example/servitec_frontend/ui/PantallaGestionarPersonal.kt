@@ -36,13 +36,13 @@ class PantallaGestionarPersonal : AppCompatActivity() {
     // Datos y Estado
     private var llistaUsuaris: List<UsuariDTO> = emptyList()
     private var usuariSeleccionat: UsuariDTO? = null
-    private val repositoryUsuari = UsuariRepository()
+    private lateinit var repositoryUsuari: UsuariRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_gestionar_personal)
 
-        // Inicializar vistas de navegación
+        repositoryUsuari = UsuariRepository(this)
         btnTornar = findViewById(R.id.btnTornar)
 
         // Inicializar vistas - Eliminar

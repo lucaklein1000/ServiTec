@@ -35,7 +35,7 @@ class PantallaAfegirMenjador : AppCompatActivity() {
     private lateinit var dragTaula8Pax: LinearLayout
 
     private val llistaTaulesCollocades = mutableListOf<PostTaulaDTO>()
-    private val TaulaRepository = TaulaRepository()
+    private lateinit var taulaRepository : TaulaRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +52,8 @@ class PantallaAfegirMenjador : AppCompatActivity() {
         dragTaula8Pax = findViewById(R.id.dragTaula8Pax)
 
         btnTornar = findViewById(R.id.btnTornar)
+
+        taulaRepository = TaulaRepository(this)
 
 
         // 1. Configurar listeners de arrastre en la paleta lateral
@@ -193,7 +195,7 @@ class PantallaAfegirMenjador : AppCompatActivity() {
         )
 
         lifecycleScope.launch {
-            val resultat = TaulaRepository.crearMenjador(dto)
+            val resultat = taulaRepository.crearMenjador(dto)
             if (resultat != null) {
                 Toast.makeText(
                     this@PantallaAfegirMenjador,

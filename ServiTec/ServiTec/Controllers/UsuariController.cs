@@ -1,12 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// ============================================================================
+// Projecte:      ServiTec - Sistema de Gestió de Restaurants (TFG)
+// Autor:         Luca Klein
+// Titulació:     Grau en Enginyeria Informàtica (4t Curs)
+// Institució:    Universitat de Girona (UdG)
+// Fitxer:        UsuariController.cs
+// Descripció:    Controlador RESTful encarregat de la gestió del cicle de vida
+//                dels usuaris del sistema i el procés d'autenticació.
+// ============================================================================
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServiTec.Application.DTOs;
 using ServiTec.Domain.Models;
 
 namespace ServiTec.Controllers
 {
+    /// <summary>
+    /// Gestiona les operacions CRUD d'usuaris i l'autenticació en l'ecosistema ServiTec.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize] //  Tot el controlador requereix autenticació per defecte
     public class UsuariController : ControllerBase
     {
         private readonly UsuariService _usuariService;
@@ -16,42 +31,35 @@ namespace ServiTec.Controllers
             _usuariService = usuariService;
         }
 
-        /// <brief>
-        /// Recupera la llista completa d'usuaris del sistema.
-        /// </brief>
-        /// <pre>
-        /// - El servei d'usuaris ha d'estar operatiu.
-        /// </pre>
-        /// <post>
-        /// - Es retorna una col·lecció amb tots els usuaris registrats.
-        /// </post>
-        /// <returns>
-        /// 200 OK amb la llista d'usuaris.
-        /// </returns>
+        /// <summary>
+        /// Obté la llista completa d'usuaris registrats al sistema.
+        /// </summary>
+        /// <returns>Col·lecció amb tots els usuaris trobats.</returns>
+        /// <response code="200">Retorna la llista d'usuaris.</response>
+        /// <response code="401">No autoritzat (Manca el token JWT).</response>
+        /// <response code="403">Accés prohibit (L'usuari no té el rol permès).</response>
         [HttpGet("llistar")]
+        [Authorize(Roles = "Cambrer, Admin")] // Permet als cambrers consultar usuaris (ex: assignar comandas)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<Usuari>>> LlistarUsuaris()
         {
             var usuaris = await _usuariService.GetAll();
             return Ok(usuaris);
         }
 
-        /// <brief>
-        /// Cerca un usuari concret a partir del seu identificador.
-        /// </brief>
-        /// <pre>
-        /// - L'identificador proporcionat ha de ser vàlid.
-        /// </pre>
-        /// <post>
-        /// - Si l'usuari existeix, es retorna la seva informació.
-        /// </post>
-        /// <param name="id">
-        /// Identificador de l'usuari a cercar.
-        /// </param>
-        /// <returns>
-        /// 200 OK amb l'usuari trobat.
-        /// 404 NotFound si l'usuari no existeix.
-        /// </returns>
+        /// <summary>
+        /// Cerca un usuari concret pel seu identificador únic.
+        /// </summary>
+        /// <param name="id">Identificador primari de l'usuari.</param>
+        /// <returns>L'objecte de l'usuari sol·licitat.</returns>
+        /// <response code="200">Retorna l'usuari si existeix.</response>
+        /// <response code="404">No s'ha trobat cap usuari amb l'ID especificat.</response>
         [HttpGet("buscar/{id}")]
+        [Authorize(Roles = "Cambrer, Admin")] // Permet consultar informació d'un usuari específic
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Usuari>> BuscarUsuari(int id)
         {
             var usuari = await _usuariService.GetById(id);
@@ -62,51 +70,41 @@ namespace ServiTec.Controllers
             return Ok(usuari);
         }
 
-        /// <brief>
-        /// Crea un nou usuari al sistema.
-        /// </brief>
-        /// <pre>
-        /// - Les dades del DTO han de ser vàlides.
-        /// </pre>
-        /// <post>
-        /// - Es crea un nou registre d'usuari al sistema.
-        /// </post>
-        /// <param name="dto">
-        /// Objecte DTO que conté la informació necessària per crear l'usuari.
-        /// </param>
-        /// <returns>
-        /// 201 Created si la creació es realitza correctament.
-        /// </returns>
+        /// <summary>
+        /// Registra un nou usuari al sistema.
+        /// </summary>
+        /// <param name="dto">Dades de creació de l'usuari.</param>
+        /// <returns>L'usuari creat amb el seu ID assignat.</returns>
+        /// <response code="201">Usuari creat correctament.</response>
+        /// <response code="400">Si les dades del DTO no són vàlides.</response>
+        /// <response code="403">Accés prohibit (Només Administradors).</response>
         [HttpPost("crear")]
-        public async Task<ActionResult> CrearUsuari(CreateUsuariDTO dto)
+        [Authorize(Roles = "Admin")] //  Mètode crític: Només Administradors
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> CrearUsuari([FromBody] CreateUsuariDTO dto)
         {
             var usuari = await _usuariService.Create(dto);
 
             return StatusCode(StatusCodes.Status201Created, usuari);
         }
 
-        /// <brief>
+        /// <summary>
         /// Actualitza la informació d'un usuari existent.
-        /// </brief>
-        /// <pre>
-        /// - L'usuari indicat ha d'existir.
-        /// - Les dades proporcionades han de ser vàlides.
-        /// </pre>
-        /// <post>
-        /// - Les dades de l'usuari queden actualitzades al sistema.
-        /// </post>
-        /// <param name="id">
-        /// Identificador de l'usuari a actualitzar.
-        /// </param>
-        /// <param name="dto">
-        /// Objecte DTO amb les noves dades de l'usuari.
-        /// </param>
-        /// <returns>
-        /// 200 OK si l'actualització es realitza correctament.
-        /// 404 NotFound si l'usuari no existeix.
-        /// </returns>
+        /// </summary>
+        /// <param name="id">Identificador de l'usuari a modificar.</param>
+        /// <param name="dto">Noves dades a aplicar a l'usuari.</param>
+        /// <returns>L'usuari actualitzat.</returns>
+        /// <response code="200">Actualització realitzada amb èxit.</response>
+        /// <response code="404">L'usuari especificat no existeix.</response>
+        /// <response code="403">Accés prohibit (Només Administradors).</response>
         [HttpPut("actualitzar/{id}")]
-        public async Task<ActionResult> ActualitzarUsuari(int id, UpdateUsuariDTO dto)
+        [Authorize(Roles = "Admin")] //  Mètode crític: Només Administradors
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> ActualitzarUsuari(int id, [FromBody] UpdateUsuariDTO dto)
         {
             var usuari = await _usuariService.Update(id, dto);
 
@@ -116,23 +114,18 @@ namespace ServiTec.Controllers
             return Ok(usuari);
         }
 
-        /// <brief>
+        /// <summary>
         /// Elimina un usuari del sistema.
-        /// </brief>
-        /// <pre>
-        /// - L'usuari indicat ha d'existir al sistema.
-        /// </pre>
-        /// <post>
-        /// - L'usuari és eliminat del sistema.
-        /// </post>
-        /// <param name="id">
-        /// Identificador de l'usuari a eliminar.
-        /// </param>
-        /// <returns>
-        /// 204 NoContent si l'eliminació es realitza correctament.
-        /// 404 NotFound si l'usuari no existeix.
-        /// </returns>
+        /// </summary>
+        /// <param name="id">Identificador de l'usuari a eliminar.</param>
+        /// <response code="204">L'usuari s'ha eliminat correctament.</response>
+        /// <response code="404">L'usuari especificat no existeix.</response>
+        /// <response code="403">Accés prohibit (Només Administradors).</response>
         [HttpDelete("eliminar/{id}")]
+        [Authorize(Roles = "Admin")] //  Mètode crític: Només Administradors
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Delete(int id)
         {
             var eliminat = await _usuariService.Delete(id);
@@ -143,24 +136,17 @@ namespace ServiTec.Controllers
             return NoContent();
         }
 
-        /// <brief>
-        /// Realitza el procés de l'autenticació d'un usuari.
-        /// </brief>
-        /// <pre>
-        /// - L'objecte LoginRequest ha de contenir un nom d'usuari i contrasenya vàlids.
-        /// - El servei d'usuaris ha d'estar disponible.
-        /// </pre>
-        /// <post>
-        /// - Es retorna la informació de l'usuari si l'autenticació és satisfactòria.
-        /// </post>
-        /// <param name="request">
-        /// Objecte que conté les credencials (Username i Password).
-        /// </param>
-        /// <returns>
-        /// 200 OK amb les dades de l'usuari si les credencials són correctes.
-        /// 401 Unauthorized si el nom d'usuari o la contrasenya no coincideixen.
-        /// </returns>
+        /// <summary>
+        /// Autentica un usuari mitjançant les seves credencials d'accés.
+        /// </summary>
+        /// <param name="request">Credencials d'accés (Nom d'usuari i Contrasenya).</param>
+        /// <returns>Dades de l'usuari autenticat i el seu corresponent token d'accés.</returns>
+        /// <response code="200">Autenticació satisfactòria.</response>
+        /// <response code="401">Credencials incorrectes o usuari inactiu.</response>
         [HttpPost("login")]
+        [AllowAnonymous] // Permet l'accés públic per poder iniciar sessió sense token
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var usuari = await _usuariService.ValidarLogin(request.NomUsuari, request.Contrasenya);

@@ -27,18 +27,19 @@ class PantallaAfegirCategoria : AppCompatActivity() {
     private lateinit var etEditCatNom: TextInputEditText
     private lateinit var etEditCatDescripcio: TextInputEditText
     private lateinit var btnGuardarCanvisCategoria: MaterialButton
-
+    private lateinit var categoriaRepository: TaulaRepository
     // Navegació
     private lateinit var btnTornar: MaterialButton
 
     // Dades i Repositori
     private var llistaCategories: List<Categoria> = emptyList()
     private var categoriaSeleccionada: Categoria? = null
-    private val categoriaRepository = TaulaRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_afegir_categoria)
+
+        categoriaRepository = TaulaRepository(this)
 
         // Binding Vistes
         btnTornar = findViewById(R.id.btnTornar)

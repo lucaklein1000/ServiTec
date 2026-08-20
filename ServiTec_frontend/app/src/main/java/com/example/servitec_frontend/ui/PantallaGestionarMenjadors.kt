@@ -28,7 +28,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
     private lateinit var canvasMenjador: RelativeLayout
     private lateinit var tvHintCanvas: TextView
 
-    private val menjadorRepository = TaulaRepository()
+    private lateinit var menjadorRepository: TaulaRepository
 
     // Almacenamos la lista real de comedores traída de la BDD/API
     private var llistaMenjadors: List<Menjador> = emptyList()
@@ -44,6 +44,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
     }
 
     private fun initViews() {
+        menjadorRepository = TaulaRepository(this)
         btnTornar = findViewById(R.id.btnTornar)
         btnGuardarPlano = findViewById(R.id.btnGuardarPlano)
         actvMenjadors = findViewById(R.id.actvMenjadors)

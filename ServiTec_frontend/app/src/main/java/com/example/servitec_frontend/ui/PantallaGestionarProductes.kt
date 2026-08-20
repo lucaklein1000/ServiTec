@@ -36,14 +36,16 @@ class PantallaGestionarProductes : AppCompatActivity() {
     private lateinit var etEditPreu: TextInputEditText
     private lateinit var spinnerEditCategoria: AutoCompleteTextView
     private lateinit var switchProducteActiu: SwitchMaterial
-    private val producteRepository = ProducteRepository()
-    private val categoriaRepository = TaulaRepository()
+    private lateinit var producteRepository: ProducteRepository
+    private lateinit var categoriaRepository: TaulaRepository
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_gestionar_productes)
 
+        producteRepository = ProducteRepository(this)
+        categoriaRepository = TaulaRepository(this)
         btnEliminarProducte = findViewById(R.id.btnEliminarProducte)
         btnTornar = findViewById(R.id.btnTornar)
         autoCompleteEditarProducte = findViewById(R.id.autoCompleteEditarProducte)
@@ -67,7 +69,7 @@ class PantallaGestionarProductes : AppCompatActivity() {
             } else {
                 btnEliminarProducte.isEnabled = false
                 lifecycleScope.launch {
-                    val exito = producteRepository.eliminarProdcute(idProducte)
+                    val exito = producteRepository.eliminarProducte(idProducte)
                     if (exito) {
                         Toast.makeText(this@PantallaGestionarProductes, "Usuari $nomProducte eliminat correctament", Toast.LENGTH_SHORT).show()
                         autoCompleteEliminarProducte.setText("")

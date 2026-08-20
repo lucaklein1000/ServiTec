@@ -28,12 +28,15 @@ class PantallaAfegirProducte : AppCompatActivity() {
     private lateinit var btnTornar: MaterialButton
     private var categories: List<Categoria> = emptyList()
 
-    private val repositoryProducte = ProducteRepository()
-    private val repositoryTaula = TaulaRepository()
+    private lateinit var repositoryProducte : ProducteRepository
+    private lateinit var repositoryTaula : TaulaRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_afegir_producte)
+
+        repositoryProducte = ProducteRepository(this)
+        repositoryTaula = TaulaRepository(this)
         btnTornar = findViewById(R.id.btnTornar)
         etNomProducte = findViewById(R.id.etNomProducte)
         etPreuProducte = findViewById(R.id.etPreuProducte)
@@ -72,7 +75,7 @@ class PantallaAfegirProducte : AppCompatActivity() {
                     postIdCategoria = idCategoria
                 )
                 lifecycleScope.launch {
-                    repositoryProducte.crearProdcute(producteCrear)
+                    repositoryProducte.crearProducte(producteCrear)
                 }
                 Toast.makeText(this, "Prodcute $nom ($desProd) creat correctament", Toast.LENGTH_SHORT)
                     .show()

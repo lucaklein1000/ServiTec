@@ -3,9 +3,9 @@
 // Autor:         Luca Klein
 // Titulació:     Grau en Enginyeria Informàtica (4t Curs)
 // Institució:    Universitat de Girona (UdG)
-// Fitxer:        RetrofitClient.kt
-// Descripció:    Singleton que inicialitza el client de Retrofit amb OkHttp
-//                i l AuthInterceptor per gestionar peticions protegides.
+// Fitxer:        ApiClient.kt
+// Descripció:    Singleton encarregat de la configuració de Retrofit i OkHttp.
+//                Injecta l AuthInterceptor per gestionar l autenticació JWT.
 // ============================================================================
 
 package com.example.servitec_frontend.data.network
@@ -15,14 +15,15 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RetrofitClient {
+object ApiClient {
 
-    private const val BASE_URL = "http://10.0.2.2:5206/"
+    private const val BASE_URL = "http://10.0.2.2:5000/" // O la teva IP de desenvolupament
 
     private var apiService: ApiService? = null
 
     /**
-     * Retorna la instància de ApiService configurada amb el cercador de token JWT.
+     * Inicialitza i retorna la instància singleton d ApiService.
+     * Requerix el [context] per poder llegir les SharedPreferences des de l AuthInterceptor.
      */
     fun getApiService(context: Context): ApiService {
         if (apiService == null) {

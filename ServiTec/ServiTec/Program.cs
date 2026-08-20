@@ -1,61 +1,150 @@
+// ============================================================================
+// Projecte:      ServiTec - Sistema de Gestió de Restaurants (TFG)
+// Autor:         Luca Klein
+// Titulació:     Grau en Enginyeria Informàtica (4t Curs)
+// Institució:    Universitat de Girona (UdG)
+// Fitxer:        Program.cs
+// Descripció:    Punt d'entrada principal de l'aplicació ASP.NET Core. Configura
+//                el contenidor d'injecció de dependències, la base de dades,
+//                la seguretat JWT, la política CORS restrictiva i Swagger.
+// ============================================================================
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using ServiTec.Application.Interfaces;
 using ServiTec.Application.Services;
 using ServiTec.Infrastructure.Data;
 using ServiTec.Services;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configurar el servidor perquè escolti per totes les interfícies al port 5206
 builder.WebHost.UseUrls("http://0.0.0.0:5206");
 
+// Configuració de la connexió amb la base de dades SQL Server
 builder.Services.AddDbContext<ServiTecDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("connectionDB"))
 );
-// Add services to the container.
 
+// Afegir controladors i configuració de serialització JSON per evitar referències circulars
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 
+// Injecció de dependències dels serveis d'aplicació i repositoris
 builder.Services.AddScoped<ProducteService>();
 builder.Services.AddScoped<UsuariService>();
 builder.Services.AddScoped<TaulaService>();
 builder.Services.AddScoped<CategoriaService>();
 builder.Services.AddScoped<ComandaService>();
 builder.Services.AddScoped<MenjadorService>();
-
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+// Configuració de Swagger amb suport per a Bearer Token (JWT)
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "ServiTec API",
+        Version = "v1"
+    });
 
-builder.Services.AddSwaggerGen();
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "Introdueix el token JWT generat al login. Exemple: eyJhbGciOiJIUzI1NiI...",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
+        }
+    };
 
-// Conexio amb el frontend Angular
+    options.AddSecurityDefinition("Bearer", securityScheme);
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { securityScheme, new string[] { } }
+    });
+});
+
+// Configuració de la política CORS segura i compatible amb el Front-End i l'App Android
+var allowServiTecOrigins = "_allowServiTecOrigins";
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy(allowServiTecOrigins, policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(
+                    "http://10.0.2.2:5206",      // Emulador d'Android (localhost del host)
+                    "http://localhost:5206",      // Accés local directe al servidor
+                    "http://localhost:5173",      // Front-End Web (Vite / React / Vue)
+                    "http://localhost:4200"       // Front-End Web (Angular)
+              )
+              .SetIsOriginAllowedToAllowWildcardSubdomains()
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
 
+// Configuració dels paràmetres de validació del token JWT
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidateAudience = true,
+        ValidAudience = jwtSettings["Audience"],
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-app.UseCors("AllowAll");
-
-/*
-app.MapGet("/", (HttpContext context) =>
+// Configurar el pipeline de peticions HTTP
+if (app.Environment.IsDevelopment())
 {
-    context.Response.Redirect("/swagger/index.html", permanent: false);
-});
-*/
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
+app.UseRouting();
+
+// CORS s'ha de col·locar estrictament entre UseRouting i UseAuthentication
+app.UseCors(allowServiTecOrigins);
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Redirecció automàtica de l'arrel de l'API cap a la interfície de Swagger
 app.Use(async (context, next) =>
 {
     if (context.Request.Path == "/")
@@ -64,19 +153,7 @@ app.Use(async (context, next) =>
         return;
     }
     await next();
-}); 
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.UseSwaggerUI();
-    app.UseSwagger();
-}
-
-// app.UseHttpsRedirection();
-
-app.UseAuthorization();
+});
 
 app.MapControllers();
 

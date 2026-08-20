@@ -27,7 +27,7 @@ class PantallaAfegirUsuari : AppCompatActivity() {
     private lateinit var btnGuardarUsuari: MaterialButton
     private lateinit var btnCancelar: MaterialButton
     private lateinit var btnTornar: MaterialButton
-    private val repository = UsuariRepository()
+    private lateinit var repository: UsuariRepository
 
 
 
@@ -35,6 +35,7 @@ class PantallaAfegirUsuari : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_afegir_usuari)
 
+        repository = UsuariRepository(this)
         etNomUsuari = findViewById(R.id.etNomUsuari)
         etPasswordUsuari = findViewById(R.id.etPasswordUsuari)
         spinnerRol = findViewById(R.id.spinnerRol)
@@ -50,13 +51,14 @@ class PantallaAfegirUsuari : AppCompatActivity() {
         btnGuardarUsuari.setOnClickListener {
             val nom = etNomUsuari.text.toString().trim()
             val password = etPasswordUsuari.text.toString().trim()
-            val rol = spinnerRol.text.toString().trim()
+            var rol = spinnerRol.text.toString().trim()
             val esGerent = switchEsGerent.isChecked
             btnGuardarUsuari.isEnabled = false
 
             if (nom.isEmpty() || password.isEmpty() || rol.isEmpty()) {
                 Toast.makeText(this, "Si us plau, omple tots els camps", Toast.LENGTH_SHORT).show()
             } else {
+                if (esGerent) rol = "Admin"
                 val usuariCrear = CrearUsuariDTO(
                     postNomUsuari = nom,
                     postContrasenya = password,

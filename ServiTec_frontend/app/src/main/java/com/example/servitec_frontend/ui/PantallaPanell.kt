@@ -26,7 +26,7 @@ class PantallaPanell : AppCompatActivity() {
     private lateinit var canvasPanell: RelativeLayout
     private lateinit var btnCerrarSesion: MaterialButton
 
-    private val menjadorRepository = TaulaRepository()
+    private lateinit var menjadorRepository: TaulaRepository
     private var menjadorSeleccionatId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +34,7 @@ class PantallaPanell : AppCompatActivity() {
         setContentView(R.layout.pantalla_panell)
 
         // 1. INICIALIZAR TODAS LAS VISTAS
+        menjadorRepository = TaulaRepository(this)
         containerMenjadors = findViewById(R.id.containerMenjadors)
         canvasPanell = findViewById(R.id.layoutSalon)
         btnDireccio = findViewById(R.id.btnDireccio)
@@ -43,7 +44,7 @@ class PantallaPanell : AppCompatActivity() {
         val userRol = prefs.getString("rolUsuari", "") ?: ""
         val esAdmin = prefs.getBoolean("esAdmin", false)
 
-        val esGerentOAdmin = userRol.equals("Gerent", ignoreCase = true) || esAdmin
+        val esGerentOAdmin = userRol.equals("Admin", ignoreCase = true) || esAdmin
 
         btnDireccio.visibility = if (esGerentOAdmin) View.VISIBLE else View.GONE
 

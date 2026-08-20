@@ -1,3 +1,13 @@
+// ============================================================================
+// Projecte:      ServiTec - Sistema de Gestió de Restaurants (TFG)
+// Autor:         Luca Klein
+// Titulació:     Grau en Enginyeria Informàtica (4t Curs)
+// Institució:    Universitat de Girona (UdG)
+// Fitxer:        PantallaCuina.kt
+// Descripció:    Activity per a la pantalla de cuina. Mostra les comandes en
+//                curs en format de tiquets mitjançant un refresc periòdic.
+// ============================================================================
+
 package com.example.servitec_frontend.ui
 
 import android.content.Intent
@@ -9,15 +19,23 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.servitec_frontend.R
+import com.example.servitec_frontend.repository.TaulaRepository
 import com.example.servitec_frontend.ui.adapters.CuinaAdapter
 import kotlinx.coroutines.launch
 
+/**
+ * Activity que gestiona la vista de comandes per al personal de cuina.
+ *
+ * Realitza peticions periòdiques al backend per mantenir actualitzada la llista
+ * de comandes pendents i permet tancar la sessió de l usuari.
+ */
 class PantallaCuina : AppCompatActivity() {
+
     private lateinit var rvComandes: RecyclerView
     private lateinit var btnCerrarSesion: TextView
+    private lateinit var cuinaRepository: TaulaRepository
 
     // Handler i Runnable per gestionar el refresc automàtic de comandes
     private val handler = Handler(Looper.getMainLooper())
@@ -34,14 +52,15 @@ class PantallaCuina : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_cuina)
 
-        // 1. Inicialitzar elements de la UI
+        // Inicialitzar elements de la interfície de usuari
+        cuinaRepository = TaulaRepository(this)
         rvComandes = findViewById(R.id.rvComandesCuina)
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion)
 
-        // Configurar el RecyclerView en Horitzontal per veure les taules com a "tickets"
+        // Configurar el RecyclerView en graella de 4 columnes per veure les comandes com a tiquets
         rvComandes.layoutManager = GridLayoutManager(this, 4)
 
-        // 2. Configurar el botó de tancar sessió de la barra lateral
+        // Configurar el botó de tancar sessió de la barra lateral
         btnCerrarSesion.setOnClickListener {
             tancarSessio()
         }
@@ -60,38 +79,47 @@ class PantallaCuina : AppCompatActivity() {
     }
 
     /**
-     * Mètode encarregat de cridar la API i actualitzar el RecyclerView de cuina.
+     * Mètode encarregat de cridar la API REST a través del repositori i actualitzar el RecyclerView.
      */
     private fun carregarComandesCuina() {
         lifecycleScope.launch {
             try {
-                // 1. Llamamos al endpoint de la API que creamos en C#
-                val response = RetrofitClient.instance.getComandesCuina()
+                val llistaComandes = cuinaRepository.getComandesCuina()
 
-                if (response.isSuccessful && response.body() != null) {
-                    val llistaComandes = response.body()!!
-
-                    // 2. Creamos el adaptador con los datos recibidos y se lo asignamos al RecyclerView
-                    val adapter = CuinaAdapter(llistaComandes)
-                    rvComandes.adapter = adapter
+                if (llistaComandes != null) {
+                    val adapter = rvComandes.adapter as? CuinaAdapter
+                    if (adapter == null) {
+                        rvComandes.adapter = CuinaAdapter(llistaComandes)
+                    } else {
+                        // Si l adaptador ja existeix, es pot afegir un mètode d actualització per evitar parpelleigs
+                        rvComandes.adapter = CuinaAdapter(llistaComandes)
+                    }
                 } else {
-                    Toast.makeText(this@PantallaCuina, "Error al cargar comandas", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@PantallaCuina,
+                        "Error en carregar les comandes",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@PantallaCuina, "Error de conexión: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@PantallaCuina,
+                    "Error de connexió: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
     /**
-     * Neteja la sessió de l'usuari i el torna a la pantalla de Login.
+     * Neteja la sessió de l usuari i el retorna a la pantalla de login.
      */
     private fun tancarSessio() {
         val sharedPreferences = getSharedPreferences("ServiTecPrefs", MODE_PRIVATE)
         sharedPreferences.edit().clear().apply()
 
         val intent = Intent(this, PantallaLogin::class.java)
-        // Netejar l'historial de pantalles perquè no pugui tornar enrere
+        // Netejar l historial de pantalles per evitar que l usuari pugui tornar enrere
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
