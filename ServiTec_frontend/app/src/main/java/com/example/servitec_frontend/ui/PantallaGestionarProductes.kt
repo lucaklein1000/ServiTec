@@ -8,14 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.servitec_frontend.R
 import com.example.servitec_frontend.data.model.Categoria
-import com.example.servitec_frontend.data.model.Producte
 import com.example.servitec_frontend.data.model.ProducteDTO
-import com.example.servitec_frontend.data.model.PutProducteDTO
-import com.example.servitec_frontend.data.model.PutUsuariDTO
-import com.example.servitec_frontend.data.model.UsuariDTO
+import com.example.servitec_frontend.data.model.UpdateProdcuteDTO
 import com.example.servitec_frontend.repository.ProducteRepository
 import com.example.servitec_frontend.repository.TaulaRepository
-import com.example.servitec_frontend.repository.UsuariRepository
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
@@ -123,12 +119,12 @@ class PantallaGestionarProductes : AppCompatActivity() {
             } else {
                 btnGuardarCanvisProducte.isEnabled = false
 
-                val producteModificat = PutProducteDTO(
-                    putNom = nom,
-                    putDescripcio = descripcio,
-                    putPreu = preu,
-                    putActiu = actiu,
-                    putIdCategoria = idCategoria
+                val producteModificat = UpdateProdcuteDTO(
+                    nom = nom,
+                    descripcio = descripcio,
+                    preu = preu,
+                    actiu = actiu,
+                    idCategoria = idCategoria
                 )
 
                 lifecycleScope.launch {

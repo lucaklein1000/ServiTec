@@ -1,24 +1,18 @@
 package com.example.servitec_frontend.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.servitec_frontend.R
-import com.example.servitec_frontend.data.model.CrearUsuariDTO
-import com.example.servitec_frontend.data.model.CreateLiniaComandaDTO
-import com.example.servitec_frontend.repository.TaulaRepository
+import com.example.servitec_frontend.data.model.CreateUsuariDTO
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
 import com.example.servitec_frontend.repository.UsuariRepository
 import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.launch
-import kotlin.String
 
 class PantallaAfegirUsuari : AppCompatActivity() {
     private lateinit var etNomUsuari: TextInputEditText
@@ -59,12 +53,12 @@ class PantallaAfegirUsuari : AppCompatActivity() {
                 Toast.makeText(this, "Si us plau, omple tots els camps", Toast.LENGTH_SHORT).show()
             } else {
                 if (esGerent) rol = "Admin"
-                val usuariCrear = CrearUsuariDTO(
-                    postNomUsuari = nom,
-                    postContrasenya = password,
-                    postActiu = true,
-                    postAdmin = esGerent,
-                    postRol = rol
+                val usuariCrear = CreateUsuariDTO(
+                    nomUsuari = nom,
+                    contrasenya = password,
+                    actiu = true,
+                    admin = esGerent,
+                    rol = rol
                 )
                 lifecycleScope.launch {
                     repository.crearUsuari(usuariCrear)

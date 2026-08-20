@@ -16,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using ServiTec.Application.Interfaces;
 using ServiTec.Application.Services;
 using ServiTec.Infrastructure.Data;
+using ServiTec.Infrastructure.Repositories;
 using ServiTec.Services;
 using System.Text;
 using System.Text.Json.Serialization;

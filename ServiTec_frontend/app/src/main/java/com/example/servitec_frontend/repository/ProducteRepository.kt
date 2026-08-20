@@ -11,10 +11,10 @@
 package com.example.servitec_frontend.repository
 
 import android.content.Context
-import com.example.servitec_frontend.data.model.PostProducteDTO
+import com.example.servitec_frontend.data.model.CreateProdcuteDTO
 import com.example.servitec_frontend.data.model.Producte
 import com.example.servitec_frontend.data.model.ProducteDTO
-import com.example.servitec_frontend.data.model.PutProducteDTO
+import com.example.servitec_frontend.data.model.UpdateProdcuteDTO
 import com.example.servitec_frontend.data.network.RetrofitClient
 
 /**
@@ -32,7 +32,7 @@ class ProducteRepository(private val context: Context) {
      * @param nouProducte DTO amb la informació del producte a crear.
      * @return El producte creat o `null` si s produeix un error.
      */
-    suspend fun crearProducte(nouProducte: PostProducteDTO): Producte? {
+    suspend fun crearProducte(nouProducte: CreateProdcuteDTO): Producte? {
         return try {
             val response = apiService.crearProducte(nouProducte)
             if (response.isSuccessful) {
@@ -88,7 +88,7 @@ class ProducteRepository(private val context: Context) {
      * @param producte DTO amb les noves dades del producte.
      * @return `true` si s ha actualitzat correctament, `false` en cas contrari.
      */
-    suspend fun actualitzarProducte(idProducte: Int, producte: PutProducteDTO): Boolean {
+    suspend fun actualitzarProducte(idProducte: Int, producte: UpdateProdcuteDTO): Boolean {
         return try {
             val response = apiService.actualitzarProducte(idProducte, producte)
             response.isSuccessful

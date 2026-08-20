@@ -17,15 +17,14 @@ import com.example.servitec_frontend.data.model.ComandaDTO
 import com.example.servitec_frontend.data.model.CreateComandaDTO
 import com.example.servitec_frontend.data.model.CreateLiniaComandaDTO
 import com.example.servitec_frontend.data.model.Menjador
-import com.example.servitec_frontend.data.model.PostCategoriaDTO
-import com.example.servitec_frontend.data.model.PostMenjadorDTO
-import com.example.servitec_frontend.data.model.PostTaulaDTO
+import com.example.servitec_frontend.data.model.CreateCategoriaDTO
+import com.example.servitec_frontend.data.model.CreateMenjadorDTO
+import com.example.servitec_frontend.data.model.CreateTaulaDTO
 import com.example.servitec_frontend.data.model.Producte
-import com.example.servitec_frontend.data.model.PutCategoriaDTO
-import com.example.servitec_frontend.data.model.PutTaulaDTO
-import com.example.servitec_frontend.data.model.ResponseComnada
-import com.example.servitec_frontend.data.model.ResponseCuina
-import com.example.servitec_frontend.data.model.Taula
+import com.example.servitec_frontend.data.model.UpdateCategoriaDTO
+import com.example.servitec_frontend.data.model.UpdateTaulaDTO
+import com.example.servitec_frontend.data.model.Cuina
+import com.example.servitec_frontend.data.model.TaulaDTO
 import com.example.servitec_frontend.data.network.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -44,9 +43,9 @@ class TaulaRepository(private val context: Context) {
      * Obté la comanda activa associada a una taula concreta.
      *
      * @param idMesa Identificador de la taula a consultar.
-     * @return La comanda activa (`ResponseComnada`) o `null` si la taula està lliure o s produeix un error.
+     * @return La comanda activa (`ComandaDTO`) o `null` si la taula està lliure o s produeix un error.
      */
-    suspend fun obtenirComandaActiva(idMesa: Int): ResponseComnada? {
+    suspend fun obtenirComandaActiva(idMesa: Int): ComandaDTO? {
         return try {
             val response = apiService.obtenirComandaActiva(idMesa)
             if (response.isSuccessful) {
@@ -82,7 +81,7 @@ class TaulaRepository(private val context: Context) {
      * @param nomCategoria DTO amb les dades de la nova categoria.
      * @return `true` si s ha creat correctament, `false` en cas contrari.
      */
-    suspend fun crearCategoria(nomCategoria: PostCategoriaDTO): Boolean {
+    suspend fun crearCategoria(nomCategoria: CreateCategoriaDTO): Boolean {
         return try {
             val response = apiService.crearCategoria(nomCategoria)
             response.isSuccessful
@@ -99,7 +98,7 @@ class TaulaRepository(private val context: Context) {
      * @param categoria DTO amb les noves dades de la categoria.
      * @return `true` si l actualització és correcta, `false` en cas contrari.
      */
-    suspend fun actualitzarCategoria(idCategoria: Int, categoria: PutCategoriaDTO): Boolean {
+    suspend fun actualitzarCategoria(idCategoria: Int, categoria: UpdateCategoriaDTO): Boolean {
         return try {
             val response = apiService.actualitzarCategoria(idCategoria, categoria)
             response.isSuccessful
@@ -146,7 +145,7 @@ class TaulaRepository(private val context: Context) {
      *
      * @return Llista d objectes `Taula` o `null` si es produeix un error.
      */
-    suspend fun obtenirTaules(): List<Taula>? {
+    suspend fun obtenirTaules(): List<TaulaDTO>? {
         return try {
             val response = apiService.obtenirTaules()
             if (response.isSuccessful) response.body() else null
@@ -246,7 +245,7 @@ class TaulaRepository(private val context: Context) {
      * @param nouMenjador DTO amb les dades del nou menjador.
      * @return L objecte `Menjador` creat o `null` si falla la petició.
      */
-    suspend fun crearMenjador(nouMenjador: PostMenjadorDTO): Menjador? {
+    suspend fun crearMenjador(nouMenjador: CreateMenjadorDTO): Menjador? {
         return try {
             val response = apiService.crearMenjador(nouMenjador)
             if (response.isSuccessful) {
@@ -286,7 +285,7 @@ class TaulaRepository(private val context: Context) {
      * @param taula DTO amb les noves dades de la taula.
      * @return `true` si l actualització és correcta, `false` en cas contrari.
      */
-    suspend fun actualitzarTaula(idTaula: Int, taula: PutTaulaDTO): Boolean {
+    suspend fun actualitzarTaula(idTaula: Int, taula: UpdateTaulaDTO): Boolean {
         return try {
             val response = apiService.actualitzarTaula(idTaula, taula)
             response.isSuccessful
@@ -302,7 +301,7 @@ class TaulaRepository(private val context: Context) {
      * @param novaTaula DTO amb la informació de la nova taula.
      * @return L objecte `Taula` creat o `null` si s produeix un error.
      */
-    suspend fun crearTaula(novaTaula: PostTaulaDTO): Taula? {
+    suspend fun crearTaula(novaTaula: CreateTaulaDTO): TaulaDTO? {
         return try {
             val response = apiService.crearTaula(novaTaula)
             if (response.isSuccessful) {
@@ -322,14 +321,14 @@ class TaulaRepository(private val context: Context) {
      * Envia una petició GET a la API utilitzant el servei autenticat. Les línies de comanda
      * retornades ja vénen filtrades pel backend segons l estat corresponent.
      *
-     * @return Una llista mutable de [ResponseCuina] si la petició té èxit, o `null` en cas d'error o excepció.
+     * @return Una llista mutable de [Cuina] si la petició té èxit, o `null` en cas d'error o excepció.
      */
     /**
      * Obté la llista de comandes actives destinades a la pantalla de cuina.
      *
      * @return Llista mutable d objectes `ResponseCuina` o `null` si la petició falla.
      */
-    suspend fun getComandesCuina(): MutableList<ResponseCuina>? {
+    suspend fun getComandesCuina(): MutableList<Cuina>? {
         return try {
             val response = apiService.getComandesCuina()
             if (response.isSuccessful) {

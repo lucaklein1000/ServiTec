@@ -13,9 +13,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.servitec_frontend.R
-import com.example.servitec_frontend.data.model.PostMenjadorDTO
-import com.example.servitec_frontend.data.model.PostTaulaDTO
-import com.example.servitec_frontend.data.model.Taula
+import com.example.servitec_frontend.data.model.CreateMenjadorDTO
+import com.example.servitec_frontend.data.model.CreateTaulaDTO
 import com.example.servitec_frontend.repository.TaulaRepository
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -34,7 +33,7 @@ class PantallaAfegirMenjador : AppCompatActivity() {
     private lateinit var dragTaula6Pax: LinearLayout
     private lateinit var dragTaula8Pax: LinearLayout
 
-    private val llistaTaulesCollocades = mutableListOf<PostTaulaDTO>()
+    private val llistaTaulesCollocades = mutableListOf<CreateTaulaDTO>()
     private lateinit var taulaRepository : TaulaRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -152,7 +151,7 @@ class PantallaAfegirMenjador : AppCompatActivity() {
         // Permitir eliminar la mesa haciendo clic sobre ella en el lienzo
         taulaView.setOnClickListener {
             canvasMenjador.removeView(taulaView)
-            llistaTaulesCollocades.removeIf { it.postNumero == numeroTaula }
+            llistaTaulesCollocades.removeIf { it.numero == numeroTaula }
             if (llistaTaulesCollocades.isEmpty()) {
                 tvHintCanvas.visibility = View.VISIBLE
             }
@@ -160,13 +159,13 @@ class PantallaAfegirMenjador : AppCompatActivity() {
 
         // Añadir a la lista DTO para enviar al backend
         llistaTaulesCollocades.add(
-            PostTaulaDTO(
-                postNumero = numeroTaula,
-                postCapacitat = capacitat,
-                postEstat = false,
-                postIdMenjador = 1,
-                postPosX = posXPercent,
-                postPosY = posYPercent
+            CreateTaulaDTO(
+                numero = numeroTaula,
+                capacitat = capacitat,
+                estat = false,
+                idMenjador = 1,
+                posX = posXPercent,
+                posY = posYPercent
             )
         )
 
@@ -188,10 +187,10 @@ class PantallaAfegirMenjador : AppCompatActivity() {
 
         btnGuardarMenjador.isEnabled = false
 
-        val dto = PostMenjadorDTO(
-            postNomMenjador = nom,
-            postActiu = true,
-            postTaules = llistaTaulesCollocades
+        val dto = CreateMenjadorDTO(
+            nomMenjador = nom,
+            actiu = true,
+            taules = llistaTaulesCollocades
         )
 
         lifecycleScope.launch {

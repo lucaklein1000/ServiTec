@@ -8,13 +8,11 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.servitec_frontend.R
-import com.example.servitec_frontend.data.model.Taula
+import com.example.servitec_frontend.data.model.TaulaDTO
 import com.example.servitec_frontend.repository.TaulaRepository
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
@@ -111,7 +109,7 @@ class PantallaPanell : AppCompatActivity() {
         }
     }
 
-    private fun pintarTaulesAlCanvas(taules: List<Taula>?) {
+    private fun pintarTaulesAlCanvas(taules: List<TaulaDTO>?) {
         canvasPanell.removeAllViews()
 
         if (taules.isNullOrEmpty()) return

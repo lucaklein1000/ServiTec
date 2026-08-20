@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.servitec_frontend.R
 import com.example.servitec_frontend.data.model.Categoria
-import com.example.servitec_frontend.data.model.PostProducteDTO
+import com.example.servitec_frontend.data.model.CreateProdcuteDTO
 import com.example.servitec_frontend.repository.ProducteRepository
 import com.example.servitec_frontend.repository.TaulaRepository
 import com.google.android.material.button.MaterialButton
@@ -67,12 +67,12 @@ class PantallaAfegirProducte : AppCompatActivity() {
                 btnGuardarProducte.isEnabled = true
                 Toast.makeText(this, "Si us plau, omple tots els camps", Toast.LENGTH_SHORT).show()
             } else {
-                val producteCrear = PostProducteDTO(
-                    postNom = nom,
-                    postDescripcio = desProd,
-                    postPreu = preu,
-                    postActiu = disponible,
-                    postIdCategoria = idCategoria
+                val producteCrear = CreateProdcuteDTO(
+                    nom = nom,
+                    descripcio = desProd,
+                    preu = preu,
+                    actiu = disponible,
+                    idCategoria = idCategoria
                 )
                 lifecycleScope.launch {
                     repositoryProducte.crearProducte(producteCrear)

@@ -106,7 +106,7 @@ class PantallaTaula : AppCompatActivity() {
                         if (prod != null) {
                             historialGuardat.add(
                                 LiniaComandaTemporal(
-                                    idLiniaComanda = linea.idLiniaComanda,
+                                    idLiniaComanda = linea.idLinia,
                                     producte = prod,
                                     quantitat = linea.quantitat,
                                     preu = linea.preuUnitari,
@@ -180,10 +180,10 @@ class PantallaTaula : AppCompatActivity() {
                 // Enviamos la categoría modificada si existe, de lo contrario la original del producto
                 val novesLiniesDto = productesSeleccionats.map { l ->
                     CreateLiniaComandaDTO(
-                        postIdProducte = l.producte.idProducte,
-                        postQuantitat = l.quantitat,
-                        postEstat = l.estat,
-                        postIdCategoria = l.idCategoriaModificada ?: l.producte.idCategoria
+                        idProducte = l.producte.idProducte,
+                        quantitat = l.quantitat,
+                        estat = l.estat,
+                        idCategoria = l.idCategoriaModificada ?: l.producte.idCategoria
                     )
                 }
 
@@ -196,10 +196,10 @@ class PantallaTaula : AppCompatActivity() {
                     exit = resultat.isSuccess
                 } else {
                     val novaComandaDto = CreateComandaDTO(
-                        postEstat = "oberta",
-                        postIdTaula = idTaulaActual,
-                        postIdUsuari = idUsuariActual,
-                        postLinies = novesLiniesDto
+                        estat = "oberta",
+                        idTaula = idTaulaActual,
+                        idUsuari = idUsuariActual,
+                        linies = novesLiniesDto
                     )
                     exit = taulaRepository.enviarComanda(novaComandaDto)
                 }

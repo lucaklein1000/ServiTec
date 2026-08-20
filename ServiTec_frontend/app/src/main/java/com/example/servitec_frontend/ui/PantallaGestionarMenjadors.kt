@@ -13,9 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.servitec_frontend.R
 import com.example.servitec_frontend.data.model.Menjador
-import com.example.servitec_frontend.data.model.PostTaulaDTO
-import com.example.servitec_frontend.data.model.PutTaulaDTO
-import com.example.servitec_frontend.data.model.Taula
+import com.example.servitec_frontend.data.model.CreateTaulaDTO
+import com.example.servitec_frontend.data.model.UpdateTaulaDTO
+import com.example.servitec_frontend.data.model.TaulaDTO
 import com.example.servitec_frontend.repository.TaulaRepository
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
@@ -137,7 +137,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         val novesTaules = menjador.taules.toMutableList()
         val nouNumero = (novesTaules.maxOfOrNull { it.numero } ?: 0) + 1
 
-        val novaTaula = Taula(
+        val novaTaula = TaulaDTO(
             idTaula = 0, // Id 0 indica que es una mesa nueva pendiente de guardar en BDD
             numero = nouNumero,
             capacitat = capacitatPax,
@@ -160,7 +160,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
     /**
      * Método para pintar las mesas en el lienzo (Canvas).
      */
-    private fun dibuixarTaulesEnLlenç(taules: List<Taula>) {
+    private fun dibuixarTaulesEnLlenç(taules: List<TaulaDTO>) {
         canvasMenjador.removeAllViews()
 
         if (taules.isEmpty()) return
@@ -212,7 +212,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
     /**
      * Lógica de arrastre que calcula y guarda de nuevo la posición en porcentaje (0 - 100%)
      */
-    private fun hacerMesaArrastrable(view: View, taula: Taula) {
+    private fun hacerMesaArrastrable(view: View, taulaDTO: TaulaDTO) {
         var dX = 0f
         var dY = 0f
 
@@ -244,8 +244,8 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
                     val centroX = clampedX + (v.width / 2f)
                     val centroY = clampedY + (v.height / 2f)
 
-                    taula.posX = (centroX / parentWidth) * 100f
-                    taula.posY = (centroY / parentHeight) * 100f
+                    taulaDTO.posX = (centroX / parentWidth) * 100f
+                    taulaDTO.posY = (centroY / parentHeight) * 100f
 
                     true
                 }
@@ -268,23 +268,23 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
                 // Recorremos cada mesa para actualizar o crear sus datos en la BDD
                 for (taula in taules) {
                     val exit = if (taula.idTaula == 0) {
-                        val taulaNova = PostTaulaDTO(
-                            postNumero = taula.numero,
-                            postEstat = taula.estat,
-                            postCapacitat = taula.capacitat,
-                            postPosX = taula.posX,
-                            postPosY = taula.posY,
-                            postIdMenjador = menjador.idMenjador
+                        val taulaNova = CreateTaulaDTO(
+                            numero = taula.numero,
+                            estat = taula.estat,
+                            capacitat = taula.capacitat,
+                            posX = taula.posX,
+                            posY = taula.posY,
+                            idMenjador = menjador.idMenjador
                         )
                         menjadorRepository.crearTaula(taulaNova)
                     } else {
                         // Si ya tiene un idTaula válido, actualizamos con el DTO
-                        val taulaModificada = PutTaulaDTO(
-                            putNumero = taula.numero,
-                            putEstat = taula.estat,
-                            putCapacitat = taula.capacitat,
-                            putPosX = taula.posX,
-                            putPosY = taula.posY
+                        val taulaModificada = UpdateTaulaDTO(
+                            numero = taula.numero,
+                            estat = taula.estat,
+                            capacitat = taula.capacitat,
+                            posX = taula.posX,
+                            posY = taula.posY
                         )
                         menjadorRepository.actualitzarTaula(taula.idTaula, taulaModificada)
                     }
