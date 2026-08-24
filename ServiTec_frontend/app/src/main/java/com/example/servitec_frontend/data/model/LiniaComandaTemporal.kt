@@ -26,7 +26,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class LiniaComandaTemporal(
     val idLiniaComanda: Int = 0,
-    val producte: Producte,
+    val producte: ProducteDTO,
     var quantitat: Int,
     var preu: Double,
     var total: Double,

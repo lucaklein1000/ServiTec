@@ -12,7 +12,7 @@ import javax.net.ssl.X509TrustManager
 
 object RetrofitClient {
 
-    private const val BASE_URL = "https://10.0.2.2:7123/"
+    private const val BASE_URL = "https://servitec-api-hwanepfxehgpatag.spaincentral-01.azurewebsites.net/"
 
     /**
      * Crea un OkHttpClient que ignora las validaciones SSL de desarrollo.

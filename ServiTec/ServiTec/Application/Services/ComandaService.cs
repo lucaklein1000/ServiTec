@@ -113,18 +113,18 @@ namespace ServiTec.Application.Services
             var taula = await _taulaRepository.GetById(dto.IdTaula);
             if (taula == null)
             {
-                throw new ArgumentException("La mesa especificada no existe.");
+                throw new ArgumentException("La taula especificada no existeix.");
             }
 
             if (!taula.Estat)
             {
-                throw new InvalidOperationException("Esta mesa ya tiene una comanda activa.");
+                throw new InvalidOperationException("Esta taula ya te una comanda activa.");
             }
 
             var comanda = new Comanda
             {
                 DataCreacio = DateTime.Now,
-                Estat = dto.Estat ?? "Pendent",
+                Estat = dto.Estat ?? "pendent",
                 IdTaula = dto.IdTaula,
                 IdUsuari = dto.IdUsuari,
                 Total = 0,
@@ -181,7 +181,6 @@ namespace ServiTec.Application.Services
             if (comanda == null)
                 return null;
 
-            comanda.IdComanda = dto.IdComanda;
             comanda.DataCreacio = dto.DataCreacio;
             comanda.Estat = dto.Estat;
             comanda.Total = dto.Total;
@@ -325,7 +324,7 @@ namespace ServiTec.Application.Services
             var comanda = await _context.Comanda.FindAsync(idComanda);
             if (comanda == null)
             {
-                throw new ArgumentException("La comanda no existe.");
+                throw new ArgumentException("La comanda no existeix.");
             }
 
             decimal totalAdicional = 0;

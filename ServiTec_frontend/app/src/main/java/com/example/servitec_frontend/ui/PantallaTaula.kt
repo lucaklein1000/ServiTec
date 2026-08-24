@@ -18,6 +18,7 @@ import com.example.servitec_frontend.data.model.CreateComandaDTO
 import com.example.servitec_frontend.data.model.CreateLiniaComandaDTO
 import com.example.servitec_frontend.data.model.LiniaComandaTemporal
 import com.example.servitec_frontend.data.model.Producte
+import com.example.servitec_frontend.data.model.ProducteDTO
 import com.example.servitec_frontend.repository.ProducteRepository
 import com.example.servitec_frontend.repository.TaulaRepository
 import com.example.servitec_frontend.ui.adapter.CategoriesAdapter
@@ -40,7 +41,7 @@ class PantallaTaula : AppCompatActivity() {
     private lateinit var btnCambiarOrde : MaterialButton
     private lateinit var mostrarNumeroTaula: TextView
 
-    private var totsElsProductes = listOf<Producte>()
+    private var totsElsProductes = listOf<ProducteDTO>()
     private lateinit var taulaRepository: TaulaRepository
     private lateinit var producteRepository: ProducteRepository
     private val historialGuardat = mutableListOf<LiniaComandaTemporal>()
@@ -149,7 +150,7 @@ class PantallaTaula : AppCompatActivity() {
         // Carga inicial de categorías y catálogo
         lifecycleScope.launch {
             val categoriesBD = taulaRepository.obtenirCategories()
-            val productesBD = taulaRepository.obtenerProductos() ?: emptyList()
+            val productesBD = taulaRepository.obtenirProductes() ?: emptyList()
             totsElsProductes = productesBD
 
             if (categoriesBD != null) {

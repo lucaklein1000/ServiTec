@@ -77,9 +77,6 @@ interface ApiService {
  @GET("api/Producte/llistar")
  suspend fun obtenirProductes(): Response<List<ProducteDTO>>
 
- @GET("api/Producte/llistar")
- suspend fun getProducts(): Response<List<Producte>>
-
  @PUT("api/Producte/actualitzar/{id}")
  suspend fun actualitzarProducte(@Path("id") idProducte: Int, @Body dto: UpdateProdcuteDTO): Response<ProducteDTO>
 
@@ -90,7 +87,7 @@ interface ApiService {
  @POST("api/Taula/crear")
  suspend fun crearTaula(@Body dto: CreateTaulaDTO): Response<TaulaDTO>
 
- @PUT("api/Taula/actualitzar/{id}") // 🛑 CORREGIDO: falta de barra inclinada y minúsculas
+ @PUT("api/Taula/actualitzar/{id}")
  suspend fun actualitzarTaula(@Path("id") idTaula: Int, @Body dto: UpdateTaulaDTO): Response<TaulaDTO>
 
  // COMANDES

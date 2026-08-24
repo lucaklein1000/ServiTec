@@ -24,6 +24,7 @@ import com.example.servitec_frontend.data.model.Producte
 import com.example.servitec_frontend.data.model.UpdateCategoriaDTO
 import com.example.servitec_frontend.data.model.UpdateTaulaDTO
 import com.example.servitec_frontend.data.model.Cuina
+import com.example.servitec_frontend.data.model.ProducteDTO
 import com.example.servitec_frontend.data.model.TaulaDTO
 import com.example.servitec_frontend.data.network.RetrofitClient
 import kotlinx.coroutines.Dispatchers
@@ -113,10 +114,10 @@ class TaulaRepository(private val context: Context) {
      *
      * @return Llista d objectes `Producte` o `null` si la petició falla.
      */
-    suspend fun obtenerProductos(): List<Producte>? {
+    suspend fun obtenirProductes(): List<ProducteDTO>? {
         return withContext(Dispatchers.IO) {
             try {
-                val response = apiService.getProducts()
+                val response = apiService.obtenirProductes()
                 if (response.isSuccessful) response.body() else null
             } catch (e: Exception) {
                 null

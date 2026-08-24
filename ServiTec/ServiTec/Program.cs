@@ -23,12 +23,9 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar el servidor per escoltar en HTTP (5206) i HTTPS (7123)
-builder.WebHost.UseUrls("http://0.0.0.0:5206", "https://0.0.0.0:7123");
-
 // Configuració de la connexió amb la base de dades SQL Server
 builder.Services.AddDbContext<ServiTecDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("connectionDB"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 // Afegir controladors i configuració de serialització JSON per evitar referències circulars
@@ -83,18 +80,19 @@ builder.Services.AddSwaggerGen(options =>
 
 // Configuració de la política CORS segura i compatible amb el Front-End i l'App Android
 var allowServiTecOrigins = "_allowServiTecOrigins";
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(allowServiTecOrigins, policy =>
     {
         policy.WithOrigins(
-                    "http://10.0.2.2:5206",      // Emulador d'Android (HTTP)
-                    "https://10.0.2.2:7123",     // Emulador d'Android (HTTPS)
-                    "http://localhost:5206",      // Accés local directe HTTP
-                    "https://localhost:7123",     // Accés local directe HTTPS
-                    "http://localhost:5173",      // Front-End Web (Vite / React / Vue)
-                    "http://localhost:4200"       // Front-End Web (Angular)
+                    "http://10.0.2.2:5206",         // Emulador de Android (HTTP)
+                    "https://10.0.2.2:7123",        // Emulador de Android (HTTPS)
+                    "http://localhost:5206",         // Acceso local directo HTTP
+                    "https://localhost:7123",        // Acceso local directo HTTPS
+                    "http://10.45.94.221:5206",      // Tu IP local (HTTP)
+                    "https://10.45.94.221:7123",     // Tu IP local (HTTPS)
+                    "http://localhost:5173",         // Front-End Web
+                    "http://localhost:4200"          // Front-End Web
               )
               .SetIsOriginAllowedToAllowWildcardSubdomains()
               .AllowAnyHeader()
@@ -113,7 +111,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true; // Forçar metadades sobre HTTPS en entorns de producció
+    options.RequireHttpsMetadata = false; // Permet terminació TLS a Azure
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -132,19 +130,19 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configurar el pipeline de peticions HTTP
-if (app.Environment.IsDevelopment())
+// Enable Swagger per a tots els entorns (desenvolupament i producció a Azure)
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ServiTec API v1");
+    c.RoutePrefix = "swagger";
+});
 
 app.UseRouting();
 
-// CORS s'ha de col·locar estrictament entre UseRouting i UseAuthentication
+// CORS s'ha de col·locar strictly entre UseRouting i UseAuthentication
 app.UseCors(allowServiTecOrigins);
 
-// Redirecció automàtica de tot el tràfic HTTP cap a HTTPS
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

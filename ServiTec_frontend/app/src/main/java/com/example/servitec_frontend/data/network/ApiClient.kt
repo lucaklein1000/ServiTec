@@ -11,13 +11,14 @@
 package com.example.servitec_frontend.data.network
 
 import android.content.Context
+import com.example.servitec_frontend.data.network.ApiClient.apiService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
 
-    private const val BASE_URL = "http://10.0.2.2:5000/" // O la teva IP de desenvolupament
+    private const val BASE_URL = "https://servitec-api-hwanepfxehgpatag.spaincentral-01.azurewebsites.net/" // O la teva IP de desenvolupament
 
     private var apiService: ApiService? = null
 

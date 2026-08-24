@@ -10,8 +10,8 @@ import com.example.servitec_frontend.data.model.Producte
 import com.example.servitec_frontend.data.model.ProducteDTO
 
 class ProductesAdapter(
-    private var llista: List<Producte>,
-    private val onProducteClick: (Producte) -> Unit
+    private var llista: List<ProducteDTO>,
+    private val onProducteClick: (ProducteDTO) -> Unit
 
 ) : RecyclerView.Adapter<ProductesAdapter.ViewHolder>() {
     class ViewHolder(vista: View) : RecyclerView.ViewHolder(vista) {
@@ -35,7 +35,7 @@ class ProductesAdapter(
     }
 
     override fun getItemCount() = llista.size
-    fun actualitzarLlista(novaLlista: List<Producte>) {
+    fun actualitzarLlista(novaLlista: List<ProducteDTO>) {
         this.llista = novaLlista
         notifyDataSetChanged()
     }

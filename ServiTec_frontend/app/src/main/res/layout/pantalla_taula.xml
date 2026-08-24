@@ -141,7 +141,7 @@
                     android:id="@+id/btnEnviar"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
-                    android:backgroundTint="#1E3A8A"
+                    android:backgroundTint="@color/blauMenu"
                     android:text="✓ Enviar a cuina"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
@@ -234,7 +234,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#1E3A8A"
+                                app:backgroundTint="@color/blauMenu"
                                 app:cornerRadius="8dp" />
 
                             <com.google.android.material.button.MaterialButton
@@ -247,7 +247,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#1E3A8A"
+                                app:backgroundTint="@color/blauMenu"
                                 app:cornerRadius="8dp" />
 
                             <com.google.android.material.button.MaterialButton
@@ -260,7 +260,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#1E3A8A"
+                                app:backgroundTint="@color/blauMenu"
                                 app:cornerRadius="8dp" />
 
                             <com.google.android.material.button.MaterialButton
@@ -273,7 +273,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#1E3A8A"
+                                app:backgroundTint="@color/blauMenu"
                                 app:cornerRadius="8dp" />
 
                             <com.google.android.material.button.MaterialButton
@@ -286,7 +286,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#1E3A8A"
+                                app:backgroundTint="@color/blauMenu"
                                 app:cornerRadius="8dp" />
 
                             <com.google.android.material.button.MaterialButton
@@ -299,7 +299,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#1E3A8A"
+                                app:backgroundTint="@color/blauMenu"
                                 app:cornerRadius="8dp" />
 
                             <com.google.android.material.button.MaterialButton
@@ -312,7 +312,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#1E3A8A"
+                                app:backgroundTint="@color/blauMenu"
                                 app:cornerRadius="8dp" />
 
                             <com.google.android.material.button.MaterialButton
@@ -325,7 +325,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#1E3A8A"
+                                app:backgroundTint="@color/blauMenu"
                                 app:cornerRadius="8dp" />
 
                             <com.google.android.material.button.MaterialButton
@@ -338,7 +338,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#1E3A8A"
+                                app:backgroundTint="@color/blauMenu"
                                 app:cornerRadius="8dp" />
 
                             <com.google.android.material.button.MaterialButton
@@ -351,7 +351,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#3B82F6"
+                                app:backgroundTint="@color/blau_primari"
                                 app:cornerRadius="8dp" />
 
                             <com.google.android.material.button.MaterialButton
@@ -364,7 +364,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#1E3A8A"
+                                app:backgroundTint="@color/blauMenu"
                                 app:cornerRadius="8dp" />
 
                             <com.google.android.material.button.MaterialButton
@@ -412,7 +412,7 @@
                                     android:textColor="#FFFFFF"
                                     android:textSize="18sp"
                                     android:textStyle="bold"
-                                    app:backgroundTint="#3B82F6"
+                                    app:backgroundTint="@color/blauMenu"
                                     app:cornerRadius="8dp" />
 
                                 <com.google.android.material.button.MaterialButton
@@ -428,13 +428,13 @@
                                     android:minWidth="0dp"
                                     android:minHeight="0dp"
                                     android:padding="0dp"
-                                    app:backgroundTint="#EF4444"
+                                    app:backgroundTint="@color/blauMenu"
                                     app:cornerRadius="8dp"
                                     app:icon="@android:drawable/ic_menu_delete"
                                     app:iconGravity="textStart"
                                     app:iconPadding="0dp"
                                     app:iconSize="18dp"
-                                    app:iconTint="#FFFFFF" />
+                                    app:iconTint="@color/text_gray" />
                             </LinearLayout>
 
                             <!-- Fila 2: Cambiar Orden 1º/2º y Segons -->
@@ -460,7 +460,7 @@
                                     android:textColor="#FFFFFF"
                                     android:textSize="10sp"
                                     android:textStyle="bold"
-                                    app:backgroundTint="#8B5CF6"
+                                    app:backgroundTint="@color/blauMenu"
                                     app:cornerRadius="8dp" />
 
                                 <com.google.android.material.button.MaterialButton
@@ -480,7 +480,7 @@
                                     android:textColor="#FFFFFF"
                                     android:textSize="10sp"
                                     android:textStyle="bold"
-                                    app:backgroundTint="#F59E0B"
+                                    app:backgroundTint="@color/blauMenu"
                                     app:cornerRadius="8dp" />
                             </LinearLayout>
 
@@ -501,7 +501,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#0284C7"
+                                app:backgroundTint="@color/blauMenu"
                                 app:cornerRadius="8dp" />
 
                             <!-- Fila 4: Cobrar -->
@@ -521,7 +521,7 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
-                                app:backgroundTint="#10B981"
+                                app:backgroundTint="@color/blauMenu"
                                 app:cornerRadius="8dp" />
 
                         </LinearLayout>

@@ -136,26 +136,5 @@ namespace ServiTec.Controllers
 
             return NoContent();
         }
-
-        /// <summary>
-        /// Autentica un usuari mitjançant les seves credencials d'accés.
-        /// </summary>
-        /// <param name="request">Credencials d'accés (Nom d'usuari i Contrasenya).</param>
-        /// <returns>Dades de l'usuari autenticat i el seu corresponent token d'accés.</returns>
-        /// <response code="200">Autenticació satisfactòria.</response>
-        /// <response code="401">Credencials incorrectes o usuari inactiu.</response>
-        [HttpPost("login")]
-        [AllowAnonymous] // Permet l'accés públic per poder iniciar sessió sense token
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
-            var usuari = await _usuariService.ValidarLogin(request.NomUsuari, request.Contrasenya);
-
-            if (usuari == null)
-                return Unauthorized(new { message = "Usuari o contrasenya incorrectes" });
-
-            return Ok(usuari);
-        }
     }
 }

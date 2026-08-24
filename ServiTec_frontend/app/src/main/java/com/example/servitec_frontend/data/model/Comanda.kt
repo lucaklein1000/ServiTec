@@ -72,7 +72,7 @@ data class LiniaComandaDTO(
     @SerializedName("subtotal") val subtotal: Double,
     @SerializedName("estat") val estat: String? = "Pendent",
     @SerializedName("idCategoria") val idCategoria: Int? = null,
-    val idProducteNavigation: Producte? = null
+    val idProducteNavigation: ProducteDTO? = null
 )
 
 /**
