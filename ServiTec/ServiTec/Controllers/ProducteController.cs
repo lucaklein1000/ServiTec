@@ -117,12 +117,19 @@ namespace ServiTec.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Delete(int id)
         {
-            var eliminat = await _producteService.DeleteProducte(id);
+            try
+            {
+                var result = await _producteService.DeleteProducte(id);
 
-            if (!eliminat)
-                return NotFound();
+                if (!result)
+                    return NotFound(new { message = "El producte no existeix." });
 
-            return NoContent();
+                return Ok(new { message = "Producte desactivat correctament." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

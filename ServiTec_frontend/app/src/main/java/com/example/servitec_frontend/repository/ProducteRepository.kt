@@ -16,6 +16,9 @@ import com.example.servitec_frontend.data.model.Producte
 import com.example.servitec_frontend.data.model.ProducteDTO
 import com.example.servitec_frontend.data.model.UpdateProdcuteDTO
 import com.example.servitec_frontend.data.network.RetrofitClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
 /**
  * Repositori encarregat de la comunicació amb l API REST per a la gestió de productes.
@@ -71,13 +74,24 @@ class ProducteRepository(private val context: Context) {
      * @param idProducte Identificador del producte a eliminar.
      * @return `true` si s ha eliminat correctament, `false` en cas contrari.
      */
-    suspend fun eliminarProducte(idProducte: Int): Boolean {
-        return try {
-            val response = apiService.eliminarProducte(idProducte)
-            response.isSuccessful
+    suspend fun eliminarProducte(id: Int): Pair<Boolean, String> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.eliminarProducte(id) // O la llamada Retrofit correspondiente
+            if (response.isSuccessful) {
+                Pair(true, "Producte eliminat correctament")
+            } else {
+                // Extraer el mensaje del JSON de error devuelto por la API (p. ej., BadRequest)
+                val errorJson = response.errorBody()?.string()
+                val mensajeError = try {
+                    // Si la API devuelve {"message": "Hi ha taules obertes..."}, lo extraemos:
+                    JSONObject(errorJson ?: "").optString("message", "Error en eliminar el producte")
+                } catch (e: Exception) {
+                    "Error en eliminar el producte"
+                }
+                Pair(false, mensajeError)
+            }
         } catch (e: Exception) {
-            e.printStackTrace()
-            false
+            Pair(false, "Error de connexió: ${e.localizedMessage}")
         }
     }
 

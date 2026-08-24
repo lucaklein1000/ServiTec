@@ -22,10 +22,12 @@ namespace ServiTec.Application.Services
     public class ProducteService
     {
         private readonly IRepository<Producte> _repository;
+        private readonly IRepository<Taula> _taulaRepository;
 
-        public ProducteService(IRepository<Producte> repository)
+        public ProducteService(IRepository<Producte> repository, IRepository<Taula> taulaRepository)
         {
             _repository = repository;
+            _taulaRepository = taulaRepository;
         }
 
         /// <summary>
@@ -39,18 +41,31 @@ namespace ServiTec.Application.Services
         }
 
         /// <summary>
-        /// Elimina un producte del sistema a partir del seu identificador.
+        /// Desactiva un producte del sistema (esborrat lògic) si no hi ha cap taula oberta.
         /// </summary>
-        /// <param name="id">Identificador únic del producte a eliminar.</param>
-        /// <returns>Cert si s'ha eliminat correctament, o fals si no existia.</returns>
+        /// <param name="id">Identificador únic del producte a desactivar.</param>
+        /// <returns>Cert si s'ha desactivat correctament.</returns>
+        /// <exception cref="InvalidOperationException">Si hi ha taules obertes al sistema.</exception>
         public async Task<bool> DeleteProducte(int id)
         {
+            // 1. Comprovar si hi ha alguna taula oberta
+            var taules = await _taulaRepository.GetAll();
+            var taulesObertes = taules.Where(t => t.Estat == false);
+            if (taulesObertes.Any())
+            {
+                throw new InvalidOperationException("Hi ha taules obertes. No pots eliminar productes amb taules obertes.");
+            }
+
+            // 2. Cercar el producte
             var producte = await _repository.GetById(id);
 
             if (producte == null)
                 return false;
 
-            await _repository.Delete(producte);
+            // 3. Esborrat lògic: canviar estat a inactiu
+            producte.Actiu = false;
+
+            await _repository.Update(producte);
             return true;
         }
 
@@ -67,6 +82,7 @@ namespace ServiTec.Application.Services
                 Nom = p.Nom,
                 Descripcio = p.Descripcio,
                 Preu = p.Preu,
+                Actiu = p.Actiu,
                 IdCategoria = p.IdCategoria
             }).ToList();
         }

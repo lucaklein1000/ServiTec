@@ -44,7 +44,9 @@ class UsuariRepository(private val context: Context) {
                 if (response.isSuccessful) {
                     onResult(response.body(), null)
                 } else {
-                    onResult(null, "Error: Credencials invàlides")
+                    val errorCode = response.code()
+                    val errorBody = response.errorBody()?.string()
+                    onResult(null, "Error HTTP $errorCode: $errorBody")
                 }
             }
 

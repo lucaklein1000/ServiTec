@@ -143,7 +143,11 @@ app.UseRouting();
 // CORS s'ha de col·locar strictly entre UseRouting i UseAuthentication
 app.UseCors(allowServiTecOrigins);
 
-app.UseHttpsRedirection();
+// SOLO REDIRIGIR A HTTPS SI NO ESTAMOS EN DESARROLLO LOCAL
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();

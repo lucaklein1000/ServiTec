@@ -58,6 +58,7 @@ namespace ServiTec.Application.DTOs
         public string Nom { get; set; } = string.Empty;
         public string Descripcio { get; set; } = string.Empty;
         public decimal Preu { get; set; }
+        public bool Actiu { get; set; }
         public int IdCategoria { get; set; }
     }
 

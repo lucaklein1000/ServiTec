@@ -65,14 +65,17 @@ class PantallaGestionarProductes : AppCompatActivity() {
             } else {
                 btnEliminarProducte.isEnabled = false
                 lifecycleScope.launch {
-                    val exito = producteRepository.eliminarProducte(idProducte)
+                    // Desestructuramos el resultado (exito: Boolean, mensaje: String)
+                    val (exito, mensaje) = producteRepository.eliminarProducte(idProducte)
+
                     if (exito) {
-                        Toast.makeText(this@PantallaGestionarProductes, "Usuari $nomProducte eliminat correctament", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@PantallaGestionarProductes, "Producte $nomProducte eliminat correctament", Toast.LENGTH_SHORT).show()
                         autoCompleteEliminarProducte.setText("")
                         netejarFormulari()
                         carregarProductes()
                     } else {
-                        Toast.makeText(this@PantallaGestionarProductes, "Error en eliminar el producte", Toast.LENGTH_SHORT).show()
+                        // Muestra el mensaje exacto que envió el backend
+                        Toast.makeText(this@PantallaGestionarProductes, mensaje, Toast.LENGTH_LONG).show()
                     }
                     btnEliminarProducte.isEnabled = true
                 }

@@ -11,8 +11,18 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 object RetrofitClient {
+    // Cambia a true cuando estés desarrollando en local, o false para usar Azure
+    private const val IS_LOCAL_DEVELOPMENT = true
 
-    private const val BASE_URL = "https://servitec-api-hwanepfxehgpatag.spaincentral-01.azurewebsites.net/"
+    private const val LOCAL_URL = "http://10.0.2.2:5206/" // O la teva IP local http://10.45.94.221:5206/
+    private const val AZURE_URL = "https://servitec-api-hwanepfxehgpatag.spaincentral-01.azurewebsites.net/"
+
+    private val BASE_URL = if (IS_LOCAL_DEVELOPMENT) {
+        LOCAL_URL
+    } else {
+        AZURE_URL
+    }
+    private var apiService: ApiService? = null
 
     /**
      * Crea un OkHttpClient que ignora las validaciones SSL de desarrollo.

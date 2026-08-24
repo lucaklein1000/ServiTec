@@ -122,8 +122,13 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
-        // Selección de productos de la carta
+        // Configuración del adapter de productos con comprobación segura
         adapterProductes = ProductesAdapter(emptyList()) { productoPulsado ->
+            if (productoPulsado.actiu == false) {
+                Toast.makeText(this, "Aquest producte està desactivat i no es pot afegir", Toast.LENGTH_SHORT).show()
+                return@ProductesAdapter
+            }
+
             val q = quantitatTeclejada.toIntOrNull() ?: 1
             val itemExistente = productesSeleccionats.find { it.producte.idProducte == productoPulsado.idProducte }
 
@@ -151,7 +156,9 @@ class PantallaTaula : AppCompatActivity() {
         lifecycleScope.launch {
             val categoriesBD = taulaRepository.obtenirCategories()
             val productesBD = taulaRepository.obtenirProductes() ?: emptyList()
-            totsElsProductes = productesBD
+
+            // Filtro seguro: si actiu es null o true lo mantiene, descarta únicamente si es false explícito
+            totsElsProductes = productesBD.filter { it.actiu != false }
 
             if (categoriesBD != null) {
                 val adapterCategories = CategoriesAdapter(categoriesBD) { categoriaPulsada ->
@@ -178,7 +185,6 @@ class PantallaTaula : AppCompatActivity() {
             lifecycleScope.launch {
                 btnEnviar.isEnabled = false
 
-                // Enviamos la categoría modificada si existe, de lo contrario la original del producto
                 val novesLiniesDto = productesSeleccionats.map { l ->
                     CreateLiniaComandaDTO(
                         idProducte = l.producte.idProducte,
@@ -399,7 +405,6 @@ class PantallaTaula : AppCompatActivity() {
         tvTotalPreu.text = "${String.format("%.2f", granTotal)}€"
     }
 
-    // Adaptador interno con control de selección y colores correctos según la categoría modificada
     inner class ComandaColorAdapter(
         private var llista: List<LiniaComandaTemporal>,
         private val onItemClick: (LiniaComandaTemporal) -> Unit
@@ -419,7 +424,6 @@ class PantallaTaula : AppCompatActivity() {
             val item = llista[position]
             val context = holder.itemView.context
 
-            // Usamos la categoría modificada o la del producto por defecto
             val catEfectiva = item.idCategoriaModificada ?: item.producte.idCategoria
 
             val resIdColor = when (catEfectiva) {
@@ -430,7 +434,6 @@ class PantallaTaula : AppCompatActivity() {
                 else -> R.color.blauMenu
             }
 
-            // Aplicar fondo resaltado si coincide con la selección actual
             if (posicioSeleccionada == holder.bindingAdapterPosition) {
                 holder.textView.setBackgroundColor(Color.parseColor("#E2E8F0"))
             } else {
