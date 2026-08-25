@@ -17,18 +17,14 @@ import kotlinx.coroutines.launch
 
 class PantallaGestionarPersonal : AppCompatActivity() {
 
-    // Componentes Eliminar Usuari
-    private lateinit var autoCompleteEliminarUsuari: AutoCompleteTextView
-    private lateinit var btnEliminarUsuari: MaterialButton
-
     // Componentes Modificar Usuari
     private lateinit var autoCompleteEditarUsuari: AutoCompleteTextView
     private lateinit var etEditNom: TextInputEditText
     private lateinit var etEditContrasenya: TextInputEditText
     private lateinit var spinnerEditRol: AutoCompleteTextView
     private lateinit var switchActiu: SwitchMaterial
-    private lateinit var switchAdmin: SwitchMaterial
     private lateinit var btnGuardarCanvis: MaterialButton
+    private lateinit var btnCancelar: MaterialButton
 
     // Componentes Navegación
     private lateinit var btnTornar: MaterialButton
@@ -43,40 +39,49 @@ class PantallaGestionarPersonal : AppCompatActivity() {
         setContentView(R.layout.pantalla_gestionar_personal)
 
         repositoryUsuari = UsuariRepository(this)
+
+        initViews()
+        setupListeners()
+        setupDropdownRols()
+        carregarUsuaris()
+    }
+
+    private fun initViews() {
         btnTornar = findViewById(R.id.btnTornar)
-
-        // Inicializar vistas - Eliminar
-        autoCompleteEliminarUsuari = findViewById(R.id.autoCompleteEliminarUsuari)
-        btnEliminarUsuari = findViewById(R.id.btnEliminarUsuari)
-
-        // Inicializar vistas - Modificar
         autoCompleteEditarUsuari = findViewById(R.id.autoCompleteEditarUsuari)
         etEditNom = findViewById(R.id.etEditNom)
         etEditContrasenya = findViewById(R.id.etEditContrasenya)
         spinnerEditRol = findViewById(R.id.spinnerEditRol)
         switchActiu = findViewById(R.id.switchActiu)
-        switchAdmin = findViewById(R.id.switchAdmin)
         btnGuardarCanvis = findViewById(R.id.btnGuardarCanvis)
+        btnCancelar = findViewById(R.id.btnCancelar)
+    }
 
-        // Configurar opciones del desplegable de Roles
-        val rolsDisponibles = arrayOf("Cambrer", "Cuiner", "Gerent")
+    private fun setupDropdownRols() {
+        val rolsDisponibles = arrayOf("Cambrer", "Cuina", "Admin")
         val adapterRols = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, rolsDisponibles)
         spinnerEditRol.setAdapter(adapterRols)
+    }
 
-        // Cargar lista de usuarios desde la API
-        carregarUsuaris()
+    private fun setupListeners() {
+        btnTornar.setOnClickListener {
+            finish()
+        }
 
-        // 1. EVENTO: Al seleccionar usuario en el desplegable, autollenar los 5 campos
+        btnCancelar.setOnClickListener {
+            netejarFormulari()
+        }
+
+        // 1. EVENTO: Al seleccionar usuario en el desplegable, autollenar los campos
         autoCompleteEditarUsuari.setOnItemClickListener { parent, _, position, _ ->
             val nomSeleccionat = parent.getItemAtPosition(position).toString()
             usuariSeleccionat = llistaUsuaris.find { it.nomUsuari == nomSeleccionat }
 
             usuariSeleccionat?.let { usuari ->
                 etEditNom.setText(usuari.nomUsuari)
-                etEditContrasenya.setText("") // Ajusta si la propiedad en tu DTO tiene otro nombre
+                etEditContrasenya.setText("") // La contraseña no se muestra por seguridad
                 spinnerEditRol.setText(usuari.rol, false)
                 switchActiu.isChecked = usuari.actiu
-                switchAdmin.isChecked = usuari.admin
             }
         }
 
@@ -93,61 +98,35 @@ class PantallaGestionarPersonal : AppCompatActivity() {
             val contrasenya = etEditContrasenya.text.toString().trim()
             val rol = spinnerEditRol.text.toString().trim()
             val actiu = switchActiu.isChecked
-            val admin = switchAdmin.isChecked
 
-            if (nom.isEmpty() || contrasenya.isEmpty() || rol.isEmpty()) {
-                Toast.makeText(this, "Si us plau, omple tots els camps obligatoris", Toast.LENGTH_SHORT).show()
-            } else {
-                btnGuardarCanvis.isEnabled = false
-
-                val usuariModificat = UpdateUsuariDTO(
-                    nomUsuari = nom,
-                    contrasenya = contrasenya,
-                    rol = rol,
-                    actiu = actiu,
-                    admin = admin
-                )
-
-                lifecycleScope.launch {
-                    val exit = repositoryUsuari.actualitzarUsuari(usuari.idUsuari, usuariModificat)
-                    if (exit) {
-                        Toast.makeText(this@PantallaGestionarPersonal, "Usuari $nom actualitzat correctament", Toast.LENGTH_SHORT).show()
-                        netejarFormulari()
-                        carregarUsuaris()
-                    } else {
-                        Toast.makeText(this@PantallaGestionarPersonal, "Error en actualitzar l'usuari", Toast.LENGTH_SHORT).show()
-                    }
-                    btnGuardarCanvis.isEnabled = true
-                }
+            if (nom.isEmpty() || rol.isEmpty()) {
+                Toast.makeText(this, "Si us plau, omple el nom i el rol", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-        }
 
-        btnEliminarUsuari.setOnClickListener {
-            val nomUsuari = autoCompleteEliminarUsuari.text.toString().trim()
-            val idUsuari = obtIdUsuari(nomUsuari)
+            btnGuardarCanvis.isEnabled = false
 
-            if (nomUsuari.isEmpty() || idUsuari == null) {
-                Toast.makeText(this, "Selecciona un usuari vàlid", Toast.LENGTH_SHORT).show()
-            } else {
-                btnEliminarUsuari.isEnabled = false
-                lifecycleScope.launch {
-                    val exito = repositoryUsuari.eliminarUsuari(idUsuari)
-                    if (exito) {
-                        Toast.makeText(this@PantallaGestionarPersonal, "Usuari $nomUsuari eliminat correctament", Toast.LENGTH_SHORT).show()
-                        autoCompleteEliminarUsuari.setText("")
-                        netejarFormulari()
-                        carregarUsuaris()
-                    } else {
-                        Toast.makeText(this@PantallaGestionarPersonal, "Error en eliminar l'usuari", Toast.LENGTH_SHORT).show()
-                    }
-                    btnEliminarUsuari.isEnabled = true
+            // Si el campo de contraseña está vacío, puedes pasar una cadena vacía
+            // o manejar en tu backend que si llega vacía no la actualice.
+            val usuariModificat = UpdateUsuariDTO(
+                nomUsuari = nom,
+                contrasenya = contrasenya,
+                rol = rol,
+                actiu = actiu,
+                admin = usuari.admin // Mantenemos el valor original que ya tenía
+            )
+
+            lifecycleScope.launch {
+                val exit = repositoryUsuari.actualitzarUsuari(usuari.idUsuari, usuariModificat)
+                if (exit) {
+                    Toast.makeText(this@PantallaGestionarPersonal, "Usuari $nom actualitzat correctament", Toast.LENGTH_SHORT).show()
+                    netejarFormulari()
+                    carregarUsuaris()
+                } else {
+                    Toast.makeText(this@PantallaGestionarPersonal, "Error en actualitzar l'usuari", Toast.LENGTH_SHORT).show()
                 }
+                btnGuardarCanvis.isEnabled = true
             }
-        }
-
-
-        btnTornar.setOnClickListener {
-            finish()
         }
     }
 
@@ -157,13 +136,8 @@ class PantallaGestionarPersonal : AppCompatActivity() {
             val nomsUsuaris = llistaUsuaris.map { it.nomUsuari }
 
             val adapter = ArrayAdapter(this@PantallaGestionarPersonal, android.R.layout.simple_dropdown_item_1line, nomsUsuaris)
-            autoCompleteEliminarUsuari.setAdapter(adapter)
             autoCompleteEditarUsuari.setAdapter(adapter)
         }
-    }
-
-    private fun obtIdUsuari(nomUsuari: String): Int? {
-        return llistaUsuaris.find { it.nomUsuari == nomUsuari }?.idUsuari
     }
 
     private fun netejarFormulari() {
@@ -173,6 +147,5 @@ class PantallaGestionarPersonal : AppCompatActivity() {
         etEditContrasenya.setText("")
         spinnerEditRol.setText("")
         switchActiu.isChecked = false
-        switchAdmin.isChecked = false
     }
 }

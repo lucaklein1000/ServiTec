@@ -6,7 +6,7 @@
     android:background="#F4F5F7"
     android:orientation="horizontal">
 
-    <!-- COLUMNA IZQUIERDA UNIFICADA (240dp) -->
+    <!-- COLUMNA ESQUERRA (240dp) -->
     <LinearLayout
         android:layout_width="240dp"
         android:layout_height="match_parent"
@@ -25,268 +25,204 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="30dp"
             android:text="Panell de Direcció"
             android:textColor="#9EAEC7"
             android:textSize="12sp" />
 
-        <!-- BOTÓN TORNAR AL PANELL -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTornar"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:text="← TORNAR AL PANELL"
-            android:textAlignment="textStart"
             android:textColor="@android:color/white"
             android:textSize="13sp"
             android:textStyle="bold"
-            app:cornerRadius="12dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <!-- TANCAR SESSIÓ -->
+            app:cornerRadius="12dp"
+            app:strokeColor="#3B82F6"
+            app:strokeWidth="1dp" />
 
     </LinearLayout>
 
-    <!-- ÁREA CENTRAL (GESTIÓN DE PERSONAL) -->
-    <ScrollView
+    <!-- ÀREA CENTRAL (FORMULARI DE MODIFICACIÓ / BAIXA) -->
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="500dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="32dp">
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp">
 
-            <!-- CABECERA -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="👥 Gestió de Personal"
-                android:textColor="#1B3358"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="28dp"
-                android:text="Administra i actualitza la informació dels usuaris del sistema."
-                android:textColor="#64748B"
-                android:textSize="14sp" />
-
-            <!-- DISPOSICIÓN EN 2 COLUMNAS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="32dp">
 
-                <!-- BLOQUE 1: ELIMINAR USUARIO -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@android:color/white"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
+                    android:layout_marginBottom="6dp"
+                    android:text="✏️ Modificar / Baixa Usuari"
+                    android:textColor="#1B3358"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:text="Selecciona un usuari per actualitzar les seves dades o la seva activitat."
+                    android:textColor="#64748B"
+                    android:textSize="14sp" />
+
+                <!-- SELECTOR PREDICTIU D'USUARI A EDITAR -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:hint="Cerca o selecciona l'usuari...">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteEditarUsuari"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:completionThreshold="1"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- CONTENIDOR DEL FORMULARI -->
+                <LinearLayout
+                    android:id="@+id/layoutFormulariEdicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- NOM D'USUARI -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="Nom d'usuari / Nom complet">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etEditNom"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPersonName" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- CONTRASENYA -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="Nova contrasenya (opcional)"
+                        app:passwordToggleEnabled="true">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etEditContrasenya"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- SELECTOR DE ROL -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="Rol de l'usuari">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/spinnerEditRol"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- SWITCH USUARI ACTIU (SOFT DELETE) -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="24dp">
+                        android:layout_marginBottom="24dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🗑️ Eliminar Usuari"
-                            android:textColor="#1B3358"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:text="Cerca un usuari registrat per nom i confirma la seva baixa."
-                            android:textColor="#64748B"
-                            android:textSize="13sp" />
-
-                        <!-- AUTOCOMPLETE ELIMINAR -->
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:hint="Cerca un usuari...">
-
-                            <AutoCompleteTextView
-                                android:id="@+id/autoCompleteEliminarUsuari"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:completionThreshold="1"
-                                android:inputType="text" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnEliminarUsuari"
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:text="Eliminar Usuari"
-                            android:textColor="@android:color/white"
-                            app:backgroundTint="#EF4444"
-                            app:cornerRadius="10dp" />
-
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- BLOQUE 2: MODIFICAR USUARIO -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@android:color/white"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="24dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="✏️ Modificar Usuari"
-                            android:textColor="#1B3358"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:text="Cerca un usuari per carregar i modificar les seves dades."
-                            android:textColor="#64748B"
-                            android:textSize="13sp" />
-
-                        <!-- BUSCADOR PREDICTIVO USUARIO -->
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:hint="Selecciona l'usuari a editar...">
-
-                            <AutoCompleteTextView
-                                android:id="@+id/autoCompleteEditarUsuari"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:completionThreshold="1"
-                                android:inputType="text" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <!-- FORMULARIO DE EDICIÓN -->
                         <LinearLayout
-                            android:id="@+id/layoutFormulariEdicio"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:orientation="vertical">
 
-                            <!-- 1. NOMBRE -->
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                android:layout_width="match_parent"
+                            <TextView
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="12dp"
-                                android:hint="Nom">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etEditNom"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="textPersonName" />
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <!-- 2. CONTRASEÑA -->
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="12dp"
-                                android:hint="Contrasenya"
-                                app:passwordToggleEnabled="true">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etEditContrasenya"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="textPassword" />
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <!-- 3. ROL -->
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="16dp"
-                                android:hint="Rol">
-
-                                <AutoCompleteTextView
-                                    android:id="@+id/spinnerEditRol"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="none" />
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <!-- 4. ACTIVO (SWITCH) -->
-                            <com.google.android.material.switchmaterial.SwitchMaterial
-                                android:id="@+id/switchActiu"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="8dp"
                                 android:text="Usuari Actiu"
                                 android:textColor="#1B3358"
-                                android:textSize="14sp" />
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
 
-                            <!-- 5. ADMIN (SWITCH) -->
-                            <com.google.android.material.switchmaterial.SwitchMaterial
-                                android:id="@+id/switchAdmin"
-                                android:layout_width="match_parent"
+                            <TextView
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="20dp"
-                                android:text="Es Administrador"
-                                android:textColor="#1B3358"
-                                android:textSize="14sp" />
-
-                            <!-- BOTÓN GUARDAR -->
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnGuardarCanvis"
-                                android:layout_width="match_parent"
-                                android:layout_height="50dp"
-                                android:text="Guardar Canvis"
-                                android:textColor="@android:color/white"
-                                app:backgroundTint="#3B82F6"
-                                app:cornerRadius="10dp" />
-
+                                android:text="Si es desactiva, no podrà iniciar sessió a la POS"
+                                android:textColor="#64748B"
+                                android:textSize="12sp" />
                         </LinearLayout>
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switchActiu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:thumbTint="#3B82F6" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+
+                    <!-- BOTONS D'ACCIÓ -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCancelar"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_marginEnd="12dp"
+                            android:text="CANCEL·LAR"
+                            android:textColor="#64748B" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnGuardarCanvis"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:text="Guardar Canvis"
+                            android:textColor="@android:color/white"
+                            app:backgroundTint="#3B82F6"
+                            app:cornerRadius="10dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
-    </ScrollView>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
 
 </LinearLayout>
