@@ -8,7 +8,7 @@
 //                marcatge de plats pendents a la pantalla de cuina.
 // ============================================================================
 
-package com.example.servitec_frontend.ui.adapters
+package com.example.servitec_frontend.ui.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater

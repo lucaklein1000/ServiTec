@@ -14,7 +14,7 @@ using ServiTec.Application.DTOs;
 using ServiTec.Application.Interfaces;
 using ServiTec.Domain.Models;
 
-namespace ServiTec.Services
+namespace ServiTec.Application.Services
 {
     /// <summary>
     /// Servei encarregat de gestionar les operacions de la base de dades

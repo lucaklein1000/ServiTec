@@ -28,6 +28,7 @@ import com.example.servitec_frontend.data.model.UpdateTaulaDTO
 import com.example.servitec_frontend.data.model.UpdateUsuariDTO
 import com.example.servitec_frontend.data.model.Cuina
 import com.example.servitec_frontend.data.model.TaulaDTO
+import com.example.servitec_frontend.data.model.UpdateMenjadorDTO
 import com.example.servitec_frontend.data.model.UsuariDTO
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -90,6 +91,9 @@ interface ApiService {
  @PUT("api/Taula/actualitzar/{id}")
  suspend fun actualitzarTaula(@Path("id") idTaula: Int, @Body dto: UpdateTaulaDTO): Response<TaulaDTO>
 
+ @DELETE("api/Taula/borrar/{id}")
+ suspend fun eliminarTaula(@Path("id") idTaula: Int): Response<ResponseBody>
+
  // COMANDES
  @POST("api/Comanda/crear")
  suspend fun crearComanda(@Body dto: CreateComandaDTO): Response<ResponseBody>
@@ -121,4 +125,7 @@ interface ApiService {
 
  @POST("api/Menjador/crear")
  suspend fun crearMenjador(@Body dto: CreateMenjadorDTO): Response<Menjador>
+
+ @PUT("api/Menjador/actualitzar/{id}")
+ suspend fun actualitzarMenjador(@Path("id") idMenjador: Int, @Body dto: UpdateMenjadorDTO): Response<Menjador>
 }

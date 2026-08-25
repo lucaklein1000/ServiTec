@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.servitec_frontend.R
 import com.example.servitec_frontend.repository.TaulaRepository
-import com.example.servitec_frontend.ui.adapters.CuinaAdapter
+import com.example.servitec_frontend.ui.adapter.CuinaAdapter
 import kotlinx.coroutines.launch
 
 /**

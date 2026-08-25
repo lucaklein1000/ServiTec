@@ -75,10 +75,9 @@ namespace ServiTec.Application.DTOs
         public int Numero { get; set; }
         public int Capacitat { get; set; }
         public bool Estat { get; set; }
-        public string? EstatComanda { get; set; }
         public int IdMenjador { get; set; }
-        public int PosX { get; set; }
-        public int PosY { get; set; }
+        public double PosX { get; set; }
+        public double PosY { get; set; }
     }
 
     /// <summary>

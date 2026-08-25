@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServiTec.Application.DTOs;
 using ServiTec.Application.Services;
-using ServiTec.Services;
 
 namespace ServiTec.Controllers
 {
@@ -95,7 +94,7 @@ namespace ServiTec.Controllers
         /// <response code="204">Actualització realitzada amb èxit.</response>
         /// <response code="404">La taula especificada no existeix.</response>
         /// <response code="403">Accés prohibit (Només Cambrers o Administradors).</response>
-        [HttpPut("Actualitza{id}")]
+        [HttpPut("actualitzar/{id}")]
         [Authorize(Roles = "Cambrer, Admin")] // Els cambrers poden canviar l'estat (Ocupada/Lliure)
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -117,7 +116,7 @@ namespace ServiTec.Controllers
         /// <response code="204">La taula s'ha eliminat correctament.</response>
         /// <response code="404">La taula especificada no existeix.</response>
         /// <response code="403">Accés prohibit (Només Administradors).</response>
-        [HttpDelete("borra{id}")]
+        [HttpDelete("borrar/{id}")]
         [Authorize(Roles = "Admin")] //  Manteniment de sala: Només Administradors
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

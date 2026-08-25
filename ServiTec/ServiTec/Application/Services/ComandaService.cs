@@ -118,7 +118,7 @@ namespace ServiTec.Application.Services
 
             if (!taula.Estat)
             {
-                throw new InvalidOperationException("Esta taula ya te una comanda activa.");
+                throw new InvalidOperationException("Aquesta taula ya te una comanda activa.");
             }
 
             var comanda = new Comanda

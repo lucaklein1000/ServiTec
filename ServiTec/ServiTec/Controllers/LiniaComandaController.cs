@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServiTec.Application.DTOs;
 using ServiTec.Application.Services;
-using ServiTec.Services;
 
 namespace ServiTec.Controllers
 {

@@ -2,7 +2,7 @@ package com.example.servitec_frontend.data.model
 
 data class TaulaDTO(
     val idTaula: Int,
-    val numero: Int,
+    var numero: Int,
     val capacitat: Int,
     val estat: Boolean,
     val estatComanda: String? = null,

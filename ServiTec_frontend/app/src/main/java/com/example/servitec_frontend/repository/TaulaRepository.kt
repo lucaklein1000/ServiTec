@@ -26,6 +26,7 @@ import com.example.servitec_frontend.data.model.UpdateTaulaDTO
 import com.example.servitec_frontend.data.model.Cuina
 import com.example.servitec_frontend.data.model.ProducteDTO
 import com.example.servitec_frontend.data.model.TaulaDTO
+import com.example.servitec_frontend.data.model.UpdateMenjadorDTO
 import com.example.servitec_frontend.data.network.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -279,6 +280,15 @@ class TaulaRepository(private val context: Context) {
         }
     }
 
+    suspend fun actualitzarMenjador(idMenjador: Int, updateMenjadorDTO: UpdateMenjadorDTO): Boolean {
+        return try {
+            val response = apiService.actualitzarMenjador(idMenjador, updateMenjadorDTO)
+            response.isSuccessful
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     /**
      * Actualitza la configuració o estat d una taula.
      *
@@ -313,6 +323,22 @@ class TaulaRepository(private val context: Context) {
         } catch (e: Exception) {
             e.printStackTrace()
             null
+        }
+    }
+
+    /**
+     * Elimina una taula concreta de la base de dades.
+     *
+     * @param idTaula Identificador únic de la taula a eliminar.
+     * @return `true` si s'ha eliminat correctament (204 No Content), `false` en cas contrari.
+     */
+    suspend fun eliminarTaula(idTaula: Int): Boolean {
+        return try {
+            val response = apiService.eliminarTaula(idTaula)
+            response.isSuccessful
+        } catch (e: Exception) {
+            Log.e("TaulaRepository", "Error en eliminar la taula: ${e.message}")
+            false
         }
     }
 

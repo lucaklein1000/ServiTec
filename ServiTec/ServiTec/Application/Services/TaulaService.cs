@@ -14,7 +14,7 @@ using ServiTec.Application.DTOs;
 using ServiTec.Domain.Models;
 using ServiTec.Infrastructure.Data;
 
-namespace ServiTec.Services
+namespace ServiTec.Application.Services
 {
     /// <summary>
     /// Servei encarregat de gestionar les consultes i operacions de la base de dades
@@ -106,16 +106,20 @@ namespace ServiTec.Services
         }
 
         /// <summary>
-        /// Actualitza la informació d'una taula existent, incloent la seva capacitat i posició.
+        /// Actualitza la informació d'una taula existent, incloent la seva capacitat, número i posició.
+        /// No permet modificacions si la taula té una comanda oberta o està ocupada.
         /// </summary>
         /// <param name="id">Identificador únic de la taula a modificar.</param>
         /// <param name="dto">Objecte de transferència de dades amb les modificacions.</param>
-        /// <returns>Cert si s'ha actualitzat correctament, o fals si no existia.</returns>
+        /// <returns>Cert si s'ha actualitzat correctament, o fals si no existia o tenia una comanda oberta.</returns>
         public async Task<bool> Update(int id, UpdateTaulaDTO dto)
         {
             var taula = await _context.Taules.FindAsync(id);
 
             if (taula == null)
+                return false;
+
+            if (!taula.Estat)
                 return false;
 
             taula.Numero = dto.Numero;
@@ -130,15 +134,19 @@ namespace ServiTec.Services
         }
 
         /// <summary>
-        /// Elimina una taula del sistema a partir del seu identificador.
+        /// Elimina una taula existent de la base de dades.
+        /// No permet eliminar si la taula està ocupada o té una comanda oberta.
         /// </summary>
         /// <param name="id">Identificador únic de la taula a eliminar.</param>
-        /// <returns>Cert si s'ha eliminat correctament, o fals si no existia.</returns>
+        /// <returns>Cert si s'ha eliminat correctament, o fals si no existia o estava ocupada.</returns>
         public async Task<bool> Delete(int id)
         {
             var taula = await _context.Taules.FindAsync(id);
 
             if (taula == null)
+                return false;
+
+            if (!taula.Estat)
                 return false;
 
             _context.Taules.Remove(taula);
