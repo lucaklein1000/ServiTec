@@ -53,7 +53,7 @@ namespace ServiTec.Application.Services
         }
 
         /// <summary>
-        /// Obté la llista completa de menjadors incloent el detall de les seves taules i l'estat actual de cada comanda.
+        /// Obté la llista completa de menjadors incloent el detall de les seves taules, l'estat del bloqueig i l'estat actual de cada comanda.
         /// </summary>
         /// <returns>Col·lecció de DTOs amb l'estructura completa de menjadors i taules.</returns>
         public async Task<IEnumerable<MenjadorDTO>> GetMenjadors()
@@ -74,6 +74,8 @@ namespace ServiTec.Application.Services
                     Capacitat = t.Capacitat,
                     Estat = t.Estat,
                     IdMenjador = t.IdMenjador,
+                    Bloquejada = t.Bloquejada,
+                    UsuariBloqueig = t.UsuariBloqueig,
                     EstatComanda = _context.Comanda
                         .Where(c => c.IdTaula == t.IdTaula && (c.Estat == "oberta" || c.Estat == "pendent" || c.Estat == "segons"))
                         .OrderByDescending(c => c.DataCreacio)

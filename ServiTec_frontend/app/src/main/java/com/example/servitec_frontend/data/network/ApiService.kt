@@ -9,6 +9,7 @@
 
 package com.example.servitec_frontend.data.network
 
+import com.example.servitec_frontend.data.model.BloqueigRequestDTO
 import com.example.servitec_frontend.data.model.Categoria
 import com.example.servitec_frontend.data.model.ComandaDTO
 import com.example.servitec_frontend.data.model.CreateUsuariDTO
@@ -94,6 +95,12 @@ interface ApiService {
 
  @DELETE("api/Taula/borrar/{id}")
  suspend fun eliminarTaula(@Path("id") idTaula: Int): Response<ResponseBody>
+
+ @POST("api/Taula/{id}/bloquejar")
+ suspend fun bloquejarTaula(@Path("id") idTaula: Int, @Body request: BloqueigRequestDTO): Response<Unit>
+
+ @POST("api/Taula/{id}/desbloquejar")
+ suspend fun desbloquejarTaula(@Path("id") idTaula: Int): Response<Unit>
 
  // COMANDES
  @POST("api/Comanda/crear")

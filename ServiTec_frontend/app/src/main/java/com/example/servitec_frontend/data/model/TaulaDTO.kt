@@ -8,7 +8,9 @@ data class TaulaDTO(
     val estatComanda: String? = null,
     val idMenjador: Int,
     var posX: Float,
-    var posY: Float
+    var posY: Float,
+    val bloquejada: Boolean = false,
+    val usuariBloqueig: String? = null
 )
 
 
@@ -27,4 +29,8 @@ data class UpdateTaulaDTO(
     val estat: Boolean,
     val posX: Float,
     val posY: Float
+)
+
+data class BloqueigRequestDTO(
+    val nomCambrer: String
 )

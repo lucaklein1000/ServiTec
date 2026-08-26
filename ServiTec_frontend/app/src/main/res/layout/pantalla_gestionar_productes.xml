@@ -6,7 +6,7 @@
     android:background="#F4F5F7"
     android:orientation="horizontal">
 
-    <!-- COLUMNA IZQUIERDA UNIFICADA (240dp) -->
+    <!-- COLUMNA ESQUERRA (240dp) -->
     <LinearLayout
         android:layout_width="240dp"
         android:layout_height="match_parent"
@@ -25,272 +25,219 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="30dp"
             android:text="Panell de Direcció"
             android:textColor="#9EAEC7"
             android:textSize="12sp" />
 
-        <!-- BOTÓN TORNAR AL PANELL -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTornar"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:text="← TORNAR AL PANELL"
-            android:textAlignment="textStart"
             android:textColor="@android:color/white"
             android:textSize="13sp"
             android:textStyle="bold"
-            app:cornerRadius="12dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <!-- TANCAR SESSIÓ -->
+            app:cornerRadius="12dp"
+            app:strokeColor="#3B82F6"
+            app:strokeWidth="1dp" />
 
     </LinearLayout>
 
-    <!-- ÁREA CENTRAL (GESTIÓN DE PRODUCTOS) -->
-    <ScrollView
+    <!-- ÀREA CENTRAL (FORMULARI DE PRODUCTES CENTRAT) -->
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="500dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="32dp">
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp">
 
-            <!-- CABECERA -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🍔 Gestió de Productes"
-                android:textColor="#1B3358"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="28dp"
-                android:text="Administra i actualitza el catàleg de productes del menú."
-                android:textColor="#64748B"
-                android:textSize="14sp" />
-
-            <!-- DISPOSICIÓN EN 2 COLUMNAS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="32dp">
 
-                <!-- BLOQUE 1: ELIMINAR PRODUCTO -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@android:color/white"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
+                    android:layout_marginBottom="6dp"
+                    android:text="✏️ Modificar Producte"
+                    android:textColor="#1B3358"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:text="Selecciona un producte per carregar i modificar les seves dades."
+                    android:textColor="#64748B"
+                    android:textSize="14sp" />
+
+                <!-- SELECTOR PREDICTIU DE PRODUCTE -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:hint="Cerca o selecciona el producte...">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteEditarProducte"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:completionThreshold="1"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- CONTENIDOR DEL FORMULARI DE PRODUCTE -->
+                <LinearLayout
+                    android:id="@+id/layoutFormulariEdicioProducte"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- NOM DEL PRODUCTE -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="Nom del producte">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etEditNomProducte"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- DESCRIPCIÓ -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="Descripció">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etEditDescripcio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textMultiLine"
+                            android:maxLines="3" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- PREU (€) -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="Preu (€)">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etEditPreu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- CATEGORIA -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="Categoria">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/spinnerEditCategoria"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- SWITCH PRODUCTE ACTIU -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="24dp">
+                        android:layout_marginBottom="24dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🗑️ Eliminar Producte"
-                            android:textColor="#1B3358"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:text="Cerca un producte del catàleg per nom i confirma la seva baixa."
-                            android:textColor="#64748B"
-                            android:textSize="13sp" />
-
-                        <!-- AUTOCOMPLETE ELIMINAR -->
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:hint="Cerca un producte...">
-
-                            <AutoCompleteTextView
-                                android:id="@+id/autoCompleteEliminarProducte"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:completionThreshold="1"
-                                android:inputType="text" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnEliminarProducte"
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:text="Eliminar Producte"
-                            android:textColor="@android:color/white"
-                            app:backgroundTint="#EF4444"
-                            app:cornerRadius="10dp" />
-
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- BLOQUE 2: MODIFICAR PRODUCTO -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@android:color/white"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="24dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="✏️ Modificar Producte"
-                            android:textColor="#1B3358"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:text="Cerca un producte per carregar i modificar les seves dades."
-                            android:textColor="#64748B"
-                            android:textSize="13sp" />
-
-                        <!-- BUSCADOR PREDICTIVO PRODUCTO -->
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:hint="Selecciona el producte a editar...">
-
-                            <AutoCompleteTextView
-                                android:id="@+id/autoCompleteEditarProducte"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:completionThreshold="1"
-                                android:inputType="text" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <!-- FORMULARIO DE EDICIÓN -->
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:orientation="vertical">
 
-                            <!-- 1. NOM -->
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                android:layout_width="match_parent"
+                            <TextView
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="12dp"
-                                android:hint="Nom del producte">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etEditNomProducte"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="text" />
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <!-- 2. DESCRIPCIÓ -->
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="12dp"
-                                android:hint="Descripció">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etEditDescripcio"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="textMultiLine"
-                                    android:maxLines="3" />
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <!-- 3. PREU -->
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="12dp"
-                                android:hint="Preu (€)">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etEditPreu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="numberDecimal" />
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <!-- 4. CATEGORIA (DESPLEGABLE DINÁMICO) -->
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="16dp"
-                                android:hint="Categoria">
-
-                                <AutoCompleteTextView
-                                    android:id="@+id/spinnerEditCategoria"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="none" />
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <!-- 5. ACTIU (SWITCH) -->
-                            <com.google.android.material.switchmaterial.SwitchMaterial
-                                android:id="@+id/switchProducteActiu"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="20dp"
-                                android:text="Producte Actiu (Disponible)"
+                                android:text="Producte Actiu"
                                 android:textColor="#1B3358"
-                                android:textSize="14sp" />
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
 
-                            <!-- BOTÓN GUARDAR -->
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnGuardarCanvisProducte"
-                                android:layout_width="match_parent"
-                                android:layout_height="50dp"
-                                android:text="Guardar Canvis"
-                                android:textColor="@android:color/white"
-                                app:backgroundTint="#3B82F6"
-                                app:cornerRadius="10dp" />
-
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Si es desactiva, no apareixerà disponible al menú"
+                                android:textColor="#64748B"
+                                android:textSize="12sp" />
                         </LinearLayout>
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switchProducteActiu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:thumbTint="#3B82F6" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+
+                    <!-- BOTONS D'ACCIÓ -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCancelar"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_marginEnd="12dp"
+                            android:text="CANCEL·LAR"
+                            android:textColor="#64748B" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnGuardarCanvisProducte"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:text="Guardar Canvis"
+                            android:textColor="@android:color/white"
+                            app:backgroundTint="#3B82F6"
+                            app:cornerRadius="10dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
-    </ScrollView>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -11,6 +11,7 @@
 package com.example.servitec_frontend.ui.adapter
 
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Adaptador encarregat de renderitzar els tiquets de comandes de cuina
- * organitzats per categories i gestionar l actualització d estat dels plats a "Servit".
+ * organitzats per categories i gestionar l'actualització d'estat dels plats a "Servit".
  *
  * @param comandes Llista de comandes actives destinades a la cuina.
  */
@@ -69,7 +70,7 @@ class CuinaAdapter(
             holder.tvNumTaula.setTextColor(Color.BLACK)
         }
 
-        // 2. Extreure i formatar l hora (de "2026-07-23T14:30:00" extreu "14:30")
+        // 2. Extreure i formatar l'hora (de "2026-07-23T14:30:00" extreu "14:30")
         holder.tvHoraComanda.text = if (comanda.dataHora?.contains("T") == true) {
             comanda.dataHora.substringAfter("T").take(5)
         } else {
@@ -94,17 +95,29 @@ class CuinaAdapter(
                 text = "${linia.quantitat}x  $nombreValido"
                 textSize = 14f
                 setTextColor(Color.BLACK)
-                setPadding(0, 8, 0, 8)
+                setPadding(12, 8, 12, 8)
+
+                // Si els segons estan demanats i el producte és de la categoria Segons (3),
+                // s'aplica un estil de selecció en color gris.
+                if (esSegons && linia.idCategoria == 3) {
+                    val colorGris = ContextCompat.getColor(context, R.color.selecio_segons)
+
+                    val shapeGris = GradientDrawable().apply {
+                        setColor(colorGris)
+                        cornerRadius = 8f
+                    }
+                    background = shapeGris
+                }
             }
 
             tvPlato.setOnClickListener {
                 val idLinia = linia.idLiniaComanda ?: return@setOnClickListener
 
-                // Ocultar el plat visualment
+                // En seleccionar el producte, la selecció blava/acció principal preval sobre la resta
                 tvPlato.visibility = View.GONE
                 platsPendentsInTicket--
 
-                // Si era l últim plat de la comanda, traiem el tiquet sencer de la llista
+                // Si era l'últim plat de la comanda, traiem el tiquet sencer de la llista
                 if (platsPendentsInTicket <= 0) {
                     val posActual = holder.bindingAdapterPosition
                     if (posActual != RecyclerView.NO_POSITION && posActual in comandes.indices) {
@@ -132,14 +145,15 @@ class CuinaAdapter(
                 }
             }
 
-            // Classificació de productes per categoria
+            // Classificació de productes per categoria:
+            // Es manté la distribució 1-5 i qualsevol altra no especificada passa a containerBebidas
             when (linia.idCategoria) {
                 1 -> holder.containerBebidas.addView(tvPlato)
                 2 -> holder.containerPrimeros.addView(tvPlato)
                 3 -> holder.containerSegundos.addView(tvPlato)
                 4 -> holder.containerPostres.addView(tvPlato)
                 5 -> holder.containerCafes.addView(tvPlato)
-                else -> holder.containerPrimeros.addView(tvPlato)
+                else -> holder.containerBebidas.addView(tvPlato)
             }
         }
     }

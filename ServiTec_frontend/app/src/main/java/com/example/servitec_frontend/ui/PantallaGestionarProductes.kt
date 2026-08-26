@@ -16,25 +16,25 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
-import kotlin.String
 
 class PantallaGestionarProductes : AppCompatActivity() {
-    private lateinit var btnEliminarProducte: MaterialButton
-    private lateinit var btnGuardarCanvisProducte: MaterialButton
+
     private lateinit var btnTornar: MaterialButton
+    private lateinit var btnCancelar: MaterialButton
+    private lateinit var btnGuardarCanvisProducte: MaterialButton
     private lateinit var autoCompleteEditarProducte: AutoCompleteTextView
-    private lateinit var autoCompleteEliminarProducte : AutoCompleteTextView
-    private var llistaProductes: List<ProducteDTO> = emptyList()
-    private var llistaCategoria: List<Categoria> = emptyList()
-    private var producteSeleccionat: ProducteDTO? = null
     private lateinit var etEditNomProducte: TextInputEditText
     private lateinit var etEditDescripcio: TextInputEditText
     private lateinit var etEditPreu: TextInputEditText
     private lateinit var spinnerEditCategoria: AutoCompleteTextView
     private lateinit var switchProducteActiu: SwitchMaterial
+
+    private var llistaProductes: List<ProducteDTO> = emptyList()
+    private var llistaCategoria: List<Categoria> = emptyList()
+    private var producteSeleccionat: ProducteDTO? = null
+
     private lateinit var producteRepository: ProducteRepository
     private lateinit var categoriaRepository: TaulaRepository
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,58 +42,31 @@ class PantallaGestionarProductes : AppCompatActivity() {
 
         producteRepository = ProducteRepository(this)
         categoriaRepository = TaulaRepository(this)
-        btnEliminarProducte = findViewById(R.id.btnEliminarProducte)
+
         btnTornar = findViewById(R.id.btnTornar)
+        btnCancelar = findViewById(R.id.btnCancelar)
+        btnGuardarCanvisProducte = findViewById(R.id.btnGuardarCanvisProducte)
         autoCompleteEditarProducte = findViewById(R.id.autoCompleteEditarProducte)
-        autoCompleteEliminarProducte = findViewById(R.id.autoCompleteEliminarProducte)
         etEditNomProducte = findViewById(R.id.etEditNomProducte)
+        etEditDescripcio = findViewById(R.id.etEditDescripcio)
         etEditPreu = findViewById(R.id.etEditPreu)
         spinnerEditCategoria = findViewById(R.id.spinnerEditCategoria)
-        etEditDescripcio = findViewById(R.id.etEditDescripcio)
         switchProducteActiu = findViewById(R.id.switchProducteActiu)
-        btnGuardarCanvisProducte = findViewById(R.id.btnGuardarCanvisProducte)
 
         carregarProductes()
         carregarCategories(spinnerEditCategoria)
-
-        btnEliminarProducte.setOnClickListener {
-            val nomProducte = autoCompleteEliminarProducte.text.toString().trim()
-            val idProducte = obtIdProducte(nomProducte)
-
-            if (nomProducte.isEmpty() || idProducte == null) {
-                Toast.makeText(this, "Selecciona un producte vàlid", Toast.LENGTH_SHORT).show()
-            } else {
-                btnEliminarProducte.isEnabled = false
-                lifecycleScope.launch {
-                    // Desestructuramos el resultado (exito: Boolean, mensaje: String)
-                    val (exito, mensaje) = producteRepository.eliminarProducte(idProducte)
-
-                    if (exito) {
-                        Toast.makeText(this@PantallaGestionarProductes, "Producte $nomProducte eliminat correctament", Toast.LENGTH_SHORT).show()
-                        autoCompleteEliminarProducte.setText("")
-                        netejarFormulari()
-                        carregarProductes()
-                    } else {
-                        // Muestra el mensaje exacto que envió el backend
-                        Toast.makeText(this@PantallaGestionarProductes, mensaje, Toast.LENGTH_LONG).show()
-                    }
-                    btnEliminarProducte.isEnabled = true
-                }
-            }
-        }
-
 
         autoCompleteEditarProducte.setOnItemClickListener { parent, _, position, _ ->
             val nomSeleccionat = parent.getItemAtPosition(position).toString()
             producteSeleccionat = llistaProductes.find { it.nom == nomSeleccionat }
 
-            producteSeleccionat?.let { ProducteDTO ->
-                etEditNomProducte.setText(ProducteDTO.nom)
-                etEditDescripcio.setText(ProducteDTO.descripcio)
-                etEditPreu.setText(ProducteDTO.preu.toString())
-                val nomCategoriaActual = llistaCategoria.find { it.idCategoria == ProducteDTO.idCategoria }?.nom ?: ""
+            producteSeleccionat?.let { producte ->
+                etEditNomProducte.setText(producte.nom)
+                etEditDescripcio.setText(producte.descripcio)
+                etEditPreu.setText(producte.preu.toString())
+                val nomCategoriaActual = llistaCategoria.find { it.idCategoria == producte.idCategoria }?.nom ?: ""
                 spinnerEditCategoria.setText(nomCategoriaActual, false)
-                switchProducteActiu.isChecked = ProducteDTO.actiu
+                switchProducteActiu.isChecked = producte.actiu
             }
         }
 
@@ -101,8 +74,7 @@ class PantallaGestionarProductes : AppCompatActivity() {
             val producte = producteSeleccionat
 
             if (producte == null) {
-                Toast.makeText(this, "Selecciona un producte de la llista primer", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, "Selecciona un producte de la llista primer", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -114,11 +86,7 @@ class PantallaGestionarProductes : AppCompatActivity() {
             val idCategoria = obtIdCategoria(categoria)
 
             if (nom.isEmpty() || descripcio.isEmpty() || categoria.isEmpty() || preu == null || idCategoria == null) {
-                Toast.makeText(
-                    this,
-                    "Si us plau, omple tots els camps obligatoris",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Si us plau, omple tots els camps obligatoris", Toast.LENGTH_SHORT).show()
             } else {
                 btnGuardarCanvisProducte.isEnabled = false
 
@@ -152,6 +120,10 @@ class PantallaGestionarProductes : AppCompatActivity() {
             }
         }
 
+        btnCancelar.setOnClickListener {
+            netejarFormulari()
+        }
+
         btnTornar.setOnClickListener {
             finish()
         }
@@ -160,15 +132,18 @@ class PantallaGestionarProductes : AppCompatActivity() {
     private fun carregarProductes() {
         lifecycleScope.launch {
             llistaProductes = producteRepository.llistarProductes() ?: emptyList()
-            val nomPrdocute = llistaProductes.map { it.nom }
+            val nomsProductes = llistaProductes.map { it.nom }
 
-            val adapter = ArrayAdapter(this@PantallaGestionarProductes, android.R.layout.simple_dropdown_item_1line, nomPrdocute)
-            autoCompleteEliminarProducte.setAdapter(adapter)
+            val adapter = ArrayAdapter(
+                this@PantallaGestionarProductes,
+                android.R.layout.simple_dropdown_item_1line,
+                nomsProductes
+            )
             autoCompleteEditarProducte.setAdapter(adapter)
         }
     }
 
-    private fun carregarCategories(spinnerEditCategoria : AutoCompleteTextView ) {
+    private fun carregarCategories(spinnerEditCategoria: AutoCompleteTextView) {
         lifecycleScope.launch {
             llistaCategoria = categoriaRepository.obtenirCategories() ?: emptyList()
             val nomCategoria = llistaCategoria.map { it.nom }
@@ -178,13 +153,8 @@ class PantallaGestionarProductes : AppCompatActivity() {
                 android.R.layout.simple_dropdown_item_1line,
                 nomCategoria
             )
-
             spinnerEditCategoria.setAdapter(adapter)
         }
-    }
-
-    private fun obtIdProducte(nomProducte: String): Int? {
-        return llistaProductes.find { it.nom == nomProducte }?.idProducte
     }
 
     private fun obtIdCategoria(nomCategoria: String): Int? {

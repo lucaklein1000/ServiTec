@@ -6,7 +6,8 @@
 // Fitxer:        TaulaService.cs
 // Descripció:    Servei de domini encarregat de gestionar la lògica de negoci
 //                de les taules del restaurant (operacions CRUD, ubicació a la
-//                distribució de la sala i càlcul de l'estat actual de comanda).
+//                distribució de la sala, càlcul de l'estat actual de comanda i
+//                gestió de bloquejos de concurrència per cambrers).
 // ============================================================================
 
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +36,6 @@ namespace ServiTec.Application.Services
         /// <returns>Col·lecció de DTOs amb la informació completa de cada taula.</returns>
         public async Task<IEnumerable<TaulaDTO>> GetAll()
         {
-            // Llista d'estats que considerem actius
             var estatsActius = new[] { "oberta", "segons", "pendent" };
 
             return await _context.Taules
@@ -45,7 +45,8 @@ namespace ServiTec.Application.Services
                     Numero = t.Numero,
                     Capacitat = t.Capacitat,
                     Estat = t.Estat,
- 
+
+                    // Determina l'estat visual prioritzant la comanda activa més recent de la taula
                     EstatComanda = _context.Comanda
                         .Where(c => c.IdTaula == t.IdTaula &&
                                     c.Estat != null &&
@@ -158,6 +159,53 @@ namespace ServiTec.Application.Services
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        /// <summary>
+        /// Bloqueja una taula temporalment per evitar modificacions simultànies des de múltiples dispositius.
+        /// </summary>
+        /// <param name="idTaula">Identificador únic de la taula a bloquejar.</param>
+        /// <param name="nomCambrer">Nom de l'usuari que sol·licita el bloqueig.</param>
+        /// <returns>Tupla amb el resultat de l'operació i el missatge de validació.</returns>
+        public async Task<(bool Exit, string Missatge)> BloquejarTaulaAsync(int idTaula, string nomCambrer)
+        {
+            var taula = await _context.Taules.FindAsync(idTaula);
+            if (taula == null) return (false, "Taula no trobada");
+
+            var timeout = TimeSpan.FromMinutes(2);
+
+            // Denega l'accés si un altre cambrer la té bloquejada i el bloqueig no ha caducat per inactivitat
+            if (taula.Bloquejada &&
+                taula.UsuariBloqueig != nomCambrer &&
+                taula.UltimBloqueig.HasValue &&
+                (DateTime.UtcNow - taula.UltimBloqueig.Value) < timeout)
+            {
+                return (false, $"La taula està sent utilitzada per {taula.UsuariBloqueig}");
+            }
+
+            taula.Bloquejada = true;
+            taula.UsuariBloqueig = nomCambrer;
+            taula.UltimBloqueig = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return (true, "OK");
+        }
+
+        /// <summary>
+        /// Allibera el bloqueig d'una taula.
+        /// </summary>
+        /// <param name="idTaula">Identificador únic de la taula a desbloquejar.</param>
+        public async Task DesbloquejarTaulaAsync(int idTaula)
+        {
+            var taula = await _context.Taules.FindAsync(idTaula);
+            if (taula != null)
+            {
+                taula.Bloquejada = false;
+                taula.UsuariBloqueig = null;
+                taula.UltimBloqueig = null;
+
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

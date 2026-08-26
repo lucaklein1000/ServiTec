@@ -84,14 +84,14 @@ builder.Services.AddCors(options =>
     options.AddPolicy(allowServiTecOrigins, policy =>
     {
         policy.WithOrigins(
-                    "http://10.0.2.2:5206",         // Emulador de Android (HTTP)
-                    "https://10.0.2.2:7123",        // Emulador de Android (HTTPS)
-                    "http://localhost:5206",         // Acceso local directo HTTP
-                    "https://localhost:7123",        // Acceso local directo HTTPS
-                    "http://10.45.94.221:5206",      // Tu IP local (HTTP)
-                    "https://10.45.94.221:7123",     // Tu IP local (HTTPS)
-                    "http://localhost:5173",         // Front-End Web
-                    "http://localhost:4200"          // Front-End Web
+                    "http://10.0.2.2:5206",         // Emulador d'Android (HTTP)
+                    "https://10.0.2.2:7123",        // Emulador d'Android (HTTPS)
+                    "http://localhost:5206",         // Accés local directe HTTP
+                    "https://localhost:7123",        // Accés local directe HTTPS
+                    "http://10.45.94.221:5206",      // IP local de xarxa (HTTP)
+                    "https://10.45.94.221:7123",     // IP local de xarxa (HTTPS)
+                    "http://localhost:5173",         // Front-End Web (Vite/React)
+                    "http://localhost:4200"          // Front-End Web (Angular)
               )
               .SetIsOriginAllowedToAllowWildcardSubdomains()
               .AllowAnyHeader()
@@ -110,7 +110,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false; // Permet terminació TLS a Azure
+    options.RequireHttpsMetadata = false; // Permet la terminació TLS a Azure
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -129,7 +129,7 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Enable Swagger per a tots els entorns (desenvolupament i producció a Azure)
+// Habilitar Swagger per a tots els entorns (desenvolupament i producció a Azure)
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -139,10 +139,10 @@ app.UseSwaggerUI(c =>
 
 app.UseRouting();
 
-// CORS s'ha de col·locar strictly entre UseRouting i UseAuthentication
+// CORS s'ha de col·locar estrictament entre UseRouting i UseAuthentication
 app.UseCors(allowServiTecOrigins);
 
-// SOLO REDIRIGIR A HTTPS SI NO ESTAMOS EN DESARROLLO LOCAL
+// Només redirigir a HTTPS si no estem en desenvolupament local
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();

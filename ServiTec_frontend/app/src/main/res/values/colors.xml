@@ -10,12 +10,14 @@
     <color name="taula_ocupada">#FFFF0000</color>
     <color name="taula_ocupada2">#FFFF6666</color>
     <color name="taula_ocupada3">#FFD3B6</color>
-    <color name="taula_pendent">#D4B106</color>
     <color name="taula_lliure">#1E3A8A</color>
     <color name="blauMenu">#1E3A8A</color>
     <color name="red_deleted">#FFCDD2</color>
     <color name="primerPlat">#15803D</color>
     <color name="postres">#78350F</color>
+    <color name="taula_bloquejada">#A04A4A4A</color>
+    <color name="taula_pendent">#A109EF10</color>
+    <color name="selecio_segons">#E0E0E0</color>
 
 
 </resources>

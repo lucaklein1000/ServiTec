@@ -118,7 +118,7 @@ namespace ServiTec.Application.Services
 
             if (!taula.Estat)
             {
-                throw new InvalidOperationException("Aquesta taula ya te una comanda activa.");
+                throw new InvalidOperationException("Aquesta taula ja té una comanda activa.");
             }
 
             var comanda = new Comanda
@@ -203,7 +203,7 @@ namespace ServiTec.Application.Services
                 .Include(c => c.LiniaComanda)
                     .ThenInclude(lc => lc.IdProducteNavigation)
                 .FirstOrDefaultAsync(c => c.IdTaula == idTaula &&
-                                         (c.Estat == "oberta" || c.Estat == "segons" || c.Estat == "pendent"));
+                                          (c.Estat == "oberta" || c.Estat == "segons" || c.Estat == "pendent"));
         }
 
         /// <summary>
@@ -216,7 +216,6 @@ namespace ServiTec.Application.Services
                 .Include(c => c.IdTaulaNavigation)
                 .Include(c => c.LiniaComanda)
                     .ThenInclude(l => l.IdProducteNavigation)
-                // 1. Incloem l'estat "segons"
                 .Where(c => c.Estat == "pendent" || c.Estat == "oberta" || c.Estat == "segons")
                 .Where(c => c.LiniaComanda.Any(l => l.Estat == "pendentEnviar"))
                 .Select(c => new ComandaCuinaDTO
@@ -234,7 +233,6 @@ namespace ServiTec.Application.Services
                             IdProducte = l.IdProducte,
                             NomProducte = l.IdProducteNavigation != null ? l.IdProducteNavigation.Nom : "Sense nom",
                             Quantitat = l.Quantitat,
-                            // 2. Agafem la categoria de la línia (o la del producte si fos null)
                             IdCategoria = l.IdCategoria ?? (l.IdProducteNavigation != null ? l.IdProducteNavigation.IdCategoria : 0)
                         }).ToList()
                 })

@@ -1,6 +1,7 @@
 package com.example.servitec_frontend.ui
 
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -17,7 +18,6 @@ import com.example.servitec_frontend.R
 import com.example.servitec_frontend.data.model.CreateComandaDTO
 import com.example.servitec_frontend.data.model.CreateLiniaComandaDTO
 import com.example.servitec_frontend.data.model.LiniaComandaTemporal
-import com.example.servitec_frontend.data.model.Producte
 import com.example.servitec_frontend.data.model.ProducteDTO
 import com.example.servitec_frontend.repository.ProducteRepository
 import com.example.servitec_frontend.repository.TaulaRepository
@@ -37,7 +37,7 @@ class PantallaTaula : AppCompatActivity() {
     private lateinit var btnSortir: Button
     private lateinit var btnTreureCompte: Button
     private lateinit var btnDemanarSegons: Button
-    private lateinit var btnBorrar: com.google.android.material.button.MaterialButton
+    private lateinit var btnBorrar: MaterialButton
     private lateinit var btnCambiarOrde : MaterialButton
     private lateinit var mostrarNumeroTaula: TextView
 
@@ -47,6 +47,7 @@ class PantallaTaula : AppCompatActivity() {
     private val historialGuardat = mutableListOf<LiniaComandaTemporal>()
     private val productesSeleccionats = mutableListOf<LiniaComandaTemporal>()
 
+    private var idTaulaActual = -1
     private var idComandaActiva = -1
     private var estatComandaActiva = "oberta"
     private var producteBorrar: LiniaComandaTemporal? = null
@@ -61,7 +62,7 @@ class PantallaTaula : AppCompatActivity() {
 
         initViews()
 
-        val idTaulaActual = intent.getIntExtra("idTaula", -1)
+        idTaulaActual = intent.getIntExtra("idTaula", -1)
         val nTaulaActual = intent.getStringExtra("nTaula") ?: "Taula"
         val sharedPreferences = getSharedPreferences("ServiTecPrefs", MODE_PRIVATE)
         val idUsuariActual = sharedPreferences.getInt("idUsuari", -1)
@@ -113,7 +114,6 @@ class PantallaTaula : AppCompatActivity() {
                                     preu = linea.preuUnitari,
                                     total = linea.subtotal,
                                     estat = linea.estat ?: "Enviat",
-                                    // ASSIGNEM LA CATEGORIA PROPIAMENT DE LA LÍNIA DE COMANDA:
                                     idCategoriaModificada = linea.idCategoria ?: prod.idCategoria
                                 )
                             )
@@ -159,7 +159,6 @@ class PantallaTaula : AppCompatActivity() {
             val categoriesBD = taulaRepository.obtenirCategories()
             val productesBD = taulaRepository.obtenirProductes() ?: emptyList()
 
-            // Filtro seguro: si actiu es null o true lo mantiene, descarta únicamente si es false explícito
             totsElsProductes = productesBD.filter { it.actiu != false }
 
             if (categoriesBD != null) {
@@ -217,11 +216,11 @@ class PantallaTaula : AppCompatActivity() {
                     Toast.makeText(this@PantallaTaula, "Comanda enviada a cuina correctament!", Toast.LENGTH_LONG).show()
                     productesSeleccionats.clear()
                     actualitzarTotalInterficie()
-                    finish()
+                    desbloquejariSortir()
                 } else {
                     Toast.makeText(this@PantallaTaula, "Error en connectar amb el servidor", Toast.LENGTH_LONG).show()
+                    btnEnviar.isEnabled = true
                 }
-                btnEnviar.isEnabled = true
             }
         }
 
@@ -288,11 +287,13 @@ class PantallaTaula : AppCompatActivity() {
             lifecycleScope.launch {
                 val exit = taulaRepository.canviarEstatComanda(idComandaActiva, "segons")
                 if (exit) {
+                    estatComandaActiva = "segons"
                     Toast.makeText(this@PantallaTaula, "Avís enviat a cuina: Marxa els segons!", Toast.LENGTH_SHORT).show()
+                    desbloquejariSortir() // Tanca la pantalla i allibera la taula
                 } else {
                     Toast.makeText(this@PantallaTaula, "Error en enviar l'avís a cuina", Toast.LENGTH_SHORT).show()
+                    btnDemanarSegons.isEnabled = true
                 }
-                btnDemanarSegons.isEnabled = true
             }
         }
 
@@ -302,10 +303,9 @@ class PantallaTaula : AppCompatActivity() {
                 if (idComandaActiva >= 1) {
                     taulaRepository.canviarEstatComanda(idComandaActiva, "pendent")
                 }
-                btnTreureCompte.isEnabled = true
                 productesSeleccionats.clear()
                 actualitzarTotalInterficie()
-                finish()
+                desbloquejariSortir()
             }
         }
 
@@ -323,11 +323,11 @@ class PantallaTaula : AppCompatActivity() {
                         Toast.makeText(this@PantallaTaula, "Mesa cobrada correctament!", Toast.LENGTH_LONG).show()
                         productesSeleccionats.clear()
                         actualitzarTotalInterficie()
-                        finish()
+                        desbloquejariSortir()
                     } else {
                         Toast.makeText(this@PantallaTaula, "Error al cobrar la comanda", Toast.LENGTH_SHORT).show()
+                        btnCobrar.isEnabled = true
                     }
-                    btnCobrar.isEnabled = true
                 }
             } else {
                 Toast.makeText(this, "No es pot cobrar una comanda activa (s'ha de demanar el compte primer)", Toast.LENGTH_SHORT).show()
@@ -350,7 +350,29 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
-        btnSortir.setOnClickListener { finish() }
+        btnSortir.setOnClickListener {
+            desbloquejariSortir()
+        }
+    }
+
+    private fun desbloquejariSortir() {
+        if (idTaulaActual != -1) {
+            lifecycleScope.launch {
+                taulaRepository.desbloquejarTaula(idTaulaActual)
+                finish()
+            }
+        } else {
+            finish()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (idTaulaActual != -1) {
+            lifecycleScope.launch {
+                taulaRepository.desbloquejarTaula(idTaulaActual)
+            }
+        }
     }
 
     private fun initViews() {
@@ -436,6 +458,8 @@ class PantallaTaula : AppCompatActivity() {
             val context = holder.itemView.context
 
             val catEfectiva = item.idCategoriaModificada ?: item.producte.idCategoria
+            val esSegonsDemanat = estatComandaActiva.equals("segons", ignoreCase = true)
+            val esCategoriaSegons = catEfectiva == 3
 
             val resIdColor = when (catEfectiva) {
                 1 -> R.color.blauMenu
@@ -445,14 +469,27 @@ class PantallaTaula : AppCompatActivity() {
                 else -> R.color.blauMenu
             }
 
+            // Gestió de fons: Preval la selecció blava activa sobre el marcat de segons (gris)
             if (posicioSeleccionada == holder.bindingAdapterPosition) {
-                holder.textView.setBackgroundColor(Color.parseColor("#E2E8F0"))
+                val shapeBlau = GradientDrawable().apply {
+                    setColor(Color.parseColor("#2196F3")) // Blau de selecció activa
+                    cornerRadius = 8f
+                }
+                holder.textView.background = shapeBlau
+                holder.textView.setTextColor(Color.WHITE)
+            } else if (esSegonsDemanat && esCategoriaSegons) {
+                val shapeGris = GradientDrawable().apply {
+                    setColor(Color.parseColor("#E0E0E0")) // Gris d'estat segons demanats
+                    cornerRadius = 8f
+                }
+                holder.textView.background = shapeGris
+                holder.textView.setTextColor(ContextCompat.getColor(context, resIdColor))
             } else {
                 holder.textView.setBackgroundColor(Color.TRANSPARENT)
+                holder.textView.setTextColor(ContextCompat.getColor(context, resIdColor))
             }
 
             holder.textView.apply {
-                setTextColor(ContextCompat.getColor(context, resIdColor))
                 text = "${item.quantitat}x ${item.producte.nom}"
                 setOnClickListener {
                     val posAnterior = posicioSeleccionada

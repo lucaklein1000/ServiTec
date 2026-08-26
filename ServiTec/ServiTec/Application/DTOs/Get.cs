@@ -88,6 +88,8 @@ namespace ServiTec.Application.DTOs
         public int IdMenjador { get; set; }
         public double PosX { get; set; }
         public double PosY { get; set; }
+        public bool Bloquejada { get; set; }
+        public string? UsuariBloqueig { get; set; }
     }
 
     /// <summary>

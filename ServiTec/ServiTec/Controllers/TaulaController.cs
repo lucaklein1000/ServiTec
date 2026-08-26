@@ -5,7 +5,8 @@
 // Institució:    Universitat de Girona (UdG)
 // Fitxer:        TaulaController.cs
 // Descripció:    Controlador RESTful encarregat de la gestió de les taules de
-//                la sala del restaurant i la seva disponibilitat.
+//                la sala del restaurant, la seva disponibilitat i els mecanismes
+//                de bloqueig temporal per evitar concurrència entre cambrers.
 // ============================================================================
 
 using Microsoft.AspNetCore.Authorization;
@@ -16,15 +17,19 @@ using ServiTec.Application.Services;
 namespace ServiTec.Controllers
 {
     /// <summary>
-    /// Gestiona l'estat, creació i manteniment de les taules de la sala.
+    /// Controlador API per a la gestió, manteniment i control de concurrència de les taules de la sala.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] //  Protecció global: Requereix token JWT vàlid
+    [Authorize] // Protecció global: Requereix un token JWT vàlid
     public class TaulaController : ControllerBase
     {
         private readonly TaulaService _service;
 
+        /// <summary>
+        /// Inicialitza una nova instància del controlador injectant el servei de domini de taules.
+        /// </summary>
+        /// <param name="service">Servei de lògica de negoci de taules.</param>
         public TaulaController(TaulaService service)
         {
             _service = service;
@@ -37,7 +42,7 @@ namespace ServiTec.Controllers
         /// <response code="200">Retorna el llistat de taules.</response>
         /// <response code="401">No autoritzat (Manca el token JWT).</response>
         [HttpGet("llistar")]
-        [Authorize(Roles = "Cambrer, Cuina, Admin")] // Tots els rols poden consultar la sala
+        [Authorize(Roles = "Cambrer, Cuina, Admin")] // Tots els rols poden consultar el plànol de la sala
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IEnumerable<TaulaDTO>>> GetAll()
@@ -75,7 +80,7 @@ namespace ServiTec.Controllers
         /// <response code="400">Si les dades del DTO no són vàlides.</response>
         /// <response code="403">Accés prohibit (Només Administradors).</response>
         [HttpPost("crear")]
-        [Authorize(Roles = "Admin")] //  Manteniment de sala: Només Administradors
+        [Authorize(Roles = "Admin")] // Manteniment de sala: Només Administradors
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -117,7 +122,7 @@ namespace ServiTec.Controllers
         /// <response code="404">La taula especificada no existeix.</response>
         /// <response code="403">Accés prohibit (Només Administradors).</response>
         [HttpDelete("borrar/{id}")]
-        [Authorize(Roles = "Admin")] //  Manteniment de sala: Només Administradors
+        [Authorize(Roles = "Admin")] // Manteniment de sala: Només Administradors
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -129,6 +134,46 @@ namespace ServiTec.Controllers
                 return NotFound();
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Intenta bloquejar una taula temporalment per a un cambrer concret per evitar accés simultani.
+        /// </summary>
+        /// <param name="id">Identificador de la taula a bloquejar.</param>
+        /// <param name="request">DTO amb el nom del cambrer que sol·licita el bloqueig.</param>
+        /// <returns>Resultat de l'operació amb missatge de confirmació o conflicte.</returns>
+        /// <response code="200">Taula bloquejada correctament.</response>
+        /// <response code="409">Conflicte: La taula està sent utilitzada per un altre cambrer.</response>
+        [HttpPost("{id}/bloquejar")]
+        [Authorize(Roles = "Cambrer, Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> BloquejarTaula(int id, [FromBody] BloqueigRequestDTO request)
+        {
+            var (exit, missatge) = await _service.BloquejarTaulaAsync(id, request.NomCambrer);
+
+            if (!exit)
+            {
+                // Retornem 409 Conflict si la taula ja està bloquejada per algú altre
+                return Conflict(new { missatge });
+            }
+
+            return Ok(new { missatge = "Taula bloquejada correctament" });
+        }
+
+        /// <summary>
+        /// Desbloqueja la taula quan el cambrer surt de la pantalla o envia la comanda.
+        /// </summary>
+        /// <param name="id">Identificador de la taula a desbloquejar.</param>
+        /// <returns>Confirmació del desbloqueig.</returns>
+        /// <response code="200">Taula desbloquejada correctament.</response>
+        [HttpPost("{id}/desbloquejar")]
+        [Authorize(Roles = "Cambrer, Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DesbloquejarTaula(int id)
+        {
+            await _service.DesbloquejarTaulaAsync(id);
+            return Ok(new { missatge = "Taula desbloquejada correctament" });
         }
     }
 }

@@ -12,40 +12,81 @@ package com.example.servitec_frontend.repository
 
 import android.content.Context
 import android.util.Log
+import com.example.servitec_frontend.data.model.BloqueigRequestDTO
 import com.example.servitec_frontend.data.model.Categoria
 import com.example.servitec_frontend.data.model.ComandaDTO
+import com.example.servitec_frontend.data.model.CreateCategoriaDTO
 import com.example.servitec_frontend.data.model.CreateComandaDTO
 import com.example.servitec_frontend.data.model.CreateLiniaComandaDTO
-import com.example.servitec_frontend.data.model.Menjador
-import com.example.servitec_frontend.data.model.CreateCategoriaDTO
 import com.example.servitec_frontend.data.model.CreateMenjadorDTO
 import com.example.servitec_frontend.data.model.CreateTaulaDTO
-import com.example.servitec_frontend.data.model.Producte
-import com.example.servitec_frontend.data.model.UpdateCategoriaDTO
-import com.example.servitec_frontend.data.model.UpdateTaulaDTO
 import com.example.servitec_frontend.data.model.Cuina
+import com.example.servitec_frontend.data.model.Menjador
+import com.example.servitec_frontend.data.model.Producte
 import com.example.servitec_frontend.data.model.ProducteDTO
 import com.example.servitec_frontend.data.model.TaulaDTO
+import com.example.servitec_frontend.data.model.UpdateCategoriaDTO
 import com.example.servitec_frontend.data.model.UpdateMenjadorDTO
+import com.example.servitec_frontend.data.model.UpdateTaulaDTO
 import com.example.servitec_frontend.data.network.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * Repositori encarregat de la comunicació amb l API REST per a la gestió de taules,
+ * Repositori encarregat de la comunicació amb l'API REST per a la gestió de taules,
  * comandes, menjadors i elements associats al panell principal.
  *
- * @param context Context de l aplicació o activitat necessari per inicialitzar el RetrofitClient amb l interceptor JWT.
+ * @param context Context de l'aplicació o activitat necessari per inicialitzar el RetrofitClient amb l'interceptor JWT.
  */
 class TaulaRepository(private val context: Context) {
 
     private val apiService = RetrofitClient.getApiService(context)
 
     /**
+     * Intenta bloquejar una taula a nom del cambrer actual.
+     *
+     * @param idTaula Identificador únic de la taula.
+     * @param nomCambrer Nom del cambrer que intenta accedir-hi.
+     * @return Result.success(true) si s'ha bloquejat, o Result.failure amb el missatge si està bloquejada per algú altre o hi ha un error.
+     */
+    suspend fun bloquejarTaula(idTaula: Int, nomCambrer: String): Result<Boolean> {
+        return try {
+            val request = BloqueigRequestDTO(nomCambrer = nomCambrer)
+            val response = apiService.bloquejarTaula(idTaula, request)
+            if (response.isSuccessful) {
+                Result.success(true)
+            } else if (response.code() == 409) {
+                Result.failure(Exception("La taula està sent utilitzada per un altre cambrer."))
+            } else {
+                Result.failure(Exception("Error en bloquejar la taula (${response.code()})"))
+            }
+        } catch (e: Exception) {
+            Log.e("TaulaRepository", "Error en bloquejar la taula: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Allibera el bloqueig temporal d'una taula.
+     *
+     * @param idTaula Identificador únic de la taula a desbloquejar.
+     * @return `true` si s'ha desbloquejat correctament, `false` en cas contrari.
+     */
+    suspend fun desbloquejarTaula(idTaula: Int): Boolean {
+        return try {
+            val response = apiService.desbloquejarTaula(idTaula)
+            response.isSuccessful
+        } catch (e: Exception) {
+            Log.e("TaulaRepository", "Error en desbloquejar la taula: ${e.message}")
+            false
+        }
+    }
+
+    /**
      * Obté la comanda activa associada a una taula concreta.
      *
      * @param idMesa Identificador de la taula a consultar.
-     * @return La comanda activa (`ComandaDTO`) o `null` si la taula està lliure o s produeix un error.
+     * @return La comanda activa (`ComandaDTO`) o `null` si la taula està lliure o es produeix un error.
      */
     suspend fun obtenirComandaActiva(idMesa: Int): ComandaDTO? {
         return try {
@@ -64,7 +105,7 @@ class TaulaRepository(private val context: Context) {
     /**
      * Obté el llistat complet de categories de productes.
      *
-     * @return Llista d objectes `Categoria` o `null` si falla la petició.
+     * @return Llista d'objectes `Categoria` o `null` si falla la petició.
      */
     suspend fun obtenirCategories(): List<Categoria>? {
         return withContext(Dispatchers.IO) {
@@ -81,7 +122,7 @@ class TaulaRepository(private val context: Context) {
      * Crea una nova categoria de productes al sistema.
      *
      * @param nomCategoria DTO amb les dades de la nova categoria.
-     * @return `true` si s ha creat correctament, `false` en cas contrari.
+     * @return `true` si s'ha creat correctament, `false` en cas contrari.
      */
     suspend fun crearCategoria(nomCategoria: CreateCategoriaDTO): Boolean {
         return try {
@@ -94,11 +135,11 @@ class TaulaRepository(private val context: Context) {
     }
 
     /**
-     * Actualitza el nom o la informació d una categoria existent.
+     * Actualitza el nom o la informació d'una categoria existent.
      *
      * @param idCategoria Identificador de la categoria a modificar.
      * @param categoria DTO amb les noves dades de la categoria.
-     * @return `true` si l actualització és correcta, `false` en cas contrari.
+     * @return `true` si l'actualització és correcta, `false` en cas contrari.
      */
     suspend fun actualitzarCategoria(idCategoria: Int, categoria: UpdateCategoriaDTO): Boolean {
         return try {
@@ -113,7 +154,7 @@ class TaulaRepository(private val context: Context) {
     /**
      * Obté la llista completa de productes disponibles al menú.
      *
-     * @return Llista d objectes `Producte` o `null` si la petició falla.
+     * @return Llista d'objectes `Producte` o `null` si la petició falla.
      */
     suspend fun obtenirProductes(): List<ProducteDTO>? {
         return withContext(Dispatchers.IO) {
@@ -130,7 +171,7 @@ class TaulaRepository(private val context: Context) {
      * Envia una nova comanda inicial al backend.
      *
      * @param dto DTO amb la informació de la comanda a crear.
-     * @return `true` si la comanda s ha creat correctament, `false` en cas contrari.
+     * @return `true` si la comanda s'ha creat correctament, `false` en cas contrari.
      */
     suspend fun enviarComanda(dto: CreateComandaDTO): Boolean {
         return try {
@@ -145,7 +186,7 @@ class TaulaRepository(private val context: Context) {
     /**
      * Obté el llistat complet de taules del restaurant.
      *
-     * @return Llista d objectes `Taula` o `null` si es produeix un error.
+     * @return Llista d'objectes `Taula` o `null` si es produeix un error.
      */
     suspend fun obtenirTaules(): List<TaulaDTO>? {
         return try {
@@ -160,7 +201,7 @@ class TaulaRepository(private val context: Context) {
      * Finalitza i cobra una comanda activa.
      *
      * @param idComanda Identificador de la comanda a cobrar.
-     * @return `true` si el pagament s ha processat correctament, `false` en cas contrari.
+     * @return `true` si el pagament s'ha processat correctament, `false` en cas contrari.
      */
     suspend fun cobrarComanda(idComanda: Int): Boolean {
         return try {
@@ -172,11 +213,11 @@ class TaulaRepository(private val context: Context) {
     }
 
     /**
-     * Afagueix noves línies de comanda (productes) a una comanda ja existent.
+     * Afegeix noves línies de comanda (productes) a una comanda ja existent.
      *
      * @param idComanda Identificador de la comanda objectiu.
      * @param linies Llista de DTOs de les noves línies a afegir.
-     * @return Un objecte `Result` que conté el `ComandaDTO` actualitzat o una excepció en cas d error.
+     * @return Un objecte `Result` que conté el `ComandaDTO` actualitzat o una excepció en cas d'error.
      */
     suspend fun afegirLinies(idComanda: Int, linies: List<CreateLiniaComandaDTO>): Result<ComandaDTO> {
         return try {
@@ -192,27 +233,27 @@ class TaulaRepository(private val context: Context) {
     }
 
     /**
-     * Elimina una línia de comanda concreta d una comanda en curs.
+     * Elimina una línia de comanda concreta d'una comanda en curs.
      *
      * @param idLinia Identificador de la línia de comanda a eliminar.
-     * @return `true` si s ha eliminat correctament, `false` en cas contrari.
+     * @return `true` si s'ha eliminat correctament, `false` en cas contrari.
      */
     suspend fun eliminarLiniaComanda(idLinia: Int): Boolean {
         return try {
             val response = apiService.eliminarLiniaComanda(idLinia)
             response.isSuccessful
         } catch (e: Exception) {
-            Log.e("TaulaRepository", "Error en enliminar la lina de comanda: ${e.message}")
+            Log.e("TaulaRepository", "Error en eliminar la línia de comanda: ${e.message}")
             false
         }
     }
 
     /**
-     * Canvia l estat d una comanda (per exemple: pendent, en preparació, servida).
+     * Canvia l'estat d'una comanda (per exemple: pendent, en preparació, servida).
      *
      * @param idComanda Identificador de la comanda a modificar.
      * @param nouEstat Text que representa el nou estat de la comanda.
-     * @return `true` si l estat s ha actualitzat correctament, `false` en cas contrari.
+     * @return `true` si l'estat s'ha actualitzat correctament, `false` en cas contrari.
      */
     suspend fun canviarEstatComanda(idComanda: Int, nouEstat: String): Boolean {
         return try {
@@ -225,18 +266,18 @@ class TaulaRepository(private val context: Context) {
     }
 
     /**
-     * Canvia l estat d una linia de comanda (Pendent, Servit, Eliminat).
+     * Canvia l'estat d'una línia de comanda (Pendent, Servit, Eliminat).
      *
-     * @param idLinia Identificador de la linia de comanda a modificar.
+     * @param idLinia Identificador de la línia de comanda a modificar.
      * @param nouEstat Text que representa el nou estat de la comanda.
-     * @return `true` si l estat s ha actualitzat correctament, `false` en cas contrari.
+     * @return `true` si l'estat s'ha actualitzat correctament, `false` en cas contrari.
      */
     suspend fun canviarEstatLinia(idLinia: Int, nouEstat: String): Boolean {
         return try {
             val response = apiService.canviarEstatLinia(idLinia, nouEstat)
             response.isSuccessful
         } catch (e: Exception) {
-            Log.e("TaulaRepository", "Error canviant estat linia comanda", e)
+            Log.e("TaulaRepository", "Error canviant estat línia comanda", e)
             false
         }
     }
@@ -245,7 +286,7 @@ class TaulaRepository(private val context: Context) {
      * Crea un nou menjador o sala al restaurant.
      *
      * @param nouMenjador DTO amb les dades del nou menjador.
-     * @return L objecte `Menjador` creat o `null` si falla la petició.
+     * @return L'objecte `Menjador` creat o `null` si falla la petició.
      */
     suspend fun crearMenjador(nouMenjador: CreateMenjadorDTO): Menjador? {
         return try {
@@ -264,7 +305,7 @@ class TaulaRepository(private val context: Context) {
     /**
      * Obté la llista completa de menjadors registrats.
      *
-     * @return Llista d objectes `Menjador` o `null` si s produeix un error.
+     * @return Llista d'objectes `Menjador` o `null` si es produeix un error.
      */
     suspend fun llistarMenjador(): List<Menjador>? {
         return try {
@@ -290,11 +331,11 @@ class TaulaRepository(private val context: Context) {
     }
 
     /**
-     * Actualitza la configuració o estat d una taula.
+     * Actualitza la configuració o estat d'una taula.
      *
      * @param idTaula Identificador de la taula a modificar.
      * @param taula DTO amb les noves dades de la taula.
-     * @return `true` si l actualització és correcta, `false` en cas contrari.
+     * @return `true` si l'actualització és correcta, `false` en cas contrari.
      */
     suspend fun actualitzarTaula(idTaula: Int, taula: UpdateTaulaDTO): Boolean {
         return try {
@@ -307,10 +348,10 @@ class TaulaRepository(private val context: Context) {
     }
 
     /**
-     * Registra una nova taula dins d un menjador del restaurant.
+     * Registra una nova taula dins d'un menjador del restaurant.
      *
      * @param novaTaula DTO amb la informació de la nova taula.
-     * @return L objecte `Taula` creat o `null` si s produeix un error.
+     * @return L'objecte `Taula` creat o `null` si es produeix un error.
      */
     suspend fun crearTaula(novaTaula: CreateTaulaDTO): TaulaDTO? {
         return try {
@@ -345,15 +386,7 @@ class TaulaRepository(private val context: Context) {
     /**
      * Obté la llista de comandes actives destinades a la pantalla de cuina.
      *
-     * Envia una petició GET a la API utilitzant el servei autenticat. Les línies de comanda
-     * retornades ja vénen filtrades pel backend segons l estat corresponent.
-     *
-     * @return Una llista mutable de [Cuina] si la petició té èxit, o `null` en cas d'error o excepció.
-     */
-    /**
-     * Obté la llista de comandes actives destinades a la pantalla de cuina.
-     *
-     * @return Llista mutable d objectes `ResponseCuina` o `null` si la petició falla.
+     * @return Llista mutable d'objectes `Cuina` o `null` si la petició falla.
      */
     suspend fun getComandesCuina(): MutableList<Cuina>? {
         return try {
