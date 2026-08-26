@@ -28,20 +28,26 @@ class PantallaLogin : AppCompatActivity() {
 
     private lateinit var userRepository: UsuariRepository
 
+    /**
+     * Inicialitza la pantalla de login, obté les referències dels elements visuals i gestiona l'esdeveniment d'autenticació.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_login)
 
+        // Inicialització del repositori d'usuaris i referències visuals
         userRepository = UsuariRepository(this)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
         val etUser = findViewById<EditText>(R.id.idUsuari)
         val etPass = findViewById<EditText>(R.id.idContrasenya)
         val sharedPreferences = getSharedPreferences("ServiTecPrefs", MODE_PRIVATE)
 
+        // Configuració de l'esdeveniment de clic per al botó d'inici de sessió
         btnLogin.setOnClickListener {
             val user = etUser.text.toString().trim()
             val pass = etPass.text.toString().trim()
 
+            // Validació de camps buits
             if (user.isEmpty() || pass.isEmpty()) {
                 Toast.makeText(this, "Si us plau, omple tots els camps", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -49,6 +55,7 @@ class PantallaLogin : AppCompatActivity() {
 
             btnLogin.isEnabled = false
 
+            // Petició d'autenticació al backend via repository
             userRepository.loginUser(user, pass) { response: LoginResponse?, error: String? ->
                 btnLogin.isEnabled = true
 
@@ -59,7 +66,7 @@ class PantallaLogin : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    // Guardem l'idUsuari, nom, rol, admin i el token JWT a SharedPreferences
+                    // Emmagatzematge de la sessió i token JWT a SharedPreferences
                     sharedPreferences.edit {
                         putInt("idUsuari", response.idUsuari)
                         putString("nomUsuari", response.nomUsuari)
@@ -68,7 +75,7 @@ class PantallaLogin : AppCompatActivity() {
                         putString("jwt_token", response.token)
                     }
 
-                    // Enrutament segons el rol de l'usuari
+                    // Enrutament dinàmic de l'activitat segons el rol de l'usuari autenticat
                     val intent = when (response.rol.lowercase()) {
                         "admin", "gerent" -> Intent(this, PantallaGerent::class.java)
                         "1", "cambrer", "camarero" -> Intent(this, PantallaPanell::class.java)

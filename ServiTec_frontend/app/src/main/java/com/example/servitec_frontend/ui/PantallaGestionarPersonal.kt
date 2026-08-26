@@ -1,3 +1,14 @@
+// ============================================================================
+// Projecte:      ServiTec - Sistema de Gestió de Restaurants (TFG)
+// Autor:         Luca Klein
+// Titulació:     Grau en Enginyeria Informàtica (4t Curs)
+// Institució:    Universitat de Girona (UdG)
+// Fitxer:        PantallaGestionarPersonal.kt
+// Descripció:    Activity per a la gestió del personal del restaurant. Permet
+//                consultar, editar dades d'usuaris (nom, rol, estat actiu/inactiu,
+//                contrasenya) i actualitzar la informació al backend.
+// ============================================================================
+
 package com.example.servitec_frontend.ui
 
 import android.os.Bundle
@@ -15,9 +26,13 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 
+/**
+ * Activity encarregada de la gestió i modificació dels usuaris/personal del restaurant.
+ * Permet seleccionar un empleat, canviar el seu nom, contrasenya, rol o estat, i desar els canvis.
+ */
 class PantallaGestionarPersonal : AppCompatActivity() {
 
-    // Componentes Modificar Usuari
+    // Components visuals per a la modificació d'usuaris
     private lateinit var autoCompleteEditarUsuari: AutoCompleteTextView
     private lateinit var etEditNom: TextInputEditText
     private lateinit var etEditContrasenya: TextInputEditText
@@ -26,18 +41,22 @@ class PantallaGestionarPersonal : AppCompatActivity() {
     private lateinit var btnGuardarCanvis: MaterialButton
     private lateinit var btnCancelar: MaterialButton
 
-    // Componentes Navegación
+    // Components de navegació
     private lateinit var btnTornar: MaterialButton
 
-    // Datos y Estado
+    // Gestió d'estat i dades
     private var llistaUsuaris: List<UsuariDTO> = emptyList()
     private var usuariSeleccionat: UsuariDTO? = null
     private lateinit var repositoryUsuari: UsuariRepository
 
+    /**
+     * Inicialitza la pantalla de gestió de personal, enllaça les vistes, configura els adaptadors i carregar els usuaris.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_gestionar_personal)
 
+        // Inicialització del repositori d'usuaris
         repositoryUsuari = UsuariRepository(this)
 
         initViews()
@@ -46,6 +65,9 @@ class PantallaGestionarPersonal : AppCompatActivity() {
         carregarUsuaris()
     }
 
+    /**
+     * Vincula les variables locals amb els elements corresponents del layout XML.
+     */
     private fun initViews() {
         btnTornar = findViewById(R.id.btnTornar)
         autoCompleteEditarUsuari = findViewById(R.id.autoCompleteEditarUsuari)
@@ -57,12 +79,18 @@ class PantallaGestionarPersonal : AppCompatActivity() {
         btnCancelar = findViewById(R.id.btnCancelar)
     }
 
+    /**
+     * Inicialitza les opcions del desplegable de rols d'usuari disponibles al sistema.
+     */
     private fun setupDropdownRols() {
         val rolsDisponibles = arrayOf("Cambrer", "Cuina", "Admin")
         val adapterRols = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, rolsDisponibles)
         spinnerEditRol.setAdapter(adapterRols)
     }
 
+    /**
+     * Assigna els escoltadors d'esdeveniments als botons i selectors de la interfície.
+     */
     private fun setupListeners() {
         btnTornar.setOnClickListener {
             finish()
@@ -72,20 +100,20 @@ class PantallaGestionarPersonal : AppCompatActivity() {
             netejarFormulari()
         }
 
-        // 1. EVENTO: Al seleccionar usuario en el desplegable, autollenar los campos
+        // Esdeveniment al seleccionar un usuari del desplegable per emplenar el formulari
         autoCompleteEditarUsuari.setOnItemClickListener { parent, _, position, _ ->
             val nomSeleccionat = parent.getItemAtPosition(position).toString()
             usuariSeleccionat = llistaUsuaris.find { it.nomUsuari == nomSeleccionat }
 
             usuariSeleccionat?.let { usuari ->
                 etEditNom.setText(usuari.nomUsuari)
-                etEditContrasenya.setText("") // La contraseña no se muestra por seguridad
+                etEditContrasenya.setText("") // La contrasenya es manté buida per seguretat
                 spinnerEditRol.setText(usuari.rol, false)
                 switchActiu.isChecked = usuari.actiu
             }
         }
 
-        // 2. EVENTO: Guardar cambios del usuario modificado
+        // Esdeveniment per desar els canvis de l'usuari seleccionat
         btnGuardarCanvis.setOnClickListener {
             val usuari = usuariSeleccionat
 
@@ -99,6 +127,7 @@ class PantallaGestionarPersonal : AppCompatActivity() {
             val rol = spinnerEditRol.text.toString().trim()
             val actiu = switchActiu.isChecked
 
+            // Validació dels camps obligatoris
             if (nom.isEmpty() || rol.isEmpty()) {
                 Toast.makeText(this, "Si us plau, omple el nom i el rol", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -106,16 +135,16 @@ class PantallaGestionarPersonal : AppCompatActivity() {
 
             btnGuardarCanvis.isEnabled = false
 
-            // Si el campo de contraseña está vacío, puedes pasar una cadena vacía
-            // o manejar en tu backend que si llega vacía no la actualice.
+            // Construcció del DTO d'actualització d'usuari
             val usuariModificat = UpdateUsuariDTO(
                 nomUsuari = nom,
                 contrasenya = contrasenya,
                 rol = rol,
                 actiu = actiu,
-                admin = usuari.admin // Mantenemos el valor original que ya tenía
+                admin = usuari.admin // Es manté el valor original de permís d'administrador
             )
 
+            // Petició asíncrona d'actualització al repositori
             lifecycleScope.launch {
                 val exit = repositoryUsuari.actualitzarUsuari(usuari.idUsuari, usuariModificat)
                 if (exit) {
@@ -130,17 +159,25 @@ class PantallaGestionarPersonal : AppCompatActivity() {
         }
     }
 
+    /**
+     * Obté la llista d'usuaris des del repositori i actualitza l'adaptador del cercador AutoComplete.
+     */
     private fun carregarUsuaris() {
         lifecycleScope.launch {
             llistaUsuaris = repositoryUsuari.llistarUsuaris() ?: emptyList()
             val nomsUsuaris = llistaUsuaris.map { it.nomUsuari }
 
+            // Assignació dels noms d'usuari a l'adaptador del cercador
             val adapter = ArrayAdapter(this@PantallaGestionarPersonal, android.R.layout.simple_dropdown_item_1line, nomsUsuaris)
             autoCompleteEditarUsuari.setAdapter(adapter)
         }
     }
 
+    /**
+     * Reinicia l'estat dels camps de text i desmarca l'usuari seleccionat.
+     */
     private fun netejarFormulari() {
+        // Esborrat del contingut dels camps del formulari
         usuariSeleccionat = null
         autoCompleteEditarUsuari.setText("")
         etEditNom.setText("")

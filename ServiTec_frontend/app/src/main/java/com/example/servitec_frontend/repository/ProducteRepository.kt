@@ -21,9 +21,9 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
 /**
- * Repositori encarregat de la comunicació amb l API REST per a la gestió de productes.
+ * Repositori encarregat de la comunicació amb l'API REST per a la gestió de productes.
  *
- * @param context Context de l aplicació o activitat necessari per inicialitzar el RetrofitClient amb l interceptor JWT.
+ * @param context Context de l'aplicació o activitat necessari per inicialitzar el RetrofitClient amb l'interceptor JWT.
  */
 class ProducteRepository(private val context: Context) {
 
@@ -33,7 +33,7 @@ class ProducteRepository(private val context: Context) {
      * Crea un nou producte al sistema.
      *
      * @param nouProducte DTO amb la informació del producte a crear.
-     * @return El producte creat o `null` si s produeix un error.
+     * @return El producte creat o `null` si es produeix un error.
      */
     suspend fun crearProducte(nouProducte: CreateProdcuteDTO): Producte? {
         return try {
@@ -70,20 +70,19 @@ class ProducteRepository(private val context: Context) {
 
     /**
      * Elimina un producte del sistema a partir del seu identificador.
+     * Extrau el missatge d'error del JSON si la petició falla (p. ex., si hi ha comandes associades).
      *
-     * @param idProducte Identificador del producte a eliminar.
-     * @return `true` si s ha eliminat correctament, `false` en cas contrari.
+     * @param id Identificador del producte a eliminar.
+     * @return Un par `Pair<Boolean, String>` indicant l'èxit de l'operació i el missatge de resposta.
      */
     suspend fun eliminarProducte(id: Int): Pair<Boolean, String> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.eliminarProducte(id) // O la llamada Retrofit correspondiente
+            val response = apiService.eliminarProducte(id)
             if (response.isSuccessful) {
                 Pair(true, "Producte eliminat correctament")
             } else {
-                // Extraer el mensaje del JSON de error devuelto por la API (p. ej., BadRequest)
                 val errorJson = response.errorBody()?.string()
                 val mensajeError = try {
-                    // Si la API devuelve {"message": "Hi ha taules obertes..."}, lo extraemos:
                     JSONObject(errorJson ?: "").optString("message", "Error en eliminar el producte")
                 } catch (e: Exception) {
                     "Error en eliminar el producte"
@@ -96,11 +95,11 @@ class ProducteRepository(private val context: Context) {
     }
 
     /**
-     * Actualitza la informació d un producte existent.
+     * Actualitza la informació d'un producte existent.
      *
      * @param idProducte Identificador del producte a actualitzar.
      * @param producte DTO amb les noves dades del producte.
-     * @return `true` si s ha actualitzat correctament, `false` en cas contrari.
+     * @return `true` si s'ha actualitzat correctament, `false` en cas contrari.
      */
     suspend fun actualitzarProducte(idProducte: Int, producte: UpdateProdcuteDTO): Boolean {
         return try {

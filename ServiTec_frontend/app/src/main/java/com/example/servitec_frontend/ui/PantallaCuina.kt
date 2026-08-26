@@ -27,19 +27,19 @@ import kotlinx.coroutines.launch
 
 /**
  * Activity que gestiona la vista de comandes per al personal de cuina.
- *
  * Realitza peticions periòdiques al backend per mantenir actualitzada la llista
- * de comandes pendents i permet tancar la sessió de l usuari.
+ * de comandes pendents i permet tancar la sessió de l'usuari.
  */
 class PantallaCuina : AppCompatActivity() {
 
+    // Components visuals de la interfície d'usuari i repositori
     private lateinit var rvComandes: RecyclerView
     private lateinit var btnCerrarSesion: TextView
     private lateinit var cuinaRepository: TaulaRepository
 
     // Handler i Runnable per gestionar el refresc automàtic de comandes
     private val handler = Handler(Looper.getMainLooper())
-    private val intervalRefresc = 10000L // 10 segons
+    private val intervalRefresc = 10000L // Interval definit en 10 segons
 
     private val runnableRefresc = object : Runnable {
         override fun run() {
@@ -48,38 +48,47 @@ class PantallaCuina : AppCompatActivity() {
         }
     }
 
+    /**
+     * Inicialitza la pantalla de cuina, enllaça els components visuals i configura el layout de la graella.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_cuina)
 
-        // Inicialitzar elements de la interfície de usuari
+        // Inicialització dels repositoris i elements visuals de la interfície
         cuinaRepository = TaulaRepository(this)
         rvComandes = findViewById(R.id.rvComandesCuina)
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion)
 
-        // Configurar el RecyclerView en graella de 4 columnes per veure les comandes com a tiquets
+        // Configuració del RecyclerView en una graella de 4 columnes per a la visualització de tiquets
         rvComandes.layoutManager = GridLayoutManager(this, 4)
 
-        // Configurar el botó de tancar sessió de la barra lateral
+        // Configuració de l'escoltador per al tancament de sessió
         btnCerrarSesion.setOnClickListener {
             tancarSessio()
         }
     }
 
+    /**
+     * S'executa quan l'activitat passa a primer pla, iniciant el bucle de refresc periòdic.
+     */
     override fun onResume() {
         super.onResume()
-        // Iniciar el bucle de refresc automàtic en tornar a la pantalla
+        // Inici del temporitzador de refresc automàtic
         handler.post(runnableRefresc)
     }
 
+    /**
+     * S'executa quan l'activitat entra en pausa, aturant el refresc per optimitzar els recursos del dispositiu.
+     */
     override fun onPause() {
         super.onPause()
-        // Aturar el bucle quan la pantalla no estigui activa per estalviar bateria i memòria
+        // Aturda del temporitzador per estalviar bateria i memòria
         handler.removeCallbacks(runnableRefresc)
     }
 
     /**
-     * Mètode encarregat de cridar la API REST a través del repositori i actualitzar el RecyclerView.
+     * Obté la llista actualitzada de comandes des de la base de dades a través de l'API REST i actualitza l'adaptador.
      */
     private fun carregarComandesCuina() {
         lifecycleScope.launch {
@@ -91,7 +100,7 @@ class PantallaCuina : AppCompatActivity() {
                     if (adapter == null) {
                         rvComandes.adapter = CuinaAdapter(llistaComandes)
                     } else {
-                        // Si l adaptador ja existeix, es pot afegir un mètode d actualització per evitar parpelleigs
+                        // Reassignació de l'adaptador amb les dades actualitzades del servidor
                         rvComandes.adapter = CuinaAdapter(llistaComandes)
                     }
                 } else {
@@ -112,14 +121,15 @@ class PantallaCuina : AppCompatActivity() {
     }
 
     /**
-     * Neteja la sessió de l usuari i el retorna a la pantalla de login.
+     * Esborra les dades de la sessió emmagatzemades i redirigeix l'usuari a la pantalla d'inici de sessió.
      */
     private fun tancarSessio() {
+        // Neteja de les preferències compartides de l'aplicació
         val sharedPreferences = getSharedPreferences("ServiTecPrefs", MODE_PRIVATE)
         sharedPreferences.edit().clear().apply()
 
+        // Redirecció a la pantalla de login eliminant la pila d'activitats anteriors
         val intent = Intent(this, PantallaLogin::class.java)
-        // Netejar l historial de pantalles per evitar que l usuari pugui tornar enrere
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()

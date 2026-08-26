@@ -1,3 +1,14 @@
+// ============================================================================
+// Projecte:      ServiTec - Sistema de Gestió de Restaurants (TFG)
+// Autor:         Luca Klein
+// Titulació:     Grau en Enginyeria Informàtica (4t Curs)
+// Institució:    Universitat de Girona (UdG)
+// Fitxer:        PantallaGestionarMenjadors.kt
+// Descripció:    Activity per a la gestió del plànol de menjadors. Permet afegir,
+//                moure mitjançant gestos de drag-and-drop, reanomenar, eliminar
+//                taules i actualitzar les seves coordenades en el canvas.
+// ============================================================================
+
 package com.example.servitec_frontend.ui
 
 import android.graphics.Color
@@ -27,8 +38,13 @@ import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+/**
+ * Activity encarregada de la gestió i disseny interactiu dels plànols dels menjadors.
+ * Suporta el posicionament dinàmic de taules, edició de capacitat i sincronització amb el backend.
+ */
 class PantallaGestionarMenjadors : AppCompatActivity() {
 
+    // Components visuals de la interfície d'usuari
     private lateinit var btnTornar: MaterialButton
     private lateinit var btnGuardarPlano: MaterialButton
     private lateinit var actvMenjadors: AutoCompleteTextView
@@ -36,11 +52,16 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
     private lateinit var tvHintCanvas: TextView
     private var zonaEsborrar: View? = null
 
+    // Repositori de dades per a les operacions d'API REST
     private lateinit var menjadorRepository: TaulaRepository
 
+    // Estat local dels menjadors i selecció actual
     private var llistaMenjadors: List<Menjador> = emptyList()
     private var menjadorSeleccionat: Menjador? = null
 
+    /**
+     * Inicialitza la pantalla de gestió de menjadors, vincula les vistes i carrega la informació des de la base de dades.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_gestionar_menjadors)
@@ -50,6 +71,9 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         carregarMenjadorsDesDeBDD()
     }
 
+    /**
+     * Vincula les variables locals amb els elements corresponents del layout XML i inicialitza el repositori.
+     */
     private fun initViews() {
         menjadorRepository = TaulaRepository(this)
         btnTornar = findViewById(R.id.btnTornar)
@@ -58,10 +82,14 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         canvasMenjador = findViewById(R.id.canvasMenjador)
         tvHintCanvas = findViewById(R.id.tvHintCanvas)
 
+        // Definició de la zona d'eliminació per arrossegament (paperera)
         zonaEsborrar = findViewById(R.id.areaPapelera)
             ?: (findViewById<View>(R.id.dragTaula2Pax)?.parent as? View)
     }
 
+    /**
+     * Assigna els escoltadors d'esdeveniments als botons de navegació, desament i creació de taules per capacitat.
+     */
     private fun setupListeners() {
         btnTornar.setOnClickListener {
             finish()
@@ -75,12 +103,16 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
             }
         }
 
+        // Esdeveniments de creació de taules segons la capacitat de persones
         findViewById<View>(R.id.dragTaula2Pax)?.setOnClickListener { afegirNovaTaula(2) }
         findViewById<View>(R.id.dragTaula4Pax)?.setOnClickListener { afegirNovaTaula(4) }
         findViewById<View>(R.id.dragTaula6Pax)?.setOnClickListener { afegirNovaTaula(6) }
         findViewById<View>(R.id.dragTaula8Pax)?.setOnClickListener { afegirNovaTaula(8) }
     }
 
+    /**
+     * Consulta el repositori per carregar la llista de menjadors i les seves respectives taules des de la base de dades.
+     */
     private fun carregarMenjadorsDesDeBDD() {
         lifecycleScope.launch {
             try {
@@ -97,11 +129,15 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         }
     }
 
+    /**
+     * Configura l'adaptador i l'escoltador del selector desplegable de menjadors.
+     */
     private fun setupDropdownMenjadors() {
         val nomMenjadors = llistaMenjadors.map { it.nomMenjador }
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, nomMenjadors)
         actvMenjadors.setAdapter(adapter)
 
+        // Carrega el plànol del menjador seleccionat
         actvMenjadors.setOnItemClickListener { parent, _, position, _ ->
             val nomSeleccionat = parent.getItemAtPosition(position) as String
             menjadorSeleccionat = llistaMenjadors.find { it.nomMenjador == nomSeleccionat }
@@ -109,12 +145,18 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         }
     }
 
+    /**
+     * Prepara el canvas i dibuixa la disposició de taules del menjador seleccionat.
+     */
     private fun carregarPlanoMenjador(menjador: Menjador?) {
         if (menjador == null) return
         tvHintCanvas.visibility = View.GONE
         dibuixarTaulesEnLlenç(menjador.taules)
     }
 
+    /**
+     * Afegeix una nova taula temporal al menjador seleccionat amb la capacitat especificada.
+     */
     private fun afegirNovaTaula(capacitatPax: Int) {
         val menjador = menjadorSeleccionat
         if (menjador == null) {
@@ -125,7 +167,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         val novesTaules = menjador.taules.toMutableList()
         val nouNumero = (novesTaules.maxOfOrNull { it.numero } ?: 0) + 1
 
-        // Usamos TaulaDTO con idTaula = 0 para representar la mesa no guardada
+        // Utilització de idTaula = 0 per indicar una taula pendent de crear a la BDD
         val novaTaula = TaulaDTO(
             idTaula = 0,
             numero = nouNumero,
@@ -144,6 +186,9 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         Toast.makeText(this, "Afegida Taula $nouNumero ($capacitatPax PAX)", Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * Dibuixa totes les taules d'un menjador al canvas convertint les coordenades percentuals a píxels reals.
+     */
     private fun dibuixarTaulesEnLlenç(taules: List<TaulaDTO>) {
         canvasMenjador.removeAllViews()
         if (taules.isEmpty()) return
@@ -155,6 +200,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
             if (canvasWidth == 0f || canvasHeight == 0f) return@post
 
             for (taula in taules) {
+                // Conversió de percentatge a posició en píxels
                 val pixelX = (taula.posX / 100f) * canvasWidth
                 val pixelY = (taula.posY / 100f) * canvasHeight
 
@@ -167,6 +213,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
                     textSize = 12f
                     isAllCaps = false
 
+                    // Fons segons la capacitat de comensals
                     val bgDrawableRes = when (taula.capacitat) {
                         1, 2 -> R.drawable.bg_taula_2pax
                         3, 4 -> R.drawable.bg_taula_4pax
@@ -187,6 +234,9 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         }
     }
 
+    /**
+     * Configura els gestos d'arrossegament (drag-and-drop) i clic sobre una taula del plànol.
+     */
     private fun hacerMesaInteractiva(view: View, taulaDTO: TaulaDTO) {
         var dX = 0f
         var dY = 0f
@@ -197,6 +247,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         view.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    // Desa la posició inicial de l'arrossegament
                     dX = v.x - event.rawX
                     dY = v.y - event.rawY
                     startX = event.rawX
@@ -205,6 +256,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
+                    // Actualització de la posició visual en temps real
                     val newX = event.rawX + dX
                     val newY = event.rawY + dY
 
@@ -214,6 +266,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
                     val parentWidth = canvasMenjador.width.toFloat()
                     val parentHeight = canvasMenjador.height.toFloat()
 
+                    // Re-càlcul del percentatge relatiu al canvas
                     if (parentWidth > 0f && parentHeight > 0f) {
                         val centroX = newX + (v.width / 2f)
                         val centroY = newY + (v.height / 2f)
@@ -227,6 +280,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
                     val diffX = abs(event.rawX - startX)
                     val diffY = abs(event.rawY - startY)
 
+                    // Distinció entre clic simple o gest d'arrossegament
                     if (diffX < clickThreshold && diffY < clickThreshold) {
                         mostrarDialogoCambiarNumero(taulaDTO)
                     } else {
@@ -245,6 +299,9 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         }
     }
 
+    /**
+     * Comprova si una taula s'ha arrossegat a sobre de la zona d'eliminació (paperera).
+     */
     private fun esDropEnPaleta(view: View): Boolean {
         val targetView = zonaEsborrar ?: return false
 
@@ -254,9 +311,13 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         val targetRect = Rect()
         targetView.getGlobalVisibleRect(targetRect)
 
+        // Intersecció de les àrees visuals
         return Rect.intersects(viewRect, targetRect)
     }
 
+    /**
+     * Comprova si una taula s'ha arrossegat fora dels límits del canvas.
+     */
     private fun esDropFueraDelCanvas(view: View): Boolean {
         val viewRect = Rect()
         view.getGlobalVisibleRect(viewRect)
@@ -267,6 +328,9 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         return !Rect.intersects(viewRect, canvasRect) || viewRect.centerX() < canvasRect.left
     }
 
+    /**
+     * Ajusta la posició d'una taula per evitar que quedi parcialment o totalment fora dels límits del canvas.
+     */
     private fun ajustarLimitesCanvas(view: View, taulaDTO: TaulaDTO) {
         val parentWidth = canvasMenjador.width.toFloat()
         val parentHeight = canvasMenjador.height.toFloat()
@@ -282,6 +346,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         view.x = clampedX
         view.y = clampedY
 
+        // Recàlcul final de la posició percentual des d'un punt vàlid
         val centroX = clampedX + (view.width / 2f)
         val centroY = clampedY + (view.height / 2f)
 
@@ -289,7 +354,11 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         taulaDTO.posY = (centroY / parentHeight) * 100f
     }
 
+    /**
+     * Mostra un diàleg modal per permetre modificar el número d'identificació visual d'una taula.
+     */
     private fun mostrarDialogoCambiarNumero(taulaDTO: TaulaDTO) {
+        // Validació: No es permet editar taules ocupades
         if (!taulaDTO.estat) {
             Toast.makeText(this, "No es pot canviar el número d'una taula ocupada", Toast.LENGTH_LONG).show()
             return
@@ -301,6 +370,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
             setSelection(text.length)
         }
 
+        // Diàleg per a la introducció del nou número
         AlertDialog.Builder(this)
             .setTitle("Canviar número de taula")
             .setMessage("Introdueix el nou número per a la taula:")
@@ -311,6 +381,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
                     taulaDTO.numero = nouNumero
                     menjadorSeleccionat?.let { dibuixarTaulesEnLlenç(it.taules) }
 
+                    // Actualització immediata a la BDD si la taula ja existia al backend
                     if (taulaDTO.idTaula != 0) {
                         lifecycleScope.launch {
                             try {
@@ -343,7 +414,11 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
             .show()
     }
 
+    /**
+     * Elimina la taula especificada tant de l'estat local com de la base de dades backend si correspon.
+     */
     private fun eliminarTaula(taulaDTO: TaulaDTO) {
+        // Impedir l'esborrat de taules en ús
         if (!taulaDTO.estat) {
             Toast.makeText(this, "No es pot eliminar una taula ocupada o amb comandes obertes", Toast.LENGTH_LONG).show()
             menjadorSeleccionat?.let { dibuixarTaulesEnLlenç(it.taules) }
@@ -352,6 +427,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
 
         val menjador = menjadorSeleccionat ?: return
 
+        // Si la taula està desada al servidor, es demana l'esborrat via API
         if (taulaDTO.idTaula != 0) {
             lifecycleScope.launch {
                 try {
@@ -373,6 +449,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
                 }
             }
         } else {
+            // Esborrat local directe per a taules noves no sincronitzades
             val novesTaules = menjador.taules.toMutableList()
             novesTaules.remove(taulaDTO)
             menjador.taules = novesTaules
@@ -382,6 +459,9 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sincronitza tots els canvis realitzats al plànol (nom del menjador, noves taules i modificacions) amb el servidor.
+     */
     private fun guardarCanvisPlano(menjador: Menjador) {
         lifecycleScope.launch {
             try {
@@ -393,19 +473,18 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
 
                 var errors = 0
 
-                // 1. Si el usuario ha cambiado el nombre del comedor en el AutoCompleteTextView
+                // 1. Sincronització del nom del menjador si ha canviat
                 if (nouNom != menjador.nomMenjador) {
-                    val updateMenjadorDto =
-                        UpdateMenjadorDTO(nomMenjador = nouNom) // O el modelo DTO que uses en tu API
+                    val updateMenjadorDto = UpdateMenjadorDTO(nomMenjador = nouNom)
                     val nomActualitzat = menjadorRepository.actualitzarMenjador(menjador.idMenjador, updateMenjadorDto)
                     if (!nomActualitzat) {
                         errors++
                     } else {
-                        menjador.nomMenjador = nouNom // Actualizamos el objeto local
+                        menjador.nomMenjador = nouNom
                     }
                 }
 
-                // 2. Guardar / Actualizar las mesas (lógica que ya teníamos)
+                // 2. Creació o actualització en massa de les taules del plànol
                 val taules = menjador.taules
                 if (!taules.isNullOrEmpty()) {
                     val taulesActualitzades = taules.toMutableList()
@@ -414,6 +493,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
                         val taula = taulesActualitzades[i]
 
                         if (taula.idTaula == 0) {
+                            // Creació de taula nova al backend
                             val taulaNova = CreateTaulaDTO(
                                 numero = taula.numero,
                                 estat = taula.estat,
@@ -429,6 +509,7 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
                                 errors++
                             }
                         } else {
+                            // Actualització de posició/propietats de taula existent
                             val taulaModificada = UpdateTaulaDTO(
                                 numero = taula.numero,
                                 estat = taula.estat,
@@ -443,13 +524,14 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
                     menjador.taules = taulesActualitzades
                 }
 
+                // Notificació del resultat de l'operació
                 if (errors == 0) {
                     Toast.makeText(
                         this@PantallaGestionarMenjadors,
                         "S'han guardat tots els canvis correctament",
                         Toast.LENGTH_SHORT
                     ).show()
-                    carregarMenjadorsDesDeBDD() // Recarga y refresca el desplegable
+                    carregarMenjadorsDesDeBDD()
                 } else {
                     Toast.makeText(
                         this@PantallaGestionarMenjadors,
@@ -468,5 +550,8 @@ class PantallaGestionarMenjadors : AppCompatActivity() {
         }
     }
 
+    /**
+     * Extensió per convertir valors DP a Píxels segons la densitat de la pantalla actual.
+     */
     private fun Int.toPx(): Int = (this * resources.displayMetrics.density).toInt()
 }

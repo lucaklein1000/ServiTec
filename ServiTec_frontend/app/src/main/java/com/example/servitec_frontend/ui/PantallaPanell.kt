@@ -1,3 +1,14 @@
+// ============================================================================
+// Projecte:      ServiTec - Sistema de Gestió de Restaurants (TFG)
+// Autor:         Luca Klein
+// Titulació:     Grau en Enginyeria Informàtica (4t Curs)
+// Institució:    Universitat de Girona (UdG)
+// Fitxer:        PantallaPanell.kt
+// Descripció:    Vista interactiva del pla de menjadors (TPV). Sincronitza en
+//                temps real l'estat de les taules, posicions, bloquejos d'usuaris
+//                i permet la navegació cap a la gestió de comandes.
+// ============================================================================
+
 package com.example.servitec_frontend.ui
 
 import android.content.Context
@@ -19,27 +30,33 @@ import com.example.servitec_frontend.data.model.TaulaDTO
 import com.example.servitec_frontend.repository.TaulaRepository
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
-import kotlin.jvm.java
 
+/**
+ * Activitat encarregada de la visualització gràfica del pla de menjadors del restaurant.
+ * Gestiona el refresc periòdic (polling), el dibuixat de taules en posició percentual
+ * respecte al canvas i el control de concurrència/bloquejos entre cambrers.
+ */
 class PantallaPanell : AppCompatActivity() {
 
+    // Components principals de la interfície d'usuari
     private lateinit var btnDireccio: MaterialButton
     private lateinit var containerMenjadors: LinearLayout
     private lateinit var canvasPanell: RelativeLayout
     private lateinit var btnCerrarSesion: MaterialButton
 
+    // Repositori de dades per a les operacions d'API REST
     private lateinit var menjadorRepository: TaulaRepository
     private var menjadorSeleccionatId: Int? = null
 
-    // Usuari actual obtingut de SharedPreferences
+    // Dades de la sessió de l'usuari actiu
     private var nomCambrerActual: String = ""
 
-    // Mapa per emmagatzemar i reutilitzar les vistes de les taules actualment dibuixades
+    // Cache local de les vistes de les taules dibuixades (Evita parpelleig i recreacions innecessàries)
     private val taulesViewsMap = mutableMapOf<Int, androidx.appcompat.widget.AppCompatButton>()
 
-    // Handler i Runnable per gestionar el refresc automàtic en temps real
+    // Bucle de sincronització automàtica en temps real (Polling cada 1 segon)
     private val handler = Handler(Looper.getMainLooper())
-    private val intervalRefresc = 1000L // 1 segon
+    private val intervalRefresc = 1000L
 
     private val runnableRefresc = object : Runnable {
         override fun run() {
@@ -48,24 +65,28 @@ class PantallaPanell : AppCompatActivity() {
         }
     }
 
+    /**
+     * Inicialitza la pantalla panell, els repositoris, les vistes i comprova els permisos de l'usuari.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_panell)
 
-        // 1. INICIALITZAR VISTES I DADES D'USUARI
+        // Inicialització de repositoris i referències visuals
         menjadorRepository = TaulaRepository(this)
         containerMenjadors = findViewById(R.id.containerMenjadors)
         canvasPanell = findViewById(R.id.layoutSalon)
         btnDireccio = findViewById(R.id.btnDireccio)
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion)
 
+        // Recuperació del perfil d'usuari emmagatzemat localment
         val prefs = getSharedPreferences("ServiTecPrefs", Context.MODE_PRIVATE)
         val userRol = prefs.getString("rolUsuari", "") ?: ""
         val esAdmin = prefs.getBoolean("esAdmin", false)
         nomCambrerActual = prefs.getString("nomUsuari", "") ?: prefs.getString("username", "Cambrer") ?: "Cambrer"
 
+        // Restricció d'accés al botó de direcció segons el rol de l'usuari
         val esGerentOAdmin = userRol.equals("Admin", ignoreCase = true) || esAdmin
-
         btnDireccio.visibility = if (esGerentOAdmin) View.VISIBLE else View.GONE
 
         btnDireccio.setOnClickListener {
@@ -77,20 +98,32 @@ class PantallaPanell : AppCompatActivity() {
         }
     }
 
+    /**
+     * Activa el bucle de sincronització periòdica quan la pantalla passa a primer pla.
+     */
     override fun onResume() {
         super.onResume()
+        // Execució del runnable per iniciar la sincronització en temps real
         handler.post(runnableRefresc)
     }
 
+    /**
+     * Atura el bucle de sincronització en pauses per estalviar recursos i bateria.
+     */
     override fun onPause() {
         super.onPause()
+        // Cancel·lació del refresc periòdic
         handler.removeCallbacks(runnableRefresc)
     }
 
+    /**
+     * Consulta l'API REST per obtenir la llista actualitzada de menjadors i taules.
+     */
     private fun carregarMenjadors() {
         lifecycleScope.launch {
             val llistaMenjadors = menjadorRepository.llistarMenjador() ?: emptyList()
 
+            // Si no hi ha menjadors disponibles, netegem tot el canvas
             if (llistaMenjadors.isEmpty()) {
                 canvasPanell.removeAllViews()
                 taulesViewsMap.clear()
@@ -98,7 +131,7 @@ class PantallaPanell : AppCompatActivity() {
                 return@launch
             }
 
-            // Actualitzem els botons dels menjadors només si el nombre de botons difereix
+            // Dibuixat dinàmic dels botons dels menjadors (només es recrea si varia el nombre)
             if (containerMenjadors.childCount != llistaMenjadors.size) {
                 containerMenjadors.removeAllViews()
                 llistaMenjadors.forEachIndexed { index, menjador ->
@@ -124,7 +157,7 @@ class PantallaPanell : AppCompatActivity() {
                             marcarBotoActiu(this)
                             if (menjadorSeleccionatId != menjador.idMenjador) {
                                 menjadorSeleccionatId = menjador.idMenjador
-                                // En canviar de menjador, netegem el canvas per dibuixar el nou salon
+                                // Netegem les taules de l'anterior menjador abans de dibuixar el nou
                                 canvasPanell.removeAllViews()
                                 taulesViewsMap.clear()
                                 pintarTaulesAlCanvas(menjador.taules)
@@ -132,6 +165,7 @@ class PantallaPanell : AppCompatActivity() {
                         }
                     }
 
+                    // Marcar per defecte el primer menjador o el seleccionat actualment
                     if ((menjadorSeleccionatId == null && index == 0) || menjadorSeleccionatId == menjador.idMenjador) {
                         marcarBotoActiu(btnMenjador)
                         menjadorSeleccionatId = menjador.idMenjador
@@ -141,7 +175,7 @@ class PantallaPanell : AppCompatActivity() {
                 }
             }
 
-            // Actualitzar el canvas del menjador actualment seleccionat
+            // Actualitzar el canvas del menjador visible actualment
             val menjadorActual = llistaMenjadors.find { it.idMenjador == menjadorSeleccionatId }
                 ?: llistaMenjadors.firstOrNull()
 
@@ -152,6 +186,10 @@ class PantallaPanell : AppCompatActivity() {
         }
     }
 
+    /**
+     * Realitza el rendiment visual de les taules al canvas utilitzant un algorisme de delta-update
+     * per actualitzar només aquelles vistes que hagin canviat d'estat o posició.
+     */
     private fun pintarTaulesAlCanvas(taules: List<TaulaDTO>?) {
         if (taules.isNullOrEmpty()) {
             canvasPanell.removeAllViews()
@@ -167,7 +205,7 @@ class PantallaPanell : AppCompatActivity() {
 
             val idsNoves = taules.map { it.idTaula }.toSet()
 
-            // Eliminar vistes de taules que ja no existeixin en la resposta del servidor
+            // Neteja de taules que han estat eliminades al servidor des de la darrera sincronització
             val iter = taulesViewsMap.iterator()
             while (iter.hasNext()) {
                 val entry = iter.next()
@@ -186,11 +224,11 @@ class PantallaPanell : AppCompatActivity() {
 
                 val esSegons = estatComanda.equals("segons", ignoreCase = true)
 
-                // Normalitzar la comparació de noms d'usuari per evitar fallos d'espais o majúscules
+                // Verificació de bloqueig per concurrència
                 val esElMeuBloqueig = taula.usuariBloqueig?.trim().equals(nomCambrerActual.trim(), ignoreCase = true)
                 val estaBloquejadaPerAltre = taula.bloquejada && !esElMeuBloqueig
 
-                // Determinar el tint de color segons l'estat
+                // Càlcul del color del boto segons l'estat operatiu i de bloqueig
                 val nouTint = when {
                     estaBloquejadaPerAltre -> ContextCompat.getColorStateList(this@PantallaPanell, R.color.negre)
                     esSegons -> ContextCompat.getColorStateList(this@PantallaPanell, R.color.taula_ocupada2)
@@ -201,14 +239,14 @@ class PantallaPanell : AppCompatActivity() {
                     else -> null
                 }
 
-                // Text segons l'estat visual
+                // Format del text informatiu de la taula
                 val textTaula = when {
                     estaBloquejadaPerAltre -> "Taula ${taula.numero}\n🔒 ${taula.usuariBloqueig ?: "Bloquejada"}"
                     esSegons -> "Taula ${taula.numero}\n⏸️ SEGONS"
                     else -> "Taula ${taula.numero}\n(${taula.capacitat} Pax)"
                 }
 
-                // SI LA TAULA JA EXISTEIX AL CANVAS, NOMÉS N'ACTUALITZEM LES PROPIETATS
+                // Reutilització de vistes: Si la taula ja existeix, s'actualitzen les propietats
                 val vistaExistent = taulesViewsMap[taula.idTaula]
                 if (vistaExistent != null) {
                     vistaExistent.text = textTaula
@@ -219,7 +257,7 @@ class PantallaPanell : AppCompatActivity() {
                     continue
                 }
 
-                // SI ÉS UNA TAULA NOVA, LA CREEM I AFEGIM AL MAPA
+                // Creació de nova vista: Conversió de coordenades percentuals a píxels reals
                 val pixelX = (taula.posX / 100f) * canvasWidth
                 val pixelY = (taula.posY / 100f) * canvasHeight
                 val sizePx = 160.toPx()
@@ -231,6 +269,7 @@ class PantallaPanell : AppCompatActivity() {
                     textSize = 12f
                     isAllCaps = false
 
+                    // Fons adaptable segons la capacitat de comensals
                     val bgDrawableRes = when (taula.capacitat) {
                         1, 2 -> R.drawable.bg_taula_2pax
                         3, 4 -> R.drawable.bg_taula_4pax
@@ -259,10 +298,13 @@ class PantallaPanell : AppCompatActivity() {
         }
     }
 
+    /**
+     * Intent de bloqueig al backend i navegació cap a la pantalla TPV de la taula.
+     */
     private fun obrirPantallaTaula(taula: TaulaDTO, esOcupada: Boolean, estatComanda: String) {
         val esElMeuBloqueig = taula.usuariBloqueig?.trim().equals(nomCambrerActual.trim(), ignoreCase = true)
 
-        // Denegar l'accés directament si la taula està bloquejada per un altre usuari
+        // Denega l'accés si la taula la té oberta un altre cambrer
         if (taula.bloquejada && !esElMeuBloqueig) {
             Toast.makeText(
                 this,
@@ -272,7 +314,7 @@ class PantallaPanell : AppCompatActivity() {
             return
         }
 
-        // Executem el bloqueig al servidor abans de navegar
+        // Bloqueig de la taula al backend abans d'obrir la comanda
         lifecycleScope.launch {
             val result = menjadorRepository.bloquejarTaula(taula.idTaula, nomCambrerActual)
 
@@ -290,16 +332,24 @@ class PantallaPanell : AppCompatActivity() {
                     ex.message ?: "La taula ha estat bloquejada per un altre usuari",
                     Toast.LENGTH_SHORT
                 ).show()
-                carregarMenjadors() // Refrescar si hi ha hagut un conflicte 409
+                carregarMenjadors() // Refrescar per mostrar la taula com a bloquejada immediatament
             }
         }
     }
 
+    /**
+     * Canvia l'estat visual del botó de menjador seleccionat.
+     */
     private fun marcarBotoActiu(button: MaterialButton) {
+        // Canvi de color de fons del botó seleccionat
         button.setBackgroundColor(Color.parseColor("#3B82F6"))
     }
 
+    /**
+     * Restableix el fons de tots els botons de menjadors a transparent.
+     */
     private fun desmarcarTotsElsBotons() {
+        // Iteració sobre la llista de botons per reiniciar-ne l'estat visual
         for (i in 0 until containerMenjadors.childCount) {
             val child = containerMenjadors.getChildAt(i)
             if (child is MaterialButton) {
@@ -308,9 +358,16 @@ class PantallaPanell : AppCompatActivity() {
         }
     }
 
+    /**
+     * Extensió per a la conversió ràpida de DP a Píxels segons la densitat de pantalla.
+     */
     private fun Int.toPx(): Int = (this * resources.displayMetrics.density).toInt()
 
+    /**
+     * Neteja la sessió local i redirecciona a la pantalla d'inici de sessió.
+     */
     private fun tancarSessio() {
+        // Aturar tasques en segon pla i netejar preferències
         handler.removeCallbacks(runnableRefresc)
         val sharedPreferences = getSharedPreferences("ServiTecPrefs", MODE_PRIVATE)
         sharedPreferences.edit().clear().apply()

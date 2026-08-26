@@ -1,3 +1,14 @@
+// ============================================================================
+// Projecte:      ServiTec - Sistema de Gestió de Restaurants (TFG)
+// Autor:         Luca Klein
+// Titulació:     Grau en Enginyeria Informàtica (4t Curs)
+// Institució:    Universitat de Girona (UdG)
+// Fitxer:        PantallaTaula.kt
+// Descripció:    Vista principal de gestió de taules (TPV). Permet afegir
+//                productes, canviar d'ordre els plats, teclejar quantitats,
+//                enviar comandes a cuina, demanar segons i cobrar.
+// ============================================================================
+
 package com.example.servitec_frontend.ui
 
 import android.graphics.Color
@@ -26,8 +37,14 @@ import com.example.servitec_frontend.ui.adapter.ProductesAdapter
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
 
+/**
+ * Activitat encarregada de la gestió operativa d'una taula del restaurant.
+ * Controla el catàleg de productes, el teclat numèric, el tiquet de la comanda
+ * i la sincronització en temps real amb el servidor REST.
+ */
 class PantallaTaula : AppCompatActivity() {
 
+    // Components de la interfície d'usuari
     private lateinit var adapterProductes: ProductesAdapter
     private lateinit var adapterCentre: ComandaColorAdapter
     private lateinit var tvTotalPreu: TextView
@@ -38,45 +55,56 @@ class PantallaTaula : AppCompatActivity() {
     private lateinit var btnTreureCompte: Button
     private lateinit var btnDemanarSegons: Button
     private lateinit var btnBorrar: MaterialButton
-    private lateinit var btnCambiarOrde : MaterialButton
+    private lateinit var btnCambiarOrde: MaterialButton
     private lateinit var mostrarNumeroTaula: TextView
+    private lateinit var tvQuantitat: TextView
 
-    private var totsElsProductes = listOf<ProducteDTO>()
+    // Repositoris de dades per a la comunicació amb l'API REST
     private lateinit var taulaRepository: TaulaRepository
     private lateinit var producteRepository: ProducteRepository
+
+    // Estat local i col·leccions de dades
+    private var totsElsProductes = listOf<ProducteDTO>()
     private val historialGuardat = mutableListOf<LiniaComandaTemporal>()
     private val productesSeleccionats = mutableListOf<LiniaComandaTemporal>()
 
+    // Control del context de la taula actual
     private var idTaulaActual = -1
     private var idComandaActiva = -1
     private var estatComandaActiva = "oberta"
     private var producteBorrar: LiniaComandaTemporal? = null
 
-    private lateinit var tvQuantitat: TextView
+    // Lògica per a la gestió de la quantitat teclejada
     private var quantitatTeclejada = "1"
     private var quantitatEditada = false
 
+    /**
+     * Inicialitza la pantalla, configura els adaptadors dels RecyclerViews i defineix els esdeveniments dels botons.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_taula)
 
+        // Inicialització de les vistes i referències de la interfície
         initViews()
 
+        // Lectura de paràmetres enviats des del selector de taules
         idTaulaActual = intent.getIntExtra("idTaula", -1)
         val nTaulaActual = intent.getStringExtra("nTaula") ?: "Taula"
         val sharedPreferences = getSharedPreferences("ServiTecPrefs", MODE_PRIVATE)
         val idUsuariActual = sharedPreferences.getInt("idUsuari", -1)
         val taulaOcupada = intent.getBooleanExtra("taulaOcupada", false)
+
         btnCambiarOrde = findViewById(R.id.btnCambiarOrden)
         taulaRepository = TaulaRepository(this)
         producteRepository = ProducteRepository(this)
         mostrarNumeroTaula.text = nTaulaActual
 
-        // 1. Categorías (Izquierda)
+        // Inicialització del panell esquerre (Categories)
         val rvCategories = findViewById<RecyclerView>(R.id.rvCategorias)
         rvCategories.layoutManager = LinearLayoutManager(this)
 
-        // 2. Ticket Combinado (Centro)
+        // Inicialització del panell central (Tiquet integrat de la comanda)
         val rvCentre = findViewById<RecyclerView>(R.id.rvPedido)
         rvCentre.layoutManager = LinearLayoutManager(this)
 
@@ -86,13 +114,14 @@ class PantallaTaula : AppCompatActivity() {
         }
         rvCentre.adapter = adapterCentre
 
-        // 3. Catálogo de Productos (Derecha)
+        // Inicialització del panell dret (Catàleg de productes)
         val rvProductes = findViewById<RecyclerView>(R.id.rvSeleccionProductos)
         rvProductes.layoutManager = GridLayoutManager(this, 2)
 
+        // Configuració dels esdeveniments del teclat numèric en pantalla
         setupTeclatNumeric()
 
-        // Carga inicial de datos de la mesa
+        // Càrrega inicial de la taula: Si està ocupada, recuperem les línies registrades al servidor
         if (taulaOcupada && idTaulaActual != -1) {
             lifecycleScope.launch {
                 val comandaActiva = taulaRepository.obtenirComandaActiva(idTaulaActual)
@@ -103,6 +132,7 @@ class PantallaTaula : AppCompatActivity() {
                     productesSeleccionats.clear()
                     historialGuardat.clear()
 
+                    // Mapeig de les línies rebudes de l'API cap al model temporal visual
                     comandaActiva.liniaComanda?.forEach { linea ->
                         val prod = linea.idProducteNavigation
                         if (prod != null) {
@@ -124,8 +154,9 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
-        // Configuración del adapter de productos con comprobación segura
+        // Adapter de productes: Gestió de selecció i addició de productes al tiquet local
         adapterProductes = ProductesAdapter(emptyList()) { productoPulsado ->
+            // Verificació d'estat actiu del producte
             if (productoPulsado.actiu == false) {
                 Toast.makeText(this, "Aquest producte està desactivat i no es pot afegir", Toast.LENGTH_SHORT).show()
                 return@ProductesAdapter
@@ -134,6 +165,7 @@ class PantallaTaula : AppCompatActivity() {
             val q = quantitatTeclejada.toIntOrNull() ?: 1
             val itemExistente = productesSeleccionats.find { it.producte.idProducte == productoPulsado.idProducte }
 
+            // Si el producte ja està a la llista pendent, incrementem la quantitat; si no, el creem
             if (itemExistente != null) {
                 itemExistente.quantitat += q
                 itemExistente.total = itemExistente.producte.preu * itemExistente.quantitat
@@ -154,11 +186,12 @@ class PantallaTaula : AppCompatActivity() {
         }
         rvProductes.adapter = adapterProductes
 
-        // Carga inicial de categorías y catálogo
+        // Càrrega asíncrona de les categories i el catàleg de productes
         lifecycleScope.launch {
             val categoriesBD = taulaRepository.obtenirCategories()
             val productesBD = taulaRepository.obtenirProductes() ?: emptyList()
 
+            // Filtrem per mantenir únicament els productes actius en el TPV
             totsElsProductes = productesBD.filter { it.actiu != false }
 
             if (categoriesBD != null) {
@@ -168,6 +201,7 @@ class PantallaTaula : AppCompatActivity() {
                 }
                 rvCategories.adapter = adapterCategories
 
+                // Mostrem per defecte els productes de la primera categoria trobada
                 if (categoriesBD.isNotEmpty()) {
                     val primeraCatId = categoriesBD[0].idCategoria
                     val productesInicials = totsElsProductes.filter { it.idCategoria == primeraCatId }
@@ -176,7 +210,7 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
-        // Acciones de Botones
+        // Acció: Envia les noves línies pendents cap al backend / cuina
         btnEnviar.setOnClickListener {
             if (productesSeleccionats.isEmpty()) {
                 Toast.makeText(this, "No hi ha cap producte nou per enviar a cuina", Toast.LENGTH_SHORT).show()
@@ -199,6 +233,7 @@ class PantallaTaula : AppCompatActivity() {
                 val idComandaObtinguda = comandaActiva?.idComanda ?: -1
                 val exit: Boolean
 
+                // Afegim línies a la comanda existent o en creem una de nova si la taula estava lliure
                 if (taulaOcupada && idComandaObtinguda > 0) {
                     val resultat = taulaRepository.afegirLinies(idComandaObtinguda, novesLiniesDto)
                     exit = resultat.isSuccess
@@ -224,6 +259,7 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
+        // Acció: Incrementa la quantitat de la línia de tiquet seleccionada
         btnSumarProducte.setOnClickListener {
             val elemento = producteBorrar
             if (elemento != null) {
@@ -247,6 +283,7 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
+        // Acció: Esborra o decrementa un element de la comanda
         btnBorrar.setOnClickListener {
             val elemento = producteBorrar
             if (elemento != null) {
@@ -282,6 +319,7 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
+        // Acció: Canvia l'estat de la comanda a "segons" per notificar a la cuina
         btnDemanarSegons.setOnClickListener {
             btnDemanarSegons.isEnabled = false
             lifecycleScope.launch {
@@ -289,7 +327,7 @@ class PantallaTaula : AppCompatActivity() {
                 if (exit) {
                     estatComandaActiva = "segons"
                     Toast.makeText(this@PantallaTaula, "Avís enviat a cuina: Marxa els segons!", Toast.LENGTH_SHORT).show()
-                    desbloquejariSortir() // Tanca la pantalla i allibera la taula
+                    desbloquejariSortir()
                 } else {
                     Toast.makeText(this@PantallaTaula, "Error en enviar l'avís a cuina", Toast.LENGTH_SHORT).show()
                     btnDemanarSegons.isEnabled = true
@@ -297,6 +335,7 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
+        // Acció: Demana el compte i canvia l'estat a "pendent"
         btnTreureCompte.setOnClickListener {
             lifecycleScope.launch {
                 btnTreureCompte.isEnabled = false
@@ -309,6 +348,7 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
+        // Acció: Processa el cobrament final de la comanda
         btnCobrar.setOnClickListener {
             if (idComandaActiva == -1) {
                 Toast.makeText(this, "No hi ha cap comanda activa per cobrar", Toast.LENGTH_SHORT).show()
@@ -334,6 +374,7 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
+        // Acció: Alterna la categoria d'ordre del plat entre primers i segons (ID 2 <-> ID 3)
         btnCambiarOrde.setOnClickListener {
             val element = producteBorrar
             if (element != null) {
@@ -350,12 +391,17 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
+        // Botó de sortida manual
         btnSortir.setOnClickListener {
             desbloquejariSortir()
         }
     }
 
+    /**
+     * Allibera el bloqueig de la taula al backend i tanca l'activitat.
+     */
     private fun desbloquejariSortir() {
+        // Comprovació de taula vàlida per alliberar la reserva
         if (idTaulaActual != -1) {
             lifecycleScope.launch {
                 taulaRepository.desbloquejarTaula(idTaulaActual)
@@ -366,8 +412,12 @@ class PantallaTaula : AppCompatActivity() {
         }
     }
 
+    /**
+     * S'assegura d'alliberar el bloqueig de la taula al servidor si l'activitat es destrueix.
+     */
     override fun onDestroy() {
         super.onDestroy()
+        // Garantir el desbloqueig al finalitzar el cicle de vida
         if (idTaulaActual != -1) {
             lifecycleScope.launch {
                 taulaRepository.desbloquejarTaula(idTaulaActual)
@@ -375,7 +425,11 @@ class PantallaTaula : AppCompatActivity() {
         }
     }
 
+    /**
+     * Vincula les vistes de la interfície amb les variables locals.
+     */
     private fun initViews() {
+        // Mapeig de vistes de la interfície
         tvTotalPreu = findViewById(R.id.tvTotalPrecio)
         btnEnviar = findViewById(R.id.btnEnviar)
         btnSumarProducte = findViewById(R.id.btnSumarProducte)
@@ -388,7 +442,11 @@ class PantallaTaula : AppCompatActivity() {
         tvQuantitat = findViewById(R.id.tvQuantitatTeclejada)
     }
 
+    /**
+     * Configura la lògica del teclat numèric en pantalla per introduir quantitats.
+     */
     private fun setupTeclatNumeric() {
+        // Diccionari de botons numèrics
         val botonsNumeros = mapOf(
             R.id.btnNum0 to "0", R.id.btnNum1 to "1", R.id.btnNum2 to "2", R.id.btnNum3 to "3",
             R.id.btnNum4 to "4", R.id.btnNum5 to "5", R.id.btnNum6 to "6", R.id.btnNum7 to "7",
@@ -403,10 +461,12 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
+        // Neteja tot el buffer del teclat numèric
         findViewById<com.google.android.material.button.MaterialButton>(R.id.btnNumC).setOnClickListener {
             borrarNumeroTeclat()
         }
 
+        // Esborra el darrer dígit introduït
         findViewById<com.google.android.material.button.MaterialButton>(R.id.btnNumBorrarUn).setOnClickListener {
             if (quantitatEditada) {
                 quantitatTeclejada = quantitatTeclejada.dropLast(1)
@@ -419,17 +479,25 @@ class PantallaTaula : AppCompatActivity() {
         }
     }
 
+    /**
+     * Restableix la quantitat teclejada al valor per defecte de 1x.
+     */
     private fun borrarNumeroTeclat() {
+        // Reset del buffer numèric
         quantitatTeclejada = "1"
         quantitatEditada = false
         tvQuantitat.text = "${quantitatTeclejada}x"
     }
 
+    /**
+     * Recalcula l'import total de la comanda i actualitza el tiquet central.
+     */
     private fun actualitzarTotalInterficie() {
         val totsElsItems = mutableListOf<LiniaComandaTemporal>()
         totsElsItems.addAll(historialGuardat.filter { it.estat != "Eliminat" })
         totsElsItems.addAll(productesSeleccionats)
 
+        // Ordenació dels productes per categoria per a una presentació estructurada
         totsElsItems.sortBy { it.idCategoriaModificada ?: it.producte.idCategoria }
 
         adapterCentre.actualitzarLlista(totsElsItems)
@@ -438,6 +506,10 @@ class PantallaTaula : AppCompatActivity() {
         tvTotalPreu.text = "${String.format("%.2f", granTotal)}€"
     }
 
+    /**
+     * Adaptador del RecyclerView encarregat de dibuixar les línies del tiquet,
+     * aplicant colors i fons dinàmics segons l'estat i la selecció activa.
+     */
     inner class ComandaColorAdapter(
         private var llista: List<LiniaComandaTemporal>,
         private val onItemClick: (LiniaComandaTemporal) -> Unit
@@ -445,14 +517,23 @@ class PantallaTaula : AppCompatActivity() {
 
         private var posicioSeleccionada: Int = RecyclerView.NO_POSITION
 
+        /**
+         * ViewHolder que conté la vista de text per a cada línia de producte del tiquet.
+         */
         inner class ComandaViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
 
+        /**
+         * Infla la vista de la línia del tiquet.
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComandaViewHolder {
             val tv = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_producte_ticket, parent, false) as TextView
             return ComandaViewHolder(tv)
         }
 
+        /**
+         * Enllaça les dades de la línia de la comanda amb la vista i aplica els colors i estils visual corresponents.
+         */
         override fun onBindViewHolder(holder: ComandaViewHolder, position: Int) {
             val item = llista[position]
             val context = holder.itemView.context
@@ -461,6 +542,7 @@ class PantallaTaula : AppCompatActivity() {
             val esSegonsDemanat = estatComandaActiva.equals("segons", ignoreCase = true)
             val esCategoriaSegons = catEfectiva == 3
 
+            // Assignació de colors del text segons la categoria de plat
             val resIdColor = when (catEfectiva) {
                 1 -> R.color.blauMenu
                 2 -> R.color.primerPlat
@@ -469,20 +551,20 @@ class PantallaTaula : AppCompatActivity() {
                 else -> R.color.blauMenu
             }
 
-            // Gestió de fons: Preval la selecció blava activa sobre el marcat de segons (gris)
+            // Aplicació de fons dinàmics segons selecció o avís de segons plats a cuina
             if (posicioSeleccionada == holder.bindingAdapterPosition) {
-                val shapeBlau = GradientDrawable().apply {
-                    setColor(Color.parseColor("#2196F3")) // Blau de selecció activa
+                val shapeSeleccionat = GradientDrawable().apply {
+                    setColor(ContextCompat.getColor(context, R.color.blauMenu))
                     cornerRadius = 8f
                 }
-                holder.textView.background = shapeBlau
+                holder.textView.background = shapeSeleccionat
                 holder.textView.setTextColor(Color.WHITE)
             } else if (esSegonsDemanat && esCategoriaSegons) {
-                val shapeGris = GradientDrawable().apply {
-                    setColor(Color.parseColor("#E0E0E0")) // Gris d'estat segons demanats
+                val shapeSegonsDemanats = GradientDrawable().apply {
+                    setColor(ContextCompat.getColor(context, R.color.selecio_segons))
                     cornerRadius = 8f
                 }
-                holder.textView.background = shapeGris
+                holder.textView.background = shapeSegonsDemanats
                 holder.textView.setTextColor(ContextCompat.getColor(context, resIdColor))
             } else {
                 holder.textView.setBackgroundColor(Color.TRANSPARENT)
@@ -495,6 +577,7 @@ class PantallaTaula : AppCompatActivity() {
                     val posAnterior = posicioSeleccionada
                     posicioSeleccionada = holder.bindingAdapterPosition
 
+                    // Notifiquem els canvis per refrescar la línia seleccionada anterior i la nova
                     notifyItemChanged(posAnterior)
                     notifyItemChanged(posicioSeleccionada)
 
@@ -503,14 +586,25 @@ class PantallaTaula : AppCompatActivity() {
             }
         }
 
+        /**
+         * Retorna el nombre total d'elements al tiquet.
+         */
         override fun getItemCount(): Int = llista.size
 
+        /**
+         * Reemplaça el conjunt de dades i actualitza la vista.
+         */
         fun actualitzarLlista(novaLlista: List<LiniaComandaTemporal>) {
+            // Actualització de la llista del tiquet
             this.llista = novaLlista
             notifyDataSetChanged()
         }
 
+        /**
+         * Desmarca qualsevol element seleccionat al tiquet.
+         */
         fun netejarSeleccio() {
+            // Neteja de l'estat de selecció
             val posAnterior = posicioSeleccionada
             posicioSeleccionada = RecyclerView.NO_POSITION
             if (posAnterior != RecyclerView.NO_POSITION) {

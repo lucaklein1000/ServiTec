@@ -4,8 +4,8 @@
 // Titulació:     Grau en Enginyeria Informàtica (4t Curs)
 // Institució:    Universitat de Girona (UdG)
 // Fitxer:        UsuariRepository.kt
-// Descripció:    Repositori encarregat de la gestió de les operacions d usuaris
-//                i de l autenticació al sistema mitjançant el servei RESTful.
+// Descripció:    Repositori encarregat de la gestió de les operacions d'usuaris
+//                i de l'autenticació al sistema mitjançant el servei RESTful.
 // ============================================================================
 
 package com.example.servitec_frontend.repository
@@ -21,10 +21,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-/** * Repositori encarregat de la comunicació amb l API REST per a la gestió d usuaris
- * i el procés d inici de sessió.
+/**
+ * Repositori encarregat de la comunicació amb l'API REST per a la gestió d'usuaris
+ * i el procés d'inici de sessió.
  *
- * @param context Context de l aplicació o activitat necessari per inicialitzar el RetrofitClient amb l interceptor JWT.
+ * @param context Context de l'aplicació o activitat necessari per inicialitzar el RetrofitClient amb l'interceptor JWT.
  */
 class UsuariRepository(private val context: Context) {
 
@@ -58,9 +59,9 @@ class UsuariRepository(private val context: Context) {
     }
 
     /**
-     * Obté el llistat complet d usuaris registrats al sistema.
+     * Obté el llistat complet d'usuaris registrats al sistema.
      *
-     * @return Llista de DTOs d usuaris (`List<UsuariDTO>`) o `null` si la petició falla.
+     * @return Llista de DTOs d'usuaris (`List<UsuariDTO>`) o `null` si la petició falla.
      */
     suspend fun llistarUsuaris(): List<UsuariDTO>? {
         return try {
@@ -80,7 +81,7 @@ class UsuariRepository(private val context: Context) {
      * Enregistra un nou usuari al sistema.
      *
      * @param nouUsuari DTO amb les dades de creació del nou usuari.
-     * @return L objecte `UsuariDTO` creat o `null` si es produeix un error.
+     * @return L'objecte `UsuariDTO` creat o `null` si es produeix un error.
      */
     suspend fun crearUsuari(nouUsuari: CreateUsuariDTO): UsuariDTO? {
         return try {
@@ -99,8 +100,8 @@ class UsuariRepository(private val context: Context) {
     /**
      * Elimina un usuari del sistema segons el seu identificador.
      *
-     * @param idUsuari Identificador de l usuari a eliminar.
-     * @return `true` si s ha eliminat correctament, `false` en cas contrari.
+     * @param idUsuari Identificador de l'usuari a eliminar.
+     * @return `true` si s'ha eliminat correctament, `false` en cas contrari.
      */
     suspend fun eliminarUsuari(idUsuari: Int): Boolean {
         return try {
@@ -113,11 +114,11 @@ class UsuariRepository(private val context: Context) {
     }
 
     /**
-     * Actualitza la informació o permisos d un usuari existent.
+     * Actualitza la informació o permisos d'un usuari existent.
      *
-     * @param idUsuari Identificador de l usuari a modificar.
-     * @param usuari DTO amb les noves dades de l usuari.
-     * @return `true` si l actualització és correcta, `false` en cas contrari.
+     * @param idUsuari Identificador de l'usuari a modificar.
+     * @param usuari DTO amb les noves dades de l'usuari.
+     * @return `true` si l'actualització és correcta, `false` en cas contrari.
      */
     suspend fun actualitzarUsuari(idUsuari: Int, usuari: UpdateUsuariDTO): Boolean {
         return try {
