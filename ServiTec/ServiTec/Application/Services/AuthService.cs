@@ -47,6 +47,7 @@ namespace ServiTec.Application.Services
             {
                 Token = token,
                 NomUsuari = usuari.NomUsuari,
+                IdUsuari = usuari.IdUsuari,
                 Rol = usuari.Rol
             };
         }

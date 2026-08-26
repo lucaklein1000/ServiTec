@@ -4,7 +4,7 @@
 // Titulació:     Grau en Enginyeria Informàtica (4t Curs)
 // Institució:    Universitat de Girona (UdG)
 // Fitxer:        PantallaLogin.kt
-// Descripció:    Activity que gestiona la pantalla d inici de sessió de l aplicació.
+// Descripció:    Activity que gestiona la pantalla d'inici de sessió de l'aplicació.
 //                Valida les credencials contra el backend i enruta segons el rol.
 // ============================================================================
 
@@ -18,10 +18,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.example.servitec_frontend.R
+import com.example.servitec_frontend.data.model.LoginResponse
 import com.example.servitec_frontend.repository.UsuariRepository
 
 /**
- * Activity principal d autenticació de l aplicació ServiTec.
+ * Activity principal d'autenticació de l'aplicació ServiTec.
  */
 class PantallaLogin : AppCompatActivity() {
 
@@ -38,28 +39,38 @@ class PantallaLogin : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("ServiTecPrefs", MODE_PRIVATE)
 
         btnLogin.setOnClickListener {
-            val user = etUser.text.toString()
-            val pass = etPass.text.toString()
+            val user = etUser.text.toString().trim()
+            val pass = etPass.text.toString().trim()
 
-            userRepository.loginUser(user, pass) { usuari, error ->
-                if (usuari != null) {
+            if (user.isEmpty() || pass.isEmpty()) {
+                Toast.makeText(this, "Si us plau, omple tots els camps", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            btnLogin.isEnabled = false
+
+            userRepository.loginUser(user, pass) { response: LoginResponse?, error: String? ->
+                btnLogin.isEnabled = true
+
+                if (response != null) {
                     Toast.makeText(
                         this,
-                        "Hola, ${usuari.nomUsuari}",
+                        "Hola, ${response.nomUsuari}",
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    // Guardem les dades d usuari i el token JWT
+                    // Guardem l'idUsuari, nom, rol, admin i el token JWT a SharedPreferences
                     sharedPreferences.edit {
-                        putInt("idUsuari", usuari.idUsuari)
-                        putString("rolUsuari", usuari.rol.toString())
-                        putBoolean("esAdmin", usuari.admin)
-                        putString("jwt_token", usuari.token)
+                        putInt("idUsuari", response.idUsuari)
+                        putString("nomUsuari", response.nomUsuari)
+                        putString("rolUsuari", response.rol)
+                        putBoolean("esAdmin", response.admin)
+                        putString("jwt_token", response.token)
                     }
 
-                    // Enrutament segons el rol
-                    val intent = when (usuari.rol.toString().lowercase()) {
-                        "admin" -> Intent(this, PantallaGerent::class.java)
+                    // Enrutament segons el rol de l'usuari
+                    val intent = when (response.rol.lowercase()) {
+                        "admin", "gerent" -> Intent(this, PantallaGerent::class.java)
                         "1", "cambrer", "camarero" -> Intent(this, PantallaPanell::class.java)
                         else -> Intent(this, PantallaCuina::class.java)
                     }

@@ -214,7 +214,7 @@ class TaulaRepository(private val context: Context) {
      * @param nouEstat Text que representa el nou estat de la comanda.
      * @return `true` si l estat s ha actualitzat correctament, `false` en cas contrari.
      */
-    suspend fun cambiarEstatComanda(idComanda: Int, nouEstat: String): Boolean {
+    suspend fun canviarEstatComanda(idComanda: Int, nouEstat: String): Boolean {
         return try {
             val response = apiService.canviarEstatComanda(idComanda, nouEstat)
             response.isSuccessful

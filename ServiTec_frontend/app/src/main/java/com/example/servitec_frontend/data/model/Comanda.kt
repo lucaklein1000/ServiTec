@@ -107,6 +107,7 @@ data class ComandaDTO(
  */
 data class Cuina(
     @SerializedName("idComanda") val idComanda: Int,
+    @SerializedName("estat") val estat: String,
     @SerializedName("idTaula") val idTaula: Int,
     @SerializedName("numTaula") val numTaula: String?,
     @SerializedName("dataHora") val dataHora: String,

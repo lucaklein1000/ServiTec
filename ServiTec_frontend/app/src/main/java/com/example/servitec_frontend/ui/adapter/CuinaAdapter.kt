@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -53,9 +54,20 @@ class CuinaAdapter(
 
     override fun onBindViewHolder(holder: CuinaViewHolder, position: Int) {
         val comanda = comandes[position]
+        val context = holder.itemView.context
 
-        // 1. Mostrar nom de la taula
-        holder.tvNumTaula.text = "Taula ${comanda.numTaula}"
+        // 1. Mostrar nom de la taula i senyal visual si l'estat és "segons"
+        val esSegons = comanda.estat?.equals("segons", ignoreCase = true) == true
+
+        if (esSegons) {
+            holder.tvNumTaula.text = "Taula ${comanda.numTaula} (SEGONS)"
+            holder.tvNumTaula.setBackgroundColor(ContextCompat.getColor(context, R.color.taula_ocupada2))
+            holder.tvNumTaula.setTextColor(Color.WHITE)
+        } else {
+            holder.tvNumTaula.text = "Taula ${comanda.numTaula}"
+            holder.tvNumTaula.setBackgroundColor(Color.TRANSPARENT)
+            holder.tvNumTaula.setTextColor(Color.BLACK)
+        }
 
         // 2. Extreure i formatar l hora (de "2026-07-23T14:30:00" extreu "14:30")
         holder.tvHoraComanda.text = if (comanda.dataHora?.contains("T") == true) {
@@ -87,7 +99,6 @@ class CuinaAdapter(
 
             tvPlato.setOnClickListener {
                 val idLinia = linia.idLiniaComanda ?: return@setOnClickListener
-                val context = holder.itemView.context
 
                 // Ocultar el plat visualment
                 tvPlato.visibility = View.GONE
@@ -134,4 +145,13 @@ class CuinaAdapter(
     }
 
     override fun getItemCount(): Int = comandes.size
+
+    /**
+     * Permet actualitzar la llista de comandes evitant el parpelleig de la pantalla.
+     */
+    fun actualitzarComandes(novesComandes: List<Cuina>) {
+        comandes.clear()
+        comandes.addAll(novesComandes)
+        notifyDataSetChanged()
+    }
 }

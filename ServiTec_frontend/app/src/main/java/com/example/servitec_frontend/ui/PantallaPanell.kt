@@ -124,10 +124,8 @@ class PantallaPanell : AppCompatActivity() {
                 val pixelX = (taula.posX / 100f) * canvasWidth
                 val pixelY = (taula.posY / 100f) * canvasHeight
 
-                // Tamaño estándar según el diseño de la maqueta
                 val sizePx = 160.toPx()
 
-                // Instanciamos un AppCompatButton dinámico para mantener la interactividad
                 val taulaView = androidx.appcompat.widget.AppCompatButton(this).apply {
                     text = "Taula ${taula.numero}\n(${taula.capacitat} Pax)"
                     setTextColor(Color.WHITE)
@@ -144,16 +142,9 @@ class PantallaPanell : AppCompatActivity() {
                     }
                     setBackgroundResource(bgDrawableRes)
 
-                    // 2. TINTAR O APLICAR ESTADO (Opcional si usas tint según estado)
-                    if (taula.estat) {
-                        // Si está ocupada puedes aplicarle un tinte sutil o alfa si tus drawables no lo incluyen
-                        backgroundTintList = ContextCompat.getColorStateList(this@PantallaPanell, R.color.taula_ocupada2)
-                    } else {
-                        backgroundTintList = null
-                    }
-
-                    when (taula.estatComanda) {
-                        "oberta" -> {
+                    // 2. COLOR SEGUNDO ESTADO DE COMANDA (INCLUYE "SEGONS")
+                    when (taula.estatComanda?.lowercase()) {
+                        "oberta", "segons" -> {
                             backgroundTintList = ContextCompat.getColorStateList(this@PantallaPanell, R.color.taula_ocupada2)
                         }
                         "pendent" -> {
@@ -164,26 +155,24 @@ class PantallaPanell : AppCompatActivity() {
                         }
                     }
 
-                    // Posicionamiento exacto centrado en las coordenadas (X, Y)
+                    // Posicionamiento exacto
                     layoutParams = RelativeLayout.LayoutParams(sizePx, sizePx).apply {
                         leftMargin = (pixelX - (sizePx / 2)).toInt()
                         topMargin = (pixelY - (sizePx / 2)).toInt()
                     }
 
-                    // Interacción asegurada
                     isClickable = true
                     isFocusable = true
 
                     setOnClickListener {
-                        // 1. Calculamos si la mesa tiene comanda activa igual que se hacía antes
                         val estatComanda = taula.estatComanda ?: "lliure"
                         val esOcupada = estatComanda.equals("oberta", ignoreCase = true) ||
+                                estatComanda.equals("segons", ignoreCase = true) ||
                                 estatComanda.equals("pendent", ignoreCase = true) ||
-                                taula.estat // Mantiene compatibilidad si taula.estat indica ocupación
+                                taula.estat
 
                         val intent = Intent(this@PantallaPanell, PantallaTaula::class.java).apply {
                             putExtra("idTaula", taula.idTaula)
-                            // 2. Convertimos el número a String ("Taula X") para que intent.getStringExtra("nTaula") no devuelva null
                             putExtra("nTaula", "Taula ${taula.numero}")
                             putExtra("taulaOcupada", esOcupada)
                             putExtra("estatComanda", estatComanda)

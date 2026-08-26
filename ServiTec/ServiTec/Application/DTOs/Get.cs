@@ -78,6 +78,7 @@ namespace ServiTec.Application.DTOs
     /// Objecte de transferència de dades per a l'estat i posició d'una taula al plànol del menjador.
     /// </summary>
     public class TaulaDTO
+
     {
         public int IdTaula { get; set; }
         public int Numero { get; set; }
@@ -96,6 +97,7 @@ namespace ServiTec.Application.DTOs
     {
         public int IdComanda { get; set; }
         public int IdTaula { get; set; }
+        public string Estat { get; set; } = null!;
         public int NumTaula { get; set; }
         public DateTime DataHora { get; set; }
         public List<LiniaCuinaDTO> Linies { get; set; } = new();

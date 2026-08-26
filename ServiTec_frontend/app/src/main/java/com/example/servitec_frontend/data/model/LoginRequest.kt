@@ -19,6 +19,23 @@ import com.google.gson.annotations.SerializedName
  * @property contrasenya Contrasenya associada a l'usuari.
  */
 data class LoginRequest(
-    @SerializedName("nomUsuari") val nomUsuari: String,
-    @SerializedName("contrasenya") val contrasenya: String
+    val nomUsuari: String,
+    val contrasenya: String
+)
+
+data class LoginResponse(
+    @SerializedName("idUsuari")
+    val idUsuari: Int,
+
+    @SerializedName("nomUsuari")
+    val nomUsuari: String,
+
+    @SerializedName("rol")
+    val rol: String,
+
+    @SerializedName("admin")
+    val admin: Boolean,
+
+    @SerializedName("token")
+    val token: String
 )

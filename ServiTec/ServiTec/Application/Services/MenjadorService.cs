@@ -75,7 +75,7 @@ namespace ServiTec.Application.Services
                     Estat = t.Estat,
                     IdMenjador = t.IdMenjador,
                     EstatComanda = _context.Comanda
-                        .Where(c => c.IdTaula == t.IdTaula && (c.Estat == "oberta" || c.Estat == "pendent"))
+                        .Where(c => c.IdTaula == t.IdTaula && (c.Estat == "oberta" || c.Estat == "pendent" || c.Estat == "segons"))
                         .OrderByDescending(c => c.DataCreacio)
                         .Select(c => c.Estat)
                         .FirstOrDefault() ?? "lliure",

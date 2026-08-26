@@ -35,6 +35,9 @@ namespace ServiTec.Application.Services
         /// <returns>Col·lecció de DTOs amb la informació completa de cada taula.</returns>
         public async Task<IEnumerable<TaulaDTO>> GetAll()
         {
+            // Llista d'estats que considerem actius
+            var estatsActius = new[] { "oberta", "segons", "pendent" };
+
             return await _context.Taules
                 .Select(t => new TaulaDTO
                 {
@@ -42,11 +45,13 @@ namespace ServiTec.Application.Services
                     Numero = t.Numero,
                     Capacitat = t.Capacitat,
                     Estat = t.Estat,
-                    // Subconsulta per determinar si la taula té comandes obertes o pendents
+ 
                     EstatComanda = _context.Comanda
-                        .Where(c => c.IdTaula == t.IdTaula && (c.Estat == "oberta" || c.Estat == "pendent"))
+                        .Where(c => c.IdTaula == t.IdTaula &&
+                                    c.Estat != null &&
+                                    estatsActius.Contains(c.Estat.ToLower()))
                         .OrderByDescending(c => c.DataCreacio)
-                        .Select(c => c.Estat)
+                        .Select(c => c.Estat.ToLower())
                         .FirstOrDefault() ?? "lliure"
                 })
                 .ToListAsync();
@@ -146,7 +151,7 @@ namespace ServiTec.Application.Services
             if (taula == null)
                 return false;
 
-            if (!taula.Estat)
+            if (taula.Estat)
                 return false;
 
             _context.Taules.Remove(taula);

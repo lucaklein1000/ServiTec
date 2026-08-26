@@ -112,7 +112,9 @@ class PantallaTaula : AppCompatActivity() {
                                     quantitat = linea.quantitat,
                                     preu = linea.preuUnitari,
                                     total = linea.subtotal,
-                                    estat = linea.estat ?: "Enviat"
+                                    estat = linea.estat ?: "Enviat",
+                                    // ASSIGNEM LA CATEGORIA PROPIAMENT DE LA LÍNIA DE COMANDA:
+                                    idCategoriaModificada = linea.idCategoria ?: prod.idCategoria
                                 )
                             )
                         }
@@ -282,14 +284,23 @@ class PantallaTaula : AppCompatActivity() {
         }
 
         btnDemanarSegons.setOnClickListener {
-            Toast.makeText(this, "Avís enviat a cuina: Marxa els segons!", Toast.LENGTH_SHORT).show()
+            btnDemanarSegons.isEnabled = false
+            lifecycleScope.launch {
+                val exit = taulaRepository.canviarEstatComanda(idComandaActiva, "segons")
+                if (exit) {
+                    Toast.makeText(this@PantallaTaula, "Avís enviat a cuina: Marxa els segons!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@PantallaTaula, "Error en enviar l'avís a cuina", Toast.LENGTH_SHORT).show()
+                }
+                btnDemanarSegons.isEnabled = true
+            }
         }
 
         btnTreureCompte.setOnClickListener {
             lifecycleScope.launch {
                 btnTreureCompte.isEnabled = false
                 if (idComandaActiva >= 1) {
-                    taulaRepository.cambiarEstatComanda(idComandaActiva, "pendent")
+                    taulaRepository.canviarEstatComanda(idComandaActiva, "pendent")
                 }
                 btnTreureCompte.isEnabled = true
                 productesSeleccionats.clear()

@@ -193,7 +193,7 @@ namespace ServiTec.Application.Services
         }
 
         /// <summary>
-        /// Obté la comanda activa (oberta o pendent) associada a un número de taula determinat.
+        /// Obté la comanda activa (oberta, segons o pendent) associada a un número de taula determinat.
         /// </summary>
         /// <param name="idTaula">Identificador de la taula.</param>
         /// <returns>Instància de la comanda activa amb les seves línies o null si no n'hi ha cap.</returns>
@@ -203,7 +203,7 @@ namespace ServiTec.Application.Services
                 .Include(c => c.LiniaComanda)
                     .ThenInclude(lc => lc.IdProducteNavigation)
                 .FirstOrDefaultAsync(c => c.IdTaula == idTaula &&
-                                         (c.Estat == "oberta" || c.Estat == "pendent"));
+                                         (c.Estat == "oberta" || c.Estat == "segons" || c.Estat == "pendent"));
         }
 
         /// <summary>
@@ -216,13 +216,15 @@ namespace ServiTec.Application.Services
                 .Include(c => c.IdTaulaNavigation)
                 .Include(c => c.LiniaComanda)
                     .ThenInclude(l => l.IdProducteNavigation)
-                .Where(c => c.Estat == "pendent" || c.Estat == "oberta")
+                // 1. Incloem l'estat "segons"
+                .Where(c => c.Estat == "pendent" || c.Estat == "oberta" || c.Estat == "segons")
                 .Where(c => c.LiniaComanda.Any(l => l.Estat == "pendentEnviar"))
                 .Select(c => new ComandaCuinaDTO
                 {
                     IdComanda = c.IdComanda,
                     IdTaula = c.IdTaula,
                     NumTaula = c.IdTaulaNavigation.Numero,
+                    Estat = c.Estat,
                     DataHora = c.DataCreacio,
                     Linies = c.LiniaComanda
                         .Where(l => l.Estat == "pendentEnviar")
@@ -232,7 +234,8 @@ namespace ServiTec.Application.Services
                             IdProducte = l.IdProducte,
                             NomProducte = l.IdProducteNavigation != null ? l.IdProducteNavigation.Nom : "Sense nom",
                             Quantitat = l.Quantitat,
-                            IdCategoria = l.IdProducteNavigation != null ? l.IdProducteNavigation.IdCategoria : 0
+                            // 2. Agafem la categoria de la línia (o la del producte si fos null)
+                            IdCategoria = l.IdCategoria ?? (l.IdProducteNavigation != null ? l.IdProducteNavigation.IdCategoria : 0)
                         }).ToList()
                 })
                 .ToListAsync();

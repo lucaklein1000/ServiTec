@@ -13,6 +13,7 @@ package com.example.servitec_frontend.repository
 import android.content.Context
 import com.example.servitec_frontend.data.model.CreateUsuariDTO
 import com.example.servitec_frontend.data.model.LoginRequest
+import com.example.servitec_frontend.data.model.LoginResponse
 import com.example.servitec_frontend.data.model.UpdateUsuariDTO
 import com.example.servitec_frontend.data.model.UsuariDTO
 import com.example.servitec_frontend.data.network.RetrofitClient
@@ -30,17 +31,17 @@ class UsuariRepository(private val context: Context) {
     private val apiService = RetrofitClient.getApiService(context)
 
     /**
-     * Inicia la sessió d un usuari enviant les credencials al backend.
+     * Inicia la sessió d'un usuari enviant les credencials al backend.
      *
-     * @param user Nom d usuari o credencial d accés.
-     * @param pass Contrasenya de l usuari.
-     * @param onResult Callback que retorna l objecte `UsuariDTO` amb el token en cas d èxit, o un missatge d error.
+     * @param user Nom d'usuari o credencial d'accés.
+     * @param pass Contrasenya de l'usuari.
+     * @param onResult Callback que retorna l'objecte `LoginResponse` amb l'id, token i dades en cas d'èxit, o un missatge d'error.
      */
-    fun loginUser(user: String, pass: String, onResult: (UsuariDTO?, String?) -> Unit) {
+    fun loginUser(user: String, pass: String, onResult: (LoginResponse?, String?) -> Unit) {
         val loginData = LoginRequest(user, pass)
 
-        apiService.login(loginData).enqueue(object : Callback<UsuariDTO> {
-            override fun onResponse(call: Call<UsuariDTO>, response: Response<UsuariDTO>) {
+        apiService.login(loginData).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful) {
                     onResult(response.body(), null)
                 } else {
@@ -50,7 +51,7 @@ class UsuariRepository(private val context: Context) {
                 }
             }
 
-            override fun onFailure(call: Call<UsuariDTO>, t: Throwable) {
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 onResult(null, "Error de xarxa: ${t.message}")
             }
         })

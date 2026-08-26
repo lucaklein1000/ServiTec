@@ -27,6 +27,7 @@ import com.example.servitec_frontend.data.model.UpdateProdcuteDTO
 import com.example.servitec_frontend.data.model.UpdateTaulaDTO
 import com.example.servitec_frontend.data.model.UpdateUsuariDTO
 import com.example.servitec_frontend.data.model.Cuina
+import com.example.servitec_frontend.data.model.LoginResponse
 import com.example.servitec_frontend.data.model.TaulaDTO
 import com.example.servitec_frontend.data.model.UpdateMenjadorDTO
 import com.example.servitec_frontend.data.model.UsuariDTO
@@ -50,7 +51,7 @@ interface ApiService {
  suspend fun crearUsuari(@Body dto: CreateUsuariDTO): Response<UsuariDTO>
 
  @POST("api/Auth/login")
- fun login(@Body request: LoginRequest): Call<UsuariDTO>
+ fun login(@Body request: LoginRequest): Call<LoginResponse>
 
  @DELETE("api/Usuari/eliminar/{id}")
  suspend fun eliminarUsuari(@Path("id") idUsuari: Int): Response<ResponseBody>
