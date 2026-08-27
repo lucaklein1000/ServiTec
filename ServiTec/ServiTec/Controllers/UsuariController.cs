@@ -46,7 +46,7 @@ namespace ServiTec.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<Usuari>>> LlistarUsuaris()
         {
-            var usuaris = await _usuariService.GetAll();
+            var usuaris = await _usuariService.LlistarUsuaris();
             return Ok(usuaris);
         }
 
@@ -61,14 +61,16 @@ namespace ServiTec.Controllers
         [Authorize(Roles = "Cambrer, Admin")] // Permet consultar informació d'un usuari específic
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Usuari>> BuscarUsuari(int id)
+        public async Task<ActionResult<UsuariDTO>> GetById(int id)
         {
-            var usuari = await _usuariService.GetById(id);
+            var usuariDto = await _usuariService.GetById(id);
 
-            if (usuari == null)
+            if (usuariDto == null)
+            {
                 return NotFound();
+            }
 
-            return Ok(usuari);
+            return Ok(usuariDto);
         }
 
         /// <summary>

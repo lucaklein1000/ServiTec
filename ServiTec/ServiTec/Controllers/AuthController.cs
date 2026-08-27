@@ -1,11 +1,11 @@
 ﻿// ============================================================================
-// Projecte:      ServiTec - Sistema de Gestio de Restaurants (TFG)
+// Projecte:      ServiTec - Sistema de Gestió de Restaurants (TFG)
 // Autor:         Luca Klein
-// Titulacio:     Grau en Enginyeria Informatica (4t Curs)
-// Institucio:    Universitat de Girona (UdG)
+// Titulació:     Grau en Enginyeria Informàtica (4t Curs)
+// Institució:    Universitat de Girona (UdG)
 // Fitxer:        AuthController.cs
-// Descripcio:    Controlador RESTful encarregat de l autenticacio d usuaris
-//                i de la generacio de tokens d acces JWT.
+// Descripció:    Controlador RESTful encarregat de l'autenticació d'usuaris
+//                i de la generació de tokens d'accés JWT.
 // ============================================================================
 
 using Microsoft.AspNetCore.Http;
@@ -16,7 +16,7 @@ using ServiTec.Application.Services;
 namespace ServiTec.Controllers
 {
     /// <summary>
-    /// Gestiona l autenticacio d usuaris i la verificacio de credencials.
+    /// Gestiona l'autenticació d'usuaris i la verificació de credencials.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -30,12 +30,12 @@ namespace ServiTec.Controllers
         }
 
         /// <summary>
-        /// Autentica un usuari del sistema i retorna un token JWT si les credencials son valides.
+        /// Autentica un usuari del sistema i retorna un token JWT si les credencials són vàlides.
         /// </summary>
-        /// <param name="dto">Objecte amb el nom d usuari i la contrasenya.</param>
-        /// <returns>Dades de l usuari autenticat i el token JWT corresponent.</returns>
-        /// <response code="200">Autenticacio exitosa. Retorna el token JWT.</response>
-        /// <response code="400">Si faltan el nom d usuari o la contrasenya.</response>
+        /// <param name="dto">Objecte amb el nom d'usuari i la contrasenya.</param>
+        /// <returns>Dades de l'usuari autenticat i el token JWT corresponent.</returns>
+        /// <response code="200">Autenticació exitosa. Retorna el token JWT.</response>
+        /// <response code="400">Si falten el nom d'usuari o la contrasenya.</response>
         /// <response code="401">Credencials incorrectes o usuari inactiu.</response>
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -45,14 +45,14 @@ namespace ServiTec.Controllers
         {
             if (string.IsNullOrWhiteSpace(dto.NomUsuari) || string.IsNullOrWhiteSpace(dto.Contrasenya))
             {
-                return BadRequest(new { message = "El nom d usuari i la contrasenya son obligatoris." });
+                return BadRequest(new { message = "El nom d'usuari i la contrasenya són obligatoris." });
             }
 
             var result = await _authService.AutenticarAsync(dto);
 
             if (result == null)
             {
-                return Unauthorized(new { message = "Nom d usuari o contrasenya incorrectes o usuari inactiu." });
+                return Unauthorized(new { message = "Nom d'usuari o contrasenya incorrectes o usuari inactiu." });
             }
 
             return Ok(result);

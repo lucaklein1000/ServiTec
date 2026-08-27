@@ -42,7 +42,10 @@ namespace ServiTec.Application.Services
         /// <returns>Col·lecció de DTOs amb la informació de cada línia.</returns>
         public async Task<IEnumerable<LiniaComandaDTO>> GetAll()
         {
-            var liniaComandas = await _repository.GetAll();
+            var liniaComandas = await _repository.GetQueryable()
+                .Include(l => l.IdProducteNavigation)
+                .ToListAsync();
+
             return liniaComandas.Select(p => new LiniaComandaDTO
             {
                 IdLinia = p.IdLinia,
@@ -157,12 +160,11 @@ namespace ServiTec.Application.Services
 
             if (comanda != null)
             {
-                var totesLesLinies = await _repository.GetAll();
+                var nouTotal = await _repository.GetQueryable()
+                    .Where(l => l.IdComanda == idComanda && l.Estat != "Eliminat")
+                    .SumAsync(l => l.Subtotal);
 
-                comanda.Total = totesLesLinies
-                    .Where(l => l.IdComanda == idComanda)
-                    .Sum(l => l.Subtotal);
-
+                comanda.Total = nouTotal;
                 await _comandaRepository.Update(comanda);
             }
         }

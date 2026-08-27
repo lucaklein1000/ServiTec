@@ -22,7 +22,6 @@ import com.example.servitec_frontend.data.model.CreateMenjadorDTO
 import com.example.servitec_frontend.data.model.CreateTaulaDTO
 import com.example.servitec_frontend.data.model.Cuina
 import com.example.servitec_frontend.data.model.Menjador
-import com.example.servitec_frontend.data.model.Producte
 import com.example.servitec_frontend.data.model.ProducteDTO
 import com.example.servitec_frontend.data.model.TaulaDTO
 import com.example.servitec_frontend.data.model.UpdateCategoriaDTO

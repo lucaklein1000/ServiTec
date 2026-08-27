@@ -47,5 +47,10 @@ namespace ServiTec.Application.Interfaces
         /// </summary>
         /// <param name="entity">Instància de l'entitat a eliminar.</param>
         Task Delete(T entity);
+
+        /// <summary>
+        /// Exposa la consulta LINQ per permetre consultes avançades (Include, Where, Select) des dels serveis.
+        /// </summary>
+        IQueryable<T> GetQueryable();
     }
 }

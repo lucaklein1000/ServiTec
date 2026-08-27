@@ -9,9 +9,11 @@
 //                i verificació d'autenticació/login).
 // ============================================================================
 
+using Microsoft.AspNetCore.Mvc;
 using ServiTec.Application.DTOs;
 using ServiTec.Application.Interfaces;
 using ServiTec.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ServiTec.Application.Services
 {
@@ -29,33 +31,56 @@ namespace ServiTec.Application.Services
         }
 
         /// <summary>
-        /// Obté la llista completa d'usuaris registrats al sistema.
+        /// Obté el llistat complet d'usuaris registrats al sistema projectats en un DTO segur.
         /// </summary>
-        /// <returns>Col·lecció de tots els usuaris existents.</returns>
-        public async Task<IEnumerable<Usuari>> GetAll()
-        {
-            return await _repository.GetAll();
-        }
-
-        /// <summary>
-        /// Obté un usuari específic a partir del seu identificador únic.
-        /// </summary>
-        /// <param name="id">Identificador únic de l'usuari.</param>
-        /// <returns>L'usuari trobat o null si no existeix.</returns>
-        public async Task<Usuari?> GetById(int id)
-        {
-            return await _repository.GetById(id);
-        }
-
-        /// <summary>
-        /// Cerca un usuari pel seu nom d'usuari (username).
-        /// </summary>
-        /// <param name="nomUsuari">Nom d'usuari a cercar.</param>
-        /// <returns>L'usuari corresponent al nom o null si no existeix.</returns>
-        public async Task<Usuari?> GetByNomUsuari(string nomUsuari)
+        /// <returns>Retorna una resposta HTTP 200 (OK) amb la llista d'UsuariDTO (sense exposar la contrasenya).</returns>
+        [HttpGet("llistar")]
+        public async Task<IEnumerable<UsuariDTO>> LlistarUsuaris()
         {
             var usuaris = await _repository.GetAll();
-            return usuaris.FirstOrDefault(u => u.NomUsuari == nomUsuari);
+
+            var usuarisDto = usuaris.Select(u => new UsuariDTO
+            {
+                IdUsuari = u.IdUsuari,
+                NomUsuari = u.NomUsuari,
+                Actiu = u.Actiu,
+                Admin = u.Admin,
+                Rol = u.Rol
+            });
+
+            return usuarisDto;
+        }
+
+        /// <summary>
+        /// Obté un usuari específic a partir del seu identificador únic projectat en un DTO segur.
+        /// </summary>
+        /// <param name="id">Identificador únic de l'usuari.</param>
+        /// <returns>L'UsuariDTO trobat o null si no existeix.</returns>
+        public async Task<UsuariDTO?> GetById(int id)
+        {
+            var usuari = await _repository.GetById(id);
+
+            if (usuari == null) return null;
+
+            return new UsuariDTO
+            {
+                IdUsuari = usuari.IdUsuari,
+                NomUsuari = usuari.NomUsuari,
+                Actiu = usuari.Actiu,
+                Admin = usuari.Admin,
+                Rol = usuari.Rol
+            };
+        }
+
+        /// <summary>
+        /// Cerca un usuari específic pel seu nom d'usuari.
+        /// </summary>
+        /// <param name="nomUsuari">Nom d'usuari a cercar.</param>
+        /// <returns>L'entitat de l'usuari trobat o null si no existeix.</returns>
+        public async Task<Usuari?> GetByNomUsuari(string nomUsuari)
+        {
+            return await _repository.GetQueryable()
+                .FirstOrDefaultAsync(u => u.NomUsuari == nomUsuari);
         }
 
         /// <summary>

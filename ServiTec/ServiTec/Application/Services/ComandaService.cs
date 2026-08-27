@@ -1,20 +1,7 @@
-﻿// ============================================================================
-// Projecte:      ServiTec - Sistema de Gestió de Restaurants (TFG)
-// Autor:         Luca Klein
-// Titulació:     Grau en Enginyeria Informàtica (4t Curs)
-// Institució:    Universitat de Girona (UdG)
-// Fitxer:        ComandaService.cs
-// Descripció:    Servei principal de domini encarregat de la gestió completa de
-//                comandes (creació, actualització, gestió d'estats de cuina,
-//                afegir/restar línies de comanda i cobrament de taules).
-// ============================================================================
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ServiTec.Application.DTOs;
 using ServiTec.Application.Interfaces;
 using ServiTec.Domain.Models;
-using ServiTec.Infrastructure.Data;
 
 namespace ServiTec.Application.Services
 {
@@ -27,25 +14,23 @@ namespace ServiTec.Application.Services
         private readonly IRepository<Comanda> _repository;
         private readonly IRepository<Producte> _productRepository;
         private readonly IRepository<Taula> _taulaRepository;
-        private readonly ServiTecDbContext _context;
+        private readonly IRepository<LiniaComanda> _liniaRepository;
 
         public ComandaService(
             IRepository<Comanda> repository,
             IRepository<Producte> productRepository,
             IRepository<Taula> taulaRepository,
-            ServiTecDbContext context)
+            IRepository<LiniaComanda> liniaRepository)
         {
             _repository = repository;
             _productRepository = productRepository;
             _taulaRepository = taulaRepository;
-            _context = context;
+            _liniaRepository = liniaRepository;
         }
 
         /// <summary>
         /// Cerca una comanda pel seu identificador únic.
         /// </summary>
-        /// <param name="id">Identificador únic de la comanda.</param>
-        /// <returns>Instància de la comanda o null si no s'ha trobat.</returns>
         public async Task<Comanda?> GetById(int id)
         {
             return await _repository.GetById(id);
@@ -54,8 +39,6 @@ namespace ServiTec.Application.Services
         /// <summary>
         /// Elimina una comanda del sistema pel seu identificador únic.
         /// </summary>
-        /// <param name="id">Identificador únic de la comanda a eliminar.</param>
-        /// <returns>Cert si s'ha eliminat correctament, o fals si no existia.</returns>
         public async Task<bool> DeleteComanda(int id)
         {
             var comanda = await _repository.GetById(id);
@@ -70,16 +53,12 @@ namespace ServiTec.Application.Services
         /// <summary>
         /// Obté totes les comandes incloent el detall de les seves línies i productes associats.
         /// </summary>
-        /// <returns>Llista de DTOs amb tota la informació resumida de les comandes.</returns>
         public async Task<IEnumerable<ComandaDTO>> GetComandas()
         {
-            var query = await _repository.GetAll();
-
-            var comandasConLineas = query
-                .AsQueryable()
+            var comandasConLineas = await _repository.GetQueryable()
                 .Include(c => c.LiniaComanda)
                     .ThenInclude(lc => lc.IdProducteNavigation)
-                .ToList();
+                .ToListAsync();
 
             return comandasConLineas.Select(p => new ComandaDTO
             {
@@ -104,10 +83,6 @@ namespace ServiTec.Application.Services
         /// <summary>
         /// Crea una nova comanda, valida l'estat de la taula, obté el preu actual dels productes i ocupa la taula.
         /// </summary>
-        /// <param name="dto">Objecte de transferència de dades amb les dades de la comanda i les seves línies.</param>
-        /// <returns>La comanda creada amb la seva estructura de línies.</returns>
-        /// <exception cref="ArgumentException">Si la taula no existeix.</exception>
-        /// <exception cref="InvalidOperationException">Si la taula ja està ocupada.</exception>
         public async Task<Comanda?> CrearComanda(CreateComandaDTO dto)
         {
             var taula = await _taulaRepository.GetById(dto.IdTaula);
@@ -163,17 +138,12 @@ namespace ServiTec.Application.Services
             taula.Estat = false;
             await _taulaRepository.Update(taula);
 
-            var resultat = await _repository.Create(comanda);
-
-            return resultat;
+            return await _repository.Create(comanda);
         }
 
         /// <summary>
         /// Actualitza la capçalera d'una comanda existent.
         /// </summary>
-        /// <param name="id">Identificador de la comanda a modificar.</param>
-        /// <param name="dto">DTO amb les noves dades de la capçalera.</param>
-        /// <returns>La comanda actualitzada o null si no existeix.</returns>
         public async Task<Comanda?> UpdateComandaDTO(int id, UpdateComandaDTO dto)
         {
             var comanda = await _repository.GetById(id);
@@ -193,13 +163,11 @@ namespace ServiTec.Application.Services
         }
 
         /// <summary>
-        /// Obté la comanda activa (oberta, segons o pendent) associada a un número de taula determinat.
+        /// Obté la comanda activa associada a un número de taula determinat.
         /// </summary>
-        /// <param name="idTaula">Identificador de la taula.</param>
-        /// <returns>Instància de la comanda activa amb les seves línies o null si no n'hi ha cap.</returns>
         public async Task<Comanda?> ObtenirComandaActivaSegonsTaulaAsync(int idTaula)
         {
-            return await _context.Comanda
+            return await _repository.GetQueryable()
                 .Include(c => c.LiniaComanda)
                     .ThenInclude(lc => lc.IdProducteNavigation)
                 .FirstOrDefaultAsync(c => c.IdTaula == idTaula &&
@@ -209,10 +177,9 @@ namespace ServiTec.Application.Services
         /// <summary>
         /// Obté el llistat de comandes i comandes de línia destinades a la pantalla de cuina.
         /// </summary>
-        /// <returns>Llista de DTOs formatats per al mòdul de cuina.</returns>
         public async Task<List<ComandaCuinaDTO>> ObtenirComandesCuinaAsync()
         {
-            return await _context.Comanda
+            return await _repository.GetQueryable()
                 .Include(c => c.IdTaulaNavigation)
                 .Include(c => c.LiniaComanda)
                     .ThenInclude(l => l.IdProducteNavigation)
@@ -222,7 +189,7 @@ namespace ServiTec.Application.Services
                 {
                     IdComanda = c.IdComanda,
                     IdTaula = c.IdTaula,
-                    NumTaula = c.IdTaulaNavigation.Numero,
+                    NumTaula = c.IdTaulaNavigation != null ? c.IdTaulaNavigation.Numero : 0,
                     Estat = c.Estat,
                     DataHora = c.DataCreacio,
                     Linies = c.LiniaComanda
@@ -242,17 +209,13 @@ namespace ServiTec.Application.Services
         /// <summary>
         /// Canvia l'estat d'una comanda específica a la base de dades.
         /// </summary>
-        /// <param name="idComanda">Identificador únic de la comanda.</param>
-        /// <param name="nouEstat">Nou estat a assignar (ex. 'tancada', 'oberta').</param>
-        /// <returns>Cert si s'ha canviat correctament, o fals si la comanda no existia.</returns>
         public async Task<bool> CanviarEstatComandaAsync(int idComanda, string nouEstat)
         {
-            var comanda = await _context.Comanda.FindAsync(idComanda);
+            var comanda = await _repository.GetById(idComanda);
             if (comanda == null) return false;
 
             comanda.Estat = nouEstat;
-            _context.Comanda.Update(comanda);
-            await _context.SaveChangesAsync();
+            await _repository.Update(comanda);
 
             return true;
         }
@@ -260,76 +223,68 @@ namespace ServiTec.Application.Services
         /// <summary>
         /// Canvia l'estat d'una línia de comanda individual.
         /// </summary>
-        /// <param name="idLinia">Identificador únic de la línia.</param>
-        /// <param name="nouEstat">Nou estat a assignar (ex. 'Servit', 'EnProcés').</param>
-        /// <returns>Cert si s'ha actualitzat correctament, o fals si la línia no existia.</returns>
         public async Task<bool> CanviarEstatLiniaAsync(int idLinia, string nouEstat)
         {
-            var linia = await _context.LiniaComanda
+            var linia = await _liniaRepository.GetQueryable()
                 .Include(l => l.IdComandaNavigation)
                 .FirstOrDefaultAsync(l => l.IdLinia == idLinia);
 
             if (linia == null) return false;
 
             linia.Estat = nouEstat;
-            _context.LiniaComanda.Update(linia);
-            await _context.SaveChangesAsync();
+            await _liniaRepository.Update(linia);
 
             return true;
         }
 
         /// <summary>
         /// Processa el cobrament d'una comanda: marca totes les seves línies com a servides, tanca la comanda i allibera la taula.
+        /// Executa tots els canvis en un únic SaveChangesAsync.
         /// </summary>
-        /// <param name="idComanda">Identificador únic de la comanda a cobrar.</param>
-        /// <returns>Cert si tot el procés s'ha realitzat correctament.</returns>
         public async Task<bool> CobrarComandaAsync(int idComanda)
         {
-            var comanda = await _context.Comanda
+            var comanda = await _repository.GetQueryable()
                 .Include(c => c.LiniaComanda)
                 .Include(c => c.IdTaulaNavigation)
                 .FirstOrDefaultAsync(c => c.IdComanda == idComanda);
 
             if (comanda == null) return false;
 
+            //  Modifiquem l'estat de les línies en memòria (sense cridar Update/SaveChangesAsync al bucle)
             if (comanda.LiniaComanda != null)
             {
-                var idsLinies = comanda.LiniaComanda.Select(l => l.IdLinia).ToList();
-
-                foreach (var idLinia in idsLinies)
+                foreach (var linia in comanda.LiniaComanda)
                 {
-                    await CanviarEstatLiniaAsync(idLinia, "Servit");
+                    linia.Estat = "Servit";
                 }
             }
 
-            await CanviarEstatComandaAsync(comanda.IdComanda, "tancada");
+            //  Modifiquem l'estat de la comanda i la taula
+            comanda.Estat = "tancada";
 
             if (comanda.IdTaulaNavigation != null)
             {
                 comanda.IdTaulaNavigation.Estat = true;
             }
 
-            await _context.SaveChangesAsync();
+            // Persistim TOTS els canvis en una sola transacció/petició a la base de dades
+            await _repository.Update(comanda);
+
             return true;
         }
 
         /// <summary>
         /// Afegeix un conjunt de noves línies a una comanda ja existent i actualitza el seu total acumulat.
         /// </summary>
-        /// <param name="idComanda">Identificador de la comanda a ampliar.</param>
-        /// <param name="novesLiniesDto">Llista de noves línies a afegir.</param>
-        /// <returns>La comanda actualitzada amb el nou total.</returns>
-        /// <exception cref="ArgumentException">Si la comanda no existeix.</exception>
         public async Task<Comanda?> AfegirLiniesAComanda(int idComanda, List<CreateLiniaComandaDTO> novesLiniesDto)
         {
-            var comanda = await _context.Comanda.FindAsync(idComanda);
+            var comanda = await _repository.GetById(idComanda);
             if (comanda == null)
             {
                 throw new ArgumentException("La comanda no existeix.");
             }
 
             decimal totalAdicional = 0;
-            var novesEntitatsLinia = new List<LiniaComanda>();
 
             foreach (var liniaDto in novesLiniesDto)
             {
@@ -341,7 +296,7 @@ namespace ServiTec.Application.Services
 
                     totalAdicional += subtotal;
 
-                    novesEntitatsLinia.Add(new LiniaComanda
+                    var novaLinia = new LiniaComanda
                     {
                         IdComanda = idComanda,
                         IdProducte = liniaDto.IdProducte,
@@ -349,15 +304,14 @@ namespace ServiTec.Application.Services
                         PreuUnitari = preuUnitari,
                         Subtotal = subtotal,
                         Estat = liniaDto.Estat ?? "Pendent"
-                    });
+                    };
+
+                    await _liniaRepository.Create(novaLinia);
                 }
             }
 
-            await _context.LiniaComanda.AddRangeAsync(novesEntitatsLinia);
-
             comanda.Total += totalAdicional;
-
-            await _context.SaveChangesAsync();
+            await _repository.Update(comanda);
 
             return comanda;
         }
@@ -365,11 +319,9 @@ namespace ServiTec.Application.Services
         /// <summary>
         /// Elimina o redueix en una unitat la quantitat d'una línia de comanda, recalculant el total de la comanda pare.
         /// </summary>
-        /// <param name="idLiniaComanda">Identificador únic de la línia de comanda.</param>
-        /// <returns>Cert si la línia s'ha modificat/eliminat correctament.</returns>
         public async Task<bool> EliminarLiniaComandaAsync(int idLiniaComanda)
         {
-            var linia = await _context.LiniaComanda
+            var linia = await _liniaRepository.GetQueryable()
                 .Include(l => l.IdComandaNavigation)
                 .FirstOrDefaultAsync(l => l.IdLinia == idLiniaComanda);
 
@@ -391,17 +343,19 @@ namespace ServiTec.Application.Services
                 linia.Subtotal = linia.Quantitat * linia.PreuUnitari;
             }
 
+            await _liniaRepository.Update(linia);
+
             var comandaPare = linia.IdComandaNavigation;
             if (comandaPare != null)
             {
-                var totalActiu = await _context.LiniaComanda
+                var totalActiu = await _liniaRepository.GetQueryable()
                     .Where(l => l.IdComanda == comandaPare.IdComanda && l.Estat != "Eliminat")
                     .SumAsync(l => l.Subtotal);
 
                 comandaPare.Total = totalActiu;
+                await _repository.Update(comandaPare);
             }
 
-            await _context.SaveChangesAsync();
             return true;
         }
     }
